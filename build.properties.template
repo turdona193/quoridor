@@ -4,6 +4,7 @@ test = main.QuoridorTest
 junit = /usr/share/junit-4/lib/junit.jar
 hamcrest = /usr/share/hamcrest-core/lib/hamcrest-core.jar
 
+
 bin = bin
 src = src
 tst = tst
