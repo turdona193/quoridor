@@ -1,4 +1,4 @@
-<project name = "Greeter" default = "run">
+<project name = "Quoridor" default = "run">
 
   <!-- Included to shut ant 1.8+ up about the value not being set. -->
   <presetdef name="javac">
