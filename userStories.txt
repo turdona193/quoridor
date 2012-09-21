@@ -71,7 +71,22 @@ Priority
 
 AI
 As a player
-I want to be able to play against a computer
+I want to be able to play against a computer.
 So that I can play by myself.
 Size
 Priority
+
+Number of players
+As a player
+I want to be able to choose the number of players in the game.
+So that I can set up the game.
+Size
+Priority
+
+Music
+As a player
+I want the game to have it's own background music.
+So that I can listen to Tetris music while I play.
+Size
+Priority
+
