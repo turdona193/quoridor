@@ -22,6 +22,8 @@
   <path id="classpath.test">
     <pathelement location="${junit}" />
     <pathelement location="${hamcrest}" />
+    <pathelement location="${windowlicker-core}" />
+    <pathelement location="${windowlicker-swing}" />
     <path refid="classpath.base" />
   </path>
 

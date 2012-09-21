@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.objogate.wl.swing.*;
+
 import main.QuoridorTest;
 
 public class QuoridorTest {
