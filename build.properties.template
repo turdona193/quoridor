@@ -3,6 +3,8 @@ test = main.QuoridorTest
 
 junit = /usr/share/junit-4/lib/junit.jar
 hamcrest = /usr/share/hamcrest-core/lib/hamcrest-core.jar
+windowlicker-core = /home/andrew/classes/jars/windowlicker-core-DEV.jar
+windowlicker-swing = /home/andrew/classes/jars/windowlicker-swing-DEV.jar
 
 bin = bin
 src = src
