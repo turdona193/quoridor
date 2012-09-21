@@ -1,0 +1,65 @@
+package main;
+import javax.swing.*;
+
+import static java.awt.BorderLayout.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+public class Quoridor extends JFrame{
+	
+	public final static String MAIN_WINDOW_TITLE = "Qouridor";
+	
+	
+	public final static String LABEL_NAME = "TheLabel";
+
+	/*
+	// messages displayed by the label
+	public static final String INITIAL_MESSAGE = "One fish,";
+	public static final String[] MESSAGES = {"Two fish,", "Red fish,", "Blue fish."};
+	
+	public final static String BUTTON_NAME_PREFIX = "Button";
+	public final static String[] BUTTON_TEXTS = {"One", "Two", "Three"};
+	*/
+	
+	private JLabel label;
+	private List<JButton> buttons;
+	
+	public Quoridor() {
+		super();
+		setName(MAIN_WINDOW_TITLE);
+		setTitle(MAIN_WINDOW_TITLE);
+		setSize(640, 480);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		/* A layout manager is part of any widget that can act as a container 
+		 * of other widgets. The layout manager determines how the contained
+		 * widgets will be arranged. Look at the Java tutorial at
+		 * http://docs.oracle.com/javase/tutorial/uiswing/layout/using.html
+		 * for more information (and a rundown of available layout managers).
+		 */
+		setLayout(new FlowLayout());
+		
+		label = new JLabel();
+		label.setName(LABEL_NAME);
+		label.setText(INITIAL_MESSAGE);
+		
+		add(label);
+		
+		
+		buttons = new ArrayList<JButton>();
+		initializeButtons();
+		
+		setVisible(true);
+	}
+    public static void main(String[] args) {
+    	Quoridor run = new Quaridor();
+    }
+}
