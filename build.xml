@@ -1,0 +1,73 @@
+<project name = "Greeter" default = "run">
+
+  <!-- Included to shut ant 1.8+ up about the value not being set. -->
+  <presetdef name="javac">
+     <javac includeantruntime="false" />
+  </presetdef>
+
+  <!-- build.properties contains the assignments of those properties
+       defined as variables in this build file to values specific to
+       this project. -->
+  <property file = "build.properties" />
+
+  <!-- What is the classpath to use for production builds? This path
+       can ignore the test-only paths. It will just be the build
+       directory for this project. If there are jar files you're using
+       in production, their paths go here. -->
+  <path id="classpath.base">
+    <pathelement location="${bin}" />
+  </path>
+
+  <!-- Extend classpath.base by prepending the location junit. -->
+  <path id="classpath.test">
+    <pathelement location="${junit}" />
+    <pathelement location="${hamcrest}" />
+    <path refid="classpath.base" />
+  </path>
+
+  <!-- Make a clean target by deleting all build targets. -->
+  <target name = "clean" description = "Delete all build targets">
+    <delete dir = "${bin}" />
+  </target>
+
+  <target name = "init" description = "Starting point for building">
+    <mkdir dir = "${bin}" />
+  </target>
+
+  <!-- Split the <javac> and <java> steps to two different targets -->
+  <target name = "compile" depends = "init" 
+          description = "Compile the program">
+    <!-- Compile ALL java files found in or below the source
+         directory, building the matching structure in the destination
+         directory. -->
+    <javac srcdir = "${src}" destdir = "${bin}">
+      <classpath refid="classpath.base"/>
+    </javac>
+  </target>
+
+  
+  <!-- Targets to compile the tests -->
+  <target name="compile-test" depends="compile">
+    <!-- Compile all the tests using the testpath -->
+    <javac srcdir="${tst}" destdir = "${bin}">
+      <classpath refid="classpath.test"/>
+    </javac>
+  </target>
+
+  <!-- Target to run the tests -->
+  <target name="test" depends="compile-test">
+    <!-- Using the junit task (built in to ant), run the tests. -->
+    <junit fork="yes" haltonfailure="yes">
+      <classpath refid="classpath.test" />
+      <formatter type="brief" usefile="false" />
+      <test name="${test}" />
+    </junit>
+  </target>
+
+  <!-- Target to run the named (as a property) class -->
+  <target name = "run" depends = "compile" description = "Run the program">
+    <java classname = "${run}">
+      <classpath refid="classpath.base"/>
+    </java>
+  </target>
+</project>
