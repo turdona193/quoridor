@@ -14,7 +14,7 @@ Size
 Priority
 
 Display walls
-as a player
+As a player
 I want to be able to see where the walls are on the board.
 So that I know where the walls are.
 Size
@@ -23,8 +23,55 @@ Priority
 Take turn
 As a player
 I want to be able to move my piece or place a wall on my turn.
-So that i can play the game.
+So that I can play the game.
 Size
 Priority
 
+Catch illegal move
+As a player
+I want to be informed if I try to make an illegal move.
+So that I can't cheat.
+Size
+Priority
 
+Count walls
+As a player
+I want to be able to check how many walls me and my opponents have left.
+So that I can tell how many walls are left.
+Size
+Priority
+
+New game
+As a player
+I want to be able to start a new game.
+So that I can start a new game.
+Size
+Priority
+
+Keyboard play
+As a player
+I want to be able to play the game with a keyboard.
+So that I can play with a keyboard.
+Size
+Priority
+
+Mouse play
+As a player
+I want to be able to play with a mouse.
+So that I can play with a mouse.
+Size
+Priority
+
+Player Color 
+As a player
+I want to be able to choose whether or not my piece is pink.
+So that I only have to play as the pink piece when I feel like it.
+Size
+Priority
+
+AI
+As a player
+I want to be able to play against a computer
+So that I can play by myself.
+Size
+Priority
