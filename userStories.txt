@@ -1,0 +1,30 @@
+
+Display the board
+As a player
+I want to be able to see the playing board.
+So that I have something to look at while playing the game.
+Size 
+Priority
+
+Display Pieces
+As a player
+I want to be able to see where everyone's piece is on the board.
+So that I know where the pieces are.
+Size
+Priority
+
+Display walls
+as a player
+I want to be able to see where the walls are on the board.
+So that I know where the walls are.
+Size
+Priority
+
+Take turn
+As a player
+I want to be able to move my piece or place a wall on my turn.
+So that i can play the game.
+Size
+Priority
+
+
