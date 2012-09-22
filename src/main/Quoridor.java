@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class Quoridor extends JFrame implements ActionListener {
 
@@ -62,14 +63,14 @@ public class Quoridor extends JFrame implements ActionListener {
 		panel.setVisible(true);
 		
 		JLabel top = new JLabel("Quoridor");
-		top.setHorizontalTextPosition(JLabel.CENTER + 10);
+		top.setHorizontalAlignment(SwingConstants.CENTER);
 		add(top, BorderLayout.PAGE_START);
 
-		//label = new JLabel();
-		//label.setName(LABEL_NAME);
-		//label.setText(INITIAL_MESSAGE);
+		label = new JLabel();
+		label.setName(LABEL_NAME);
+		label.setText(INITIAL_MESSAGE);
 
-		//add(label);
+		panel.add(label);
 
 
 		buttons = new ArrayList<JButton>();
