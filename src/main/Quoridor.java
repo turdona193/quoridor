@@ -82,6 +82,7 @@ public class Quoridor extends JFrame implements ActionListener {
 		buttons = new ArrayList<JButton>();
 		initializeButtons();
 		
+		// initializes the menu bar, adds the menu bar to the JFrame, and then add the file menu to the menu bar
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		setFileMenu();

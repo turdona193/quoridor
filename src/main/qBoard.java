@@ -27,14 +27,14 @@ public class qBoard extends JFrame implements ActionListener{
 		// TODO Auto-generated constructor stub	
 		super();
 		setName(MAIN_WINDOW_TITLE);
-		setSize(600,600);
+		setSize(400,400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(null);
 
 		initializeButtons();
-		buttonPanel.setSize(512,512);
+		buttonPanel.setSize(512, 512);
 
 		//add(buttonPanel, BorderLayout.PAGE_START);
 		add (buttonPanel);
@@ -53,7 +53,7 @@ public class qBoard extends JFrame implements ActionListener{
 			for (int j = 0; j < 17; j++) {
 				if(!border){
 					if(j%2 == 0){
-						JButton button = new JButton(""); // sets the text
+						JButton button = new JButton(" "); // sets the text
 						button.setName("sNumber"+i+" "+j);
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
@@ -109,8 +109,9 @@ public class qBoard extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent action) {
 		Color col = new Color(12,34,54);
 		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j< board[i].length ; )
+			for (int j = 0; j< board[i].length ; j++) // fixed, Nick forgot to increment j initially
 			if (action.getSource() == board[j][i]) {
+				col = new Color(i*20, i*j, j*20);
 				board[j][i].setBackground(col);
 				break;
 			}
