@@ -34,7 +34,7 @@ public class PlayerTest {
 		int expectedX[] = {5, 5, 0, 9};
 		int expectedY[] = {0, 9, 5, 5};
 		for (int i = 0; i < expectedX.length; i++) {
-			pl = new Player(i+1);
+			pl = new Player(i+1, 2);
 			testXAndYValues(expectedX[i], expectedY[i]);
 		}
 	}

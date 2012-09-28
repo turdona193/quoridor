@@ -5,6 +5,7 @@ import javax.swing.*;
 import static java.awt.BorderLayout.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	// messages displayed by the label
 	public static final String INITIAL_MESSAGE = "GAME ON?";
-	public static final String[] MESSAGES = {"Play Game", "Options", "Exit"};
+	public static final String[] MESSAGES = {"Play Game Clicked", "Options Clicked", "Exit Clicked"};
 
 	public final static String BUTTON_NAME_PREFIX = "Button";
 	public final static String[] BUTTON_TEXTS = {"Play Game", "Options", "Exit"};
@@ -34,7 +35,11 @@ public class Quoridor extends JFrame implements ActionListener {
 	private JLabel label;
 	private JPanel panel;
 	private List<JButton> buttons;
-
+	
+	private JMenuBar menuBar;
+	private JMenu fileMenu;
+	private JMenuItem playMenuItem, optionsMenuItem, exitMenuItem;
+	
 	private void initializeButtons() {
 		for (int i = 0; i < BUTTON_TEXTS.length; ++i) {
 			JButton button = new JButton(BUTTON_TEXTS[i]); // sets the text
@@ -64,6 +69,7 @@ public class Quoridor extends JFrame implements ActionListener {
 		
 		JLabel top = new JLabel("Quoridor");
 		top.setHorizontalAlignment(SwingConstants.CENTER);
+		top.setFont(new Font("Arial", Font.BOLD, 48));		// We need to either find a cooler font, replace this with an image later.
 		add(top, BorderLayout.PAGE_START);
 
 		label = new JLabel();
@@ -76,9 +82,35 @@ public class Quoridor extends JFrame implements ActionListener {
 		buttons = new ArrayList<JButton>();
 		initializeButtons();
 		
+		menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		setFileMenu();
+		
+		
 		setVisible(true);
 
 	}
+	
+	
+	// method to create a file menu on the menu bar, along with all the menu items
+	private void setFileMenu() {
+		fileMenu = new JMenu("File");
+		menuBar.add(fileMenu);
+		
+		playMenuItem = new JMenuItem("Play");
+		fileMenu.add(playMenuItem);
+		playMenuItem.addActionListener(this);
+		
+		optionsMenuItem = new JMenuItem("Options");
+		fileMenu.add(optionsMenuItem);
+		optionsMenuItem.addActionListener(this);
+		
+		exitMenuItem = new JMenuItem("Exit");
+		fileMenu.add(exitMenuItem);
+		exitMenuItem.addActionListener(this);
+
+	}
+	
 	
 	public void run(){
 
@@ -89,15 +121,73 @@ public class Quoridor extends JFrame implements ActionListener {
 		Window.run();
 	}
 
+	// if the object that was clicked is found, the method will end since we won't need to check
+	// the others
 	@Override
 	public void actionPerformed(ActionEvent action) {
-		for (int i = 0; i < buttons.size(); ++i) {
-			if (action.getSource() == buttons.get(i)) {
-				label.setText(MESSAGES[i]);
-				break;
-			}
+		if (checkButtons(action)) 
+			return;
+		if (checkMenuItems(action))
+			return;
+	}
+	
+	// checks to see if the action event was caused by any of the buttons being clicked
+	// if it turns out that it was caused by one of the buttons being clicked, true will 
+	// be returned, otherwise the method will return false
+	private boolean checkButtons(ActionEvent action) {
+		if (buttons.get(0) == action.getSource()) {
+			play();
+			return true;
 		}
+		
+		if (buttons.get(1) == action.getSource()) {
+			options();
+			return true;
+		}
+		
+		if (buttons.get(2) == action.getSource()) {
+			exit();
+			return true;
+		}
+		return false;
+	}
+	
+	// checks to see if the action event was caused by any of the menu items being clicked
+	// if it turns out that it was caused by one of the menu items being clicked, true will 
+	// be returned, otherwise the method will return false
+	private boolean checkMenuItems(ActionEvent action) {
+		if (playMenuItem == action.getSource()) {
+			play();
+			return true;
+		}
+		
+		if (optionsMenuItem == action.getSource()) {
+			options();
+			return true;
+		}
+		
+		if (exitMenuItem == action.getSource()) {
+			exit();
+			return true;
+		}
+		return false;
+		// JMenuItem playMenuItem, optionsMenuItem, exitMenuItem;
+	}
 
+	//  The three following methods don't do much now, but someday they'll have real functions.
+	private void play() {
+		label.setText(MESSAGES[0]);
+		
+	}
+
+	private void options() {
+		label.setText(MESSAGES[1]);
+		
+	}
+
+	private void exit() {
+		label.setText(MESSAGES[2]);
+		
 	}
 	
 	
