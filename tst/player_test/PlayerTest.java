@@ -1,5 +1,6 @@
 package player_test;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,9 +35,29 @@ public class PlayerTest {
 		int expectedX[] = {5, 5, 0, 9};
 		int expectedY[] = {0, 9, 5, 5};
 		for (int i = 0; i < expectedX.length; i++) {
-			pl = new Player(i+1, 2);
+			pl = new Player(i+1, 4);
 			testXAndYValues(expectedX[i], expectedY[i]);
 		}
+	}
+	
+	@Test
+	public void testGetColor() {
+		pl = new Player(1, 4);
+		Color expectedColor = Color.blue;
+		assertThat(expectedColor, is(equalTo(pl.getColor())));
+		
+		pl = new Player(2, 4);
+		expectedColor = Color.red;
+		assertThat(expectedColor, is(equalTo(pl.getColor())));
+		
+		pl = new Player(3, 4);
+		expectedColor = Color.green;
+		assertThat(expectedColor, is(equalTo(pl.getColor())));
+		
+		pl = new Player(4, 4);
+		expectedColor = Color.yellow;
+		assertThat(expectedColor, is(equalTo(pl.getColor())));
+		
 	}
 		
 }

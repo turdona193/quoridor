@@ -178,7 +178,7 @@ public class Quoridor extends JFrame implements ActionListener {
 	//  The three following methods don't do much now, but someday they'll have real functions.
 	private void play() {
 		label.setText(MESSAGES[0]);
-		
+		qBoard board = new qBoard();
 	}
 
 	private void options() {
@@ -188,7 +188,7 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	private void exit() {
 		label.setText(MESSAGES[2]);
-		
+		System.exit(0);
 	}
 	
 	
