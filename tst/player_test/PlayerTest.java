@@ -33,7 +33,7 @@ public class PlayerTest {
 	@Test
 	public void testStartingLocationsOfPlayers() {
 		int expectedX[] = {5, 5, 0, 9};
-		int expectedY[] = {0, 9, 5, 5};
+		int expectedY[] = {9, 0, 5, 5};
 		for (int i = 0; i < expectedX.length; i++) {
 			pl = new Player(i+1, 4);
 			testXAndYValues(expectedX[i], expectedY[i]);
@@ -41,22 +41,13 @@ public class PlayerTest {
 	}
 	
 	@Test
-	public void testGetColor() {
-		pl = new Player(1, 4);
-		Color expectedColor = Color.blue;
-		assertThat(expectedColor, is(equalTo(pl.getColor())));
+	public void testDefaultColors() {
+		Color expectedColor[] = {Color.blue, Color.red, Color.green, Color.yellow};
 		
-		pl = new Player(2, 4);
-		expectedColor = Color.red;
-		assertThat(expectedColor, is(equalTo(pl.getColor())));
-		
-		pl = new Player(3, 4);
-		expectedColor = Color.green;
-		assertThat(expectedColor, is(equalTo(pl.getColor())));
-		
-		pl = new Player(4, 4);
-		expectedColor = Color.yellow;
-		assertThat(expectedColor, is(equalTo(pl.getColor())));
+		for (int i = 0; i < expectedColor.length; i++) {
+			pl = new Player(i+1, 4);
+			assertThat(expectedColor[i], is(equalTo(pl.getColor())));
+		}
 		
 	}
 		

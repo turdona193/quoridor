@@ -4,6 +4,10 @@ import java.awt.Color;
 
 public class Player {
 
+	private final int X[] = {5, 5, 0, 9};
+	private final int Y[] = {9, 0, 5, 5};
+	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};
+	
 	private int x, y; 		// x and y are the coordinates of the player on the board.
 	private int playerID;	// playerID identifies the player as being player 1, player 2, etc.
 	private int walls;		// walls is the number of walls the player has left to place.
@@ -14,7 +18,7 @@ public class Player {
 		playerID = 0;
 		setStartingLocation();
 		setStartingWalls(0);
-		setDefaultColor(0);
+		setDefaultColor();
 	}
 
 	// ID is 1 for player 1, 2 for player 2,...  NumOfPlayers is the number of players in this game.
@@ -22,15 +26,15 @@ public class Player {
 		playerID = ID;
 		setStartingLocation();
 		setStartingWalls(startingWalls);
-		setDefaultColor(ID);
+		setDefaultColor();
 		
 	}
 	
 	//This constructor is used when a player has picked a color other than the default
-	public Player(int ID, int NumOfPlayers, Color c) {
+	public Player(int ID, int startingWalls, Color c) {
 		playerID = ID;
 		setStartingLocation();
-		setStartingWalls(NumOfPlayers);
+		setStartingWalls(startingWalls);
 		setColor(c);
 		
 	} 
@@ -46,19 +50,14 @@ public class Player {
 	}
 
 	//sets the default color of a player
-	private void setDefaultColor(int ID) {
-		if (playerID == 1) {
-			col = Color.blue;
-		}else if (playerID == 2) {
-			col = Color.red;
-		}else if (playerID == 3) {
-			col = Color.green;
-		}else if (playerID == 4) {
-			col = Color.yellow;
-		}else {
+	private void setDefaultColor() {
+		if (playerID > 0 && playerID < 5) {
+			col = color[playerID-1];
+			col = color[playerID-1];
+		} else {
 			col = Color.white;
 		}
-		
+
 	}
 
 	//Sets the number of walls
@@ -95,21 +94,12 @@ public class Player {
 	
 	//sets a starting location for the player.
 	private void setStartingLocation() {
-		if (playerID == 1) {
-			x = 5;
-			y = 0;
-		}else if (playerID == 2) {
-			x = 5;
-			y = 9;
-		}else if (playerID == 3) {
+		if (playerID > 0 && playerID < 5) {
+			x = X[playerID-1];
+			y = Y[playerID-1];
+		} else {
 			x = 0;
-			y = 5;
-		}else if (playerID == 4) {
-			x = 9;
-			y = 5;
-		}else {
-				x = 0;
-				y = 0;
+			y = 0;
 		}
 	}
 	
