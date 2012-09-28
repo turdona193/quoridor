@@ -53,7 +53,7 @@ public class qBoard extends JFrame implements ActionListener{
 			for (int j = 0; j < 17; j++) {
 				if(!border){
 					if(j%2 == 0){
-						JButton button = new JButton(" "); // sets the text
+						JButton button = new JButton(""); // sets the text
 						button.setName("sNumber"+i+" "+j);
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
