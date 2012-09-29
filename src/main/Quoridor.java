@@ -20,9 +20,6 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	public final static String MAIN_WINDOW_TITLE = "Qouridor";
 
-
-	public final static String LABEL_NAME = "TheLabel";
-
 	// messages displayed by the label
 	public static final String INITIAL_MESSAGE = "GAME ON?";
 	public static final String[] MESSAGES = {"Play Game Clicked", "Options Clicked", "Exit Clicked"};

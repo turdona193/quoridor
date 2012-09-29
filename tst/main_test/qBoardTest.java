@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import main.Quoridor;
+import main.qBoard;
 
 import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.ComponentDriver;
@@ -42,27 +43,42 @@ public class qBoardTest {
 		driver = new JFrameDriver(new GesturePerformer(), new AWTEventQueueProber(), JFrameDriver.named(BOARD_WINDOW_TITLE), JFrameDriver.showingOnScreen());
 	}
 	
-	//private JButton
+	@SuppressWarnings("unchecked")
+	@After
+	public void shutDown(){
+		driver.dispose();
+	}
+	
+    @SuppressWarnings("unchecked")
+	private JButtonDriver button(String name){
+        return new JButtonDriver(driver, JButton.class, ComponentDriver.named(name));
+	}
+    @SuppressWarnings("unchecked")
+    private JLabelDriver label(String name) {
+        return new JLabelDriver(driver, ComponentDriver.named(name));
+    }
 	
     @Test
     public void stubTest() {
         assertEquals(1, 1);
     }
     
+    @Test
     public void WindowUpWithTitle() {
-        assertEquals(1, 1);
+		driver.hasTitle(BOARD_WINDOW_TITLE);
     }
     
+    @Test
     public void lableColorsWithClick(){
-    	JButtonDriver bDriver = JButton;
+    	Color col;
     	
-    	for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j< board[i].length ; j++) // fixed, Nick forgot to increment j initially
-			if (action.getSource() == board[j][i]) {
-				col = new Color(i*20, i*j, j*20);
-				board[j][i].setBackground(col);
-				break;
+    	for (int i = 0; i < boardLength; i++) {
+			for (int j = 0; j< boardLength ; j++){
+				String buttonName = "bNumber"+i*2+" "+j*2;
+		    	JButtonDriver bDriver = button(buttonName);
+				bDriver.click();
+				//assertEqual()	
 			}
-    	
+		}
     }
-}
+   }
