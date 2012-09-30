@@ -14,7 +14,7 @@ public class Player {
 	private int walls;		// walls is the number of walls the player has left to place.
 	private Color col;		// stores the color of a player
 	
-	// default constructor, should probably never be used.
+	// default constructor, exists only for testing
 	public Player() {
 		playerID = 0;
 		setStartingLocation();
@@ -103,38 +103,42 @@ public class Player {
 	
 	// returns location directly above the player
 	public Point up() {
+		Point p;
 		if (xy.y > 0) {
-			Point p = new Point(xy.x, xy.y-1);
-			return p;
-		}
-		return null;
+			p = new Point(xy.x, xy.y-1);
+		} else
+			p = new Point(-1,-1);
+		return p;
 	}
 	
 	// returns location directly below player
 	public Point down() {
-		if (xy.y < 9) {
-			Point p = new Point(xy.x, xy.y+1);
-			return p;
-		}
-		return null;
+		Point p;
+		if (xy.y < 8) {
+			p = new Point(xy.x, xy.y+1);
+		} else
+			p = new Point(-1,-1);
+		return p;
 	}
 	
 	// returns space directly to the left of player
 	public Point left() {
+		Point p;
 		if (xy.x > 0) {
-			Point p = new Point(xy.x-1, xy.y);
-			return p;
-		}
-		return null;
+			p = new Point(xy.x-1, xy.y);
+		} else
+			p = new Point(-1,-1);
+		return p;
 	}
 	
 	// returns space directly to the right of the player
 	public Point right() {
-		if (xy.y < 9) {
-			Point p = new Point(xy.x+1, xy.y);
-			return p;
-		}
-		return null;
+		Point p;
+		if (xy.y < 8) {
+			p = new Point(xy.x+1, xy.y);
+		} else
+			p = new Point(-1,-1);
+		return p;
 	}
 	
 	//sets a starting location for the player.

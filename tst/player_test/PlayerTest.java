@@ -70,5 +70,18 @@ public class PlayerTest {
 		for (int i = 0; i < p.length; i++) 
 			p[i] = new Point(expectedX[i], expectedY[i]);
 	}
+	
+	@Test
+	public void testDirectionMethodsWhenNextToEdges() {
+		Point expectedLoc = new Point(-1,-1);
+		pl = new Player();
+		pl.setLocation(0,0);
+		assertThat(expectedLoc, is(equalTo(pl.up())));
+		assertThat(expectedLoc, is(equalTo(pl.left())));
+		pl.setLocation(8,8);
+		assertThat(expectedLoc, is(equalTo(pl.down())));
+		assertThat(expectedLoc, is(equalTo(pl.right())));
+	}
+	
 		
 }
