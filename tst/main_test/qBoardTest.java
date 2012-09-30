@@ -77,7 +77,6 @@ public class qBoardTest {
 				String buttonName = "bNumber"+i*2+" "+j*2;
 		    	JButtonDriver bDriver = button(buttonName);
 				bDriver.click();
-				//assertEqual()	
 			}
 		}
     }
