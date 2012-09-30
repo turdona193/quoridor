@@ -35,16 +35,47 @@ public class QuoridorTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
-		Quoridor game = new Quoridor(); // I can call main if I want
+		Quoridor game = new Quoridor();
 		driver = new JFrameDriver(new GesturePerformer(), new AWTEventQueueProber(), JFrameDriver.named(MAIN_WINDOW_TITLE), JFrameDriver.showingOnScreen());
 	}
+	
+	@SuppressWarnings("unchecked")
+	@After
+	public void shutDown(){
+		driver.dispose();
+	}
+	
+    @SuppressWarnings("unchecked")
+	private JButtonDriver button(String name){
+        return new JButtonDriver(driver, JButton.class, ComponentDriver.named(name));
+	}
+    @SuppressWarnings("unchecked")
+    private JLabelDriver label(String name) {
+        return new JLabelDriver(driver, ComponentDriver.named(name));
+    }
 	
     @Test
     public void stubTest() {
         assertEquals(1, 1);
     }
     
+    @Test
     public void WindowUpWithTitle() {
-        assertEquals(1, 1);
+		driver.hasTitle(MAIN_WINDOW_TITLE);
+    }
+    
+    @Test
+    public void buttonsWork(){
+		JLabelDriver label = label(LABEL_NAME);
+
+		label.hasText(equalTo(INITIAL_MESSAGE));
+
+		for (int i = 0; i < BUTTON_TEXTS.length -1; ++i){		
+			String buttonName = BUTTON_NAME_PREFIX+i;
+	    	JButtonDriver bDriver = button(buttonName);
+			bDriver.click();
+			label.hasText(equalTo(MESSAGES[i]));
+		}
+    	
     }
 }

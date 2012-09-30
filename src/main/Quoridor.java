@@ -19,9 +19,7 @@ import javax.swing.SwingConstants;
 public class Quoridor extends JFrame implements ActionListener {
 
 	public final static String MAIN_WINDOW_TITLE = "Qouridor";
-
-
-	public final static String LABEL_NAME = "TheLabel";
+	public final static String LABEL_NAME = "header";
 
 	// messages displayed by the label
 	public static final String INITIAL_MESSAGE = "GAME ON?";
@@ -98,7 +96,7 @@ public class Quoridor extends JFrame implements ActionListener {
 		fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		
-		playMenuItem = new JMenuItem("Play");
+		playMenuItem = new JMenuItem("New Game");
 		fileMenu.add(playMenuItem);
 		playMenuItem.addActionListener(this);
 		
@@ -114,9 +112,8 @@ public class Quoridor extends JFrame implements ActionListener {
 	
 	
 	public void run(){
-
-
 	}
+	
 	public static void main(String[] args) {
 		Quoridor Window = new Quoridor();
 		Window.run();

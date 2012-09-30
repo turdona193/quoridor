@@ -15,18 +15,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.text.StyleConstants.ColorConstants;
 
 public class qBoard extends JFrame implements ActionListener{
 
-	public final static String MAIN_WINDOW_TITLE = "Qouridor Board";
-	JButton oneButton, twoButton, threeButton, fourButton, fiveButton, sixButton, sevenButton, eightButton, nineButton;
-	private JButton[][] board = new JButton[9][9];
+	public final static String BOARD_WINDOW_TITLE = "Qouridor Board";
+	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
+	public final static int boardLength = 9;
+
+	public JButton[][] board = new JButton[9][9];
 	private JPanel buttonPanel; 
 
 	public qBoard() {
 		// TODO Auto-generated constructor stub	
 		super();
-		setName(MAIN_WINDOW_TITLE);
+		setName(BOARD_WINDOW_TITLE);
+		setTitle(BOARD_WINDOW_TITLE);
 		setSize(400,400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -51,13 +55,15 @@ public class qBoard extends JFrame implements ActionListener{
 			int fromLeft = 0;
 
 			for (int j = 0; j < 17; j++) {
+
 				if(!border){
 					if(j%2 == 0){
 						JButton button = new JButton(""); // sets the text
-						button.setName("sNumber"+i+" "+j);
+						button.setName("bNumber"+i+" "+j);
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
-
+						button.setBackground(BUTTON_DEFAULT_COLOR);
+						
 						buttonPanel.add(button);
 
 						Insets insets = buttonPanel.getInsets();
@@ -72,6 +78,8 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setName("wNumber"+i+" "+j);
 						//button.addActionListener(this);
 						button.setRolloverEnabled(true);
+						button.setBackground(BUTTON_DEFAULT_COLOR);
+
 
 						buttonPanel.add(button);
 
@@ -86,6 +94,8 @@ public class qBoard extends JFrame implements ActionListener{
 					button.setName("wNumber"+i+" "+j);
 					//button.addActionListener(this);
 					button.setRolloverEnabled(true);
+					button.setBackground(BUTTON_DEFAULT_COLOR);
+
 
 					buttonPanel.add(button);
 
@@ -108,14 +118,24 @@ public class qBoard extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent action) {
 		Color col = new Color(12,34,54);
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j< board[i].length ; j++) // fixed, Nick forgot to increment j initially
-			if (action.getSource() == board[j][i]) {
-				col = new Color(i*20, i*j, j*20);
-				board[j][i].setBackground(col);
-				break;
+		for (int i = 0; i < boardLength; i++) {
+			for (int j = 0; j< boardLength ; j++){
+				if (action.getSource() == board[j][i]) {
+					//System.out.println(board[j][i].getBackground());
+					if(isDefaultColor(board[j][i].getBackground())){
+						col = new Color(i*20, i*j, j*20);
+						board[j][i].setBackground(col);
+					}else{
+						board[j][i].setBackground(BUTTON_DEFAULT_COLOR);
+					}
+					break;
+				}
 			}
 		}
+	}
+	
+	private boolean isDefaultColor(Color bColor){
+		return (bColor.equals(BUTTON_DEFAULT_COLOR));
 	}
 	
 	
