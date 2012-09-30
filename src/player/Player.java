@@ -1,14 +1,15 @@
 package player;
 
 import java.awt.Color;
+import java.awt.Point;
 
 public class Player {
 
-	private final int X[] = {5, 5, 0, 9};
-	private final int Y[] = {9, 0, 5, 5};
-	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};
+	private final int X[] = {4, 4, 0, 8};  //X[] and Y[] hold the starting coordinates of each of the 4 players
+	private final int Y[] = {8, 0, 4, 4};
+	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
 	
-	private int x, y; 		// x and y are the coordinates of the player on the board.
+	private Point xy;		// holds x and y as an ordered pair
 	private int playerID;	// playerID identifies the player as being player 1, player 2, etc.
 	private int walls;		// walls is the number of walls the player has left to place.
 	private Color col;		// stores the color of a player
@@ -77,30 +78,71 @@ public class Player {
 
 	//sets the location of the piece on the board.
 	public void setLocation(int i, int j) {
-		x = i;
-		y = j;
-		
+		xy.setLocation(i, j);
+	}
+	
+	// sets location of peice on the board
+	public void setLocation(Point loc) {
+		xy.setLocation(loc);
 	}
 
 	//returns the x coordinate of the player.
 	public int getX() {
-		return x;
+		return xy.x;
 	}
 	
 	// returns the y coordinate of the player.
 	public int getY() {
-		return y;
+		return xy.y;
+	}
+	
+	// returns current location of player
+	public Point getLocation() {
+		return xy;
+	}
+	
+	// returns location directly above the player
+	public Point up() {
+		if (xy.y > 0) {
+			Point p = new Point(xy.x, xy.y-1);
+			return p;
+		}
+		return null;
+	}
+	
+	// returns location directly below player
+	public Point down() {
+		if (xy.y < 9) {
+			Point p = new Point(xy.x, xy.y+1);
+			return p;
+		}
+		return null;
+	}
+	
+	// returns space directly to the left of player
+	public Point left() {
+		if (xy.x > 0) {
+			Point p = new Point(xy.x-1, xy.y);
+			return p;
+		}
+		return null;
+	}
+	
+	// returns space directly to the right of the player
+	public Point right() {
+		if (xy.y < 9) {
+			Point p = new Point(xy.x+1, xy.y);
+			return p;
+		}
+		return null;
 	}
 	
 	//sets a starting location for the player.
 	private void setStartingLocation() {
-		if (playerID > 0 && playerID < 5) {
-			x = X[playerID-1];
-			y = Y[playerID-1];
-		} else {
-			x = 0;
-			y = 0;
-		}
+		if (playerID > 0 && playerID < 5) 
+			xy = new Point(X[playerID-1], Y[playerID-1]);
+		else 
+			xy = new Point(0, 0);
 	}
 	
 }

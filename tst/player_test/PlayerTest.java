@@ -2,6 +2,7 @@ package player_test;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,8 +33,8 @@ public class PlayerTest {
 	
 	@Test
 	public void testStartingLocationsOfPlayers() {
-		int expectedX[] = {5, 5, 0, 9};
-		int expectedY[] = {9, 0, 5, 5};
+		int expectedX[] = {4, 4, 0, 8};
+		int expectedY[] = {8, 0, 4, 4};
 		for (int i = 0; i < expectedX.length; i++) {
 			pl = new Player(i+1, 4);
 			testXAndYValues(expectedX[i], expectedY[i]);
@@ -49,6 +50,25 @@ public class PlayerTest {
 			assertThat(expectedColor[i], is(equalTo(pl.getColor())));
 		}
 		
+	}
+	
+	@Test
+	public void testUpDownLeftRightWhenNotNextToEdgeOfBoard() {
+		pl = new Player();
+		pl.setLocation(4,4);
+		Point[] expectedLocs = new Point[4];
+		initializePointArray(expectedLocs);
+		assertThat(expectedLocs[0], is(equalTo(pl.up())));
+		assertThat(expectedLocs[1], is(equalTo(pl.down())));
+		assertThat(expectedLocs[2], is(equalTo(pl.left())));
+		assertThat(expectedLocs[3], is(equalTo(pl.right())));
+	}
+	
+	private void initializePointArray(Point[] p) {
+		int expectedX[] = {4, 4, 3, 5};
+		int expectedY[] = {3, 5, 4, 4};
+		for (int i = 0; i < p.length; i++) 
+			p[i] = new Point(expectedX[i], expectedY[i]);
 	}
 		
 }
