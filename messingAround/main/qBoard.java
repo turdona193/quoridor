@@ -1,6 +1,5 @@
 package main;
 
-//
 
 import javax.swing.*;
 
@@ -49,55 +48,49 @@ public class qBoard extends JFrame implements ActionListener {
 		// add(buttonPanel, BorderLayout.PAGE_START);
 		add(buttonPanel);
 		// setSize(512,512);
-		players = new Player[4];
-		players[0] = new Player(1, 5);
-		players[1] = new Player(2, 5);
-		players[2] = new Player(3, 5);
-		players[3] = new Player(4, 5);
 		cp = 0;
 		np = 4;
-		board[players[0].getX()][players[0].getY()].setBackground(players[0]
-				.getColor());
-		board[players[1].getX()][players[1].getY()].setBackground(players[1]
-				.getColor());
-		board[players[2].getX()][players[2].getY()].setBackground(players[2]
-				.getColor());
-		board[players[3].getX()][players[3].getY()].setBackground(players[3]
-				.getColor());
-		highlightMoves(true);
+		players = new Player[np];
+		for (int i = 0; i < np; i++) {
+			players[i] = new Player(i + 1, 5);
+			board[players[i].getX()][players[i].getY()]
+					.setBackground(players[i].getColor());
+		}
+
+		highlightMoves(true, cp);
 
 		setVisible(true);
 
 	}
 
-	private void highlightMoves(boolean bool) {
+	private void highlightMoves(boolean bool, int pl) {
 		Color c;
 		if (bool == true) {
 			c = Color.pink;
 		} else {
 			c = BUTTON_DEFAULT_COLOR;
 		}
-		
-		if (players[cp].up() != null) {
-			board[players[cp].up().x][players[cp].up().y]
-					.setBackground(c);
+
+		if (players[pl].up() != null) {
+			board[players[pl].up().x][players[pl].up().y].setBackground(c);
+			board[players[pl].up().x][players[pl].up().y].setEnabled(bool);
 		}
-		
-		if (players[cp].down() != null) {
-			System.out.println(players[cp].getY());
-			board[players[cp].down().x][players[cp].down().y]
-					.setBackground(c);
+
+		if (players[pl].down() != null) {
+			board[players[pl].down().x][players[pl].down().y].setBackground(c);
+			board[players[pl].down().x][players[pl].down().y].setEnabled(bool);
 		}
-		
-		if (players[cp].left() != null) {
-			board[players[cp].left().x][players[cp].left().y]
-					.setBackground(c);
+
+		if (players[pl].left() != null) {
+			board[players[pl].left().x][players[pl].left().y].setBackground(c);
+			board[players[pl].left().x][players[pl].left().y].setEnabled(bool);
 		}
-		
-		if (players[cp].right() != null) {
-			System.out.println("testing");
-			board[players[cp].right().x][players[cp].right().y]
+
+		if (players[pl].right() != null) {
+			board[players[pl].right().x][players[pl].right().y]
 					.setBackground(c);
+			board[players[pl].right().x][players[pl].right().y]
+					.setEnabled(bool);
 		}
 
 	}
@@ -118,6 +111,7 @@ public class qBoard extends JFrame implements ActionListener {
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
+						button.setEnabled(false);
 
 						buttonPanel.add(button);
 
@@ -172,59 +166,74 @@ public class qBoard extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent action) {
+		Color col = new Color(12, 34, 54);
+
+		for (int i = 0; i < boardLength; i++) {
+			for (int j = 0; j < boardLength; j++) {
+				if (action.getSource() == board[j][i]) {
+					if (isDefaultColor(board[j][i].getBackground())) {
+						col = new Color(i * 20, i * j, j * 20);
+						board[j][i].setBackground(col);
+					} else {
+						board[j][i].setBackground(BUTTON_DEFAULT_COLOR);
+					}
+					break;
+				}
+			}
+		}
+
 		if (players[cp].up() != null)
-			if (board[players[cp].up().x][players[cp].up().y] == action.getSource()) {
-				highlightMoves(false);
-				board[players[cp].getX()][players[cp].getY()].setBackground(BUTTON_DEFAULT_COLOR);
+			if (board[players[cp].up().x][players[cp].up().y] == action
+					.getSource()) {
+				highlightMoves(false, cp);
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(BUTTON_DEFAULT_COLOR);
 				players[cp].setLocation(players[cp].up());
-				board[players[cp].getX()][players[cp].getY()].setBackground(players[cp].getColor());
-				cp = (cp+np+1) % np;
-				highlightMoves(true);
-				//(p+NP+1) % NP
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(players[cp].getColor());
+				cp = (cp + np + 1) % np;
+				highlightMoves(true, cp);
 			}
-		
+
 		if (players[cp].down() != null)
-			if (board[players[cp].down().x][players[cp].down().y] == action.getSource()) {
-				highlightMoves(false);
-				board[players[cp].getX()][players[cp].getY()].setBackground(BUTTON_DEFAULT_COLOR);
+			if (board[players[cp].down().x][players[cp].down().y] == action
+					.getSource()) {
+				highlightMoves(false, cp);
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(BUTTON_DEFAULT_COLOR);
 				players[cp].setLocation(players[cp].down());
-				board[players[cp].getX()][players[cp].getY()].setBackground(players[cp].getColor());
-				cp = (cp+np+1) % np;
-				highlightMoves(true);
-				//(p+NP+1) % NP
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(players[cp].getColor());
+				cp = (cp + np + 1) % np;
+				highlightMoves(true, cp);
 			}
-		
+
 		if (players[cp].left() != null)
-			if (board[players[cp].left().x][players[cp].left().y] == action.getSource()) {
-				highlightMoves(false);
-				board[players[cp].getX()][players[cp].getY()].setBackground(BUTTON_DEFAULT_COLOR);
+			if (board[players[cp].left().x][players[cp].left().y] == action
+					.getSource()) {
+				highlightMoves(false, cp);
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(BUTTON_DEFAULT_COLOR);
 				players[cp].setLocation(players[cp].left());
-				board[players[cp].getX()][players[cp].getY()].setBackground(players[cp].getColor());
-				cp = (cp+np+1) % np;
-				highlightMoves(true);
-				//(p+NP+1) % NP
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(players[cp].getColor());
+				cp = (cp + np + 1) % np;
+				highlightMoves(true, cp);
 			}
-		
+
 		if (players[cp].right() != null)
-			if (board[players[cp].right().x][players[cp].right().y] == action.getSource()) {
-				highlightMoves(false);
-				board[players[cp].getX()][players[cp].getY()].setBackground(BUTTON_DEFAULT_COLOR);
+			if (board[players[cp].right().x][players[cp].right().y] == action
+					.getSource()) {
+				highlightMoves(false, cp);
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(BUTTON_DEFAULT_COLOR);
 				players[cp].setLocation(players[cp].right());
-				board[players[cp].getX()][players[cp].getY()].setBackground(players[cp].getColor());
-				cp = (cp+np+1) % np;
-				highlightMoves(true);
-				//(p+NP+1) % NP
+				board[players[cp].getX()][players[cp].getY()]
+						.setBackground(players[cp].getColor());
+				cp = (cp + np + 1) % np;
+				highlightMoves(true, cp);
 			}
-		
-		// Color col = new Color(12,34,54);
-		/*
-		 * for (int i = 0; i < boardLength; i++) { for (int j = 0; j<
-		 * boardLength ; j++){ if (action.getSource() == board[j][i]) {
-		 * //System.out.println(board[j][i].getBackground());
-		 * if(isDefaultColor(board[j][i].getBackground())){ col = new
-		 * Color(i*20, i*j, j*20); board[j][i].setBackground(col); }else{
-		 * board[j][i].setBackground(BUTTON_DEFAULT_COLOR); } break; } } }
-		 */
+
 	}
 
 	private boolean isDefaultColor(Color bColor) {
