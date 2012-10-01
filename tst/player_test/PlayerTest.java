@@ -76,11 +76,11 @@ public class PlayerTest {
 		Point expectedLoc = new Point(-1,-1);
 		pl = new Player();
 		pl.setLocation(0,0);
-		assertThat(expectedLoc, is(equalTo(pl.up())));
-		assertThat(expectedLoc, is(equalTo(pl.left())));
+		assertNull(pl.up());
+		assertNull(pl.left());
 		pl.setLocation(8,8);
-		assertThat(expectedLoc, is(equalTo(pl.down())));
-		assertThat(expectedLoc, is(equalTo(pl.right())));
+		assertNull(pl.down());
+		assertNull(pl.right());
 	}
 	
 		
