@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import static java.awt.BorderLayout.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,11 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	public final static String BUTTON_NAME_PREFIX = "Button";
 	public final static String[] BUTTON_TEXTS = {"Play Game", "Options", "Exit"};
+	
+	private final Color[] DEFAULT_COLORS = {Color.blue, Color.red, Color.green, Color.yellow};
+	public Color[] colors;
+	
+	public int players;
 	
 	//public final static int[] BUTTON_LOCATONS = {FlowLayout.LEFT, FlowLayout.CENTER, FlowLayout.RIGHT};
 	
@@ -63,7 +69,7 @@ public class Quoridor extends JFrame implements ActionListener {
 		
 		panel = new JPanel();
 		add(panel, BorderLayout.CENTER);
-		panel.setVisible(true);
+		//panel.setVisible(true);
 		
 		JLabel top = new JLabel("Quoridor");
 		top.setHorizontalAlignment(SwingConstants.CENTER);
@@ -85,6 +91,12 @@ public class Quoridor extends JFrame implements ActionListener {
 		setJMenuBar(menuBar);
 		setFileMenu();
 		
+		colors = new Color[4];
+		for (int i = 0; i < DEFAULT_COLORS.length; i++) {
+			colors[i] = DEFAULT_COLORS[i];
+		}
+		
+		players = 2;
 		
 		setVisible(true);
 
@@ -180,6 +192,7 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	private void options() {
 		label.setText(MESSAGES[1]);
+		OptionsMenu options = new OptionsMenu(this);
 		
 	}
 

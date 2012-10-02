@@ -32,7 +32,7 @@ public class qBoard extends JFrame implements ActionListener{
 		setName(BOARD_WINDOW_TITLE);
 		setTitle(BOARD_WINDOW_TITLE);
 		setSize(400,400);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(null);
