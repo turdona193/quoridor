@@ -19,7 +19,7 @@ import javax.swing.text.StyleConstants.ColorConstants;
 
 public class qBoard extends JFrame implements ActionListener{
 
-	public final static String BOARD_WINDOW_TITLE = "Qouridor Board";
+	public final static String BOARD_WINDOW_TITLE = "Quoridor Board";
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public final static int boardLength = 9;
 
