@@ -36,7 +36,7 @@ public class PlayerTest {
 		int expectedX[] = {4, 4, 0, 8};
 		int expectedY[] = {8, 0, 4, 4};
 		for (int i = 0; i < expectedX.length; i++) {
-			pl = new Player(i+1, 4);
+			pl = new Player(i, 4);
 			testXAndYValues(expectedX[i], expectedY[i]);
 		}
 	}
@@ -46,7 +46,7 @@ public class PlayerTest {
 		Color expectedColor[] = {Color.blue, Color.red, Color.green, Color.yellow};
 		
 		for (int i = 0; i < expectedColor.length; i++) {
-			pl = new Player(i+1, 4);
+			pl = new Player(i, 4);
 			assertThat(expectedColor[i], is(equalTo(pl.getColor())));
 		}
 		

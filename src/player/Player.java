@@ -16,7 +16,7 @@ public class Player {
 	
 	// default constructor, exists only for testing
 	public Player() {
-		playerID = 0;
+		playerID = -1;
 		setStartingLocation();
 		setStartingWalls(0);
 		setDefaultColor();
@@ -52,9 +52,9 @@ public class Player {
 
 	//sets the default color of a player
 	private void setDefaultColor() {
-		if (playerID > 0 && playerID < 5) {
-			col = color[playerID-1];
-			col = color[playerID-1];
+		if (playerID > -1 && playerID < 4) {
+			col = color[playerID];
+			col = color[playerID];
 		} else {
 			col = Color.white;
 		}
@@ -81,7 +81,7 @@ public class Player {
 		xy.setLocation(i, j);
 	}
 	
-	// sets location of peice on the board
+	// sets location of piece on the board
 	public void setLocation(Point loc) {
 		xy.setLocation(loc);
 	}
@@ -143,8 +143,8 @@ public class Player {
 	
 	//sets a starting location for the player.
 	private void setStartingLocation() {
-		if (playerID > 0 && playerID < 5) 
-			xy = new Point(X[playerID-1], Y[playerID-1]);
+		if (playerID > -1 && playerID < 4) 
+			xy = new Point(X[playerID], Y[playerID]);
 		else 
 			xy = new Point(0, 0);
 	}

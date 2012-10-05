@@ -74,7 +74,7 @@ public class qBoardTest {
     	
     	for (int i = 0; i < boardLength; i++) {
 			for (int j = 0; j< boardLength ; j++){
-				String buttonName = "bNumber"+i*2+" "+j*2;
+				String buttonName = ("M "+i+" "+j);
 		    	JButtonDriver bDriver = button(buttonName);
 				bDriver.click();
 			}

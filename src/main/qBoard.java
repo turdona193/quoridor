@@ -17,18 +17,37 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 
+import player.board;
+
 public class qBoard extends JFrame implements ActionListener{
 
 	public final static String BOARD_WINDOW_TITLE = "Qouridor Board";
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public final static int boardLength = 9;
-
+	
+	private board playingBoard;
+	
 	public JButton[][] board = new JButton[9][9];
 	private JPanel buttonPanel; 
 
+	//broken 
 	public qBoard() {
 		// TODO Auto-generated constructor stub	
 		super();
+		playingBoard = new board(false);
+		initialize();
+
+	}
+	
+	//this is the constructor that should probably always be used, probably
+	public qBoard(board b) {
+		super();
+		playingBoard = b;
+		initialize();
+	}
+	
+	// I just took everything out of the old default constructor and pasted it in this method
+	private void initialize() {
 		setName(BOARD_WINDOW_TITLE);
 		setTitle(BOARD_WINDOW_TITLE);
 		setSize(400,400);
@@ -45,8 +64,8 @@ public class qBoard extends JFrame implements ActionListener{
 		//setSize(512,512);
 
 		setVisible(true);
-
 	}
+	
 	private void initializeButtons(){
 
 		int fromTop = 0;
@@ -59,7 +78,7 @@ public class qBoard extends JFrame implements ActionListener{
 				if(!border){
 					if(j%2 == 0){
 						JButton button = new JButton(""); // sets the text
-						button.setName("bNumber"+i+" "+j);
+						button.setName("M " + i/2 + " " + j/2);
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
@@ -117,7 +136,8 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent action) {
-		Color col = new Color(12,34,54);
+		playingBoard.readString(((JButton) action.getSource()).getName());
+		/*Color col = new Color(12,34,54);
 		for (int i = 0; i < boardLength; i++) {
 			for (int j = 0; j< boardLength ; j++){
 				if (action.getSource() == board[j][i]) {
@@ -131,11 +151,15 @@ public class qBoard extends JFrame implements ActionListener{
 					break;
 				}
 			}
-		}
+		}*/
 	}
 	
 	private boolean isDefaultColor(Color bColor){
 		return (bColor.equals(BUTTON_DEFAULT_COLOR));
+	}
+	
+	public void setColorOfSpace(Point p, Color c) {
+		board[p.x][p.y].setBackground(c);
 	}
 	
 	
@@ -156,7 +180,8 @@ public class qBoard extends JFrame implements ActionListener{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		qBoard board = new qBoard();
+		board b = new board(true);
+		//qBoard board = new qBoard(); broken at the moment
 		//createAndShowGUI();
 	}
 
