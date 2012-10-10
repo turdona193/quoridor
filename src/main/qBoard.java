@@ -82,6 +82,7 @@ public class qBoard extends JFrame implements ActionListener{
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
+						button.setEnabled(false);
 						
 						buttonPanel.add(button);
 
@@ -136,7 +137,7 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent action) {
-		playingBoard.readString(((JButton) action.getSource()).getName());
+		playingBoard.readStringFromGUI(((JButton) action.getSource()).getName());
 		/*Color col = new Color(12,34,54);
 		for (int i = 0; i < boardLength; i++) {
 			for (int j = 0; j< boardLength ; j++){
@@ -160,6 +161,14 @@ public class qBoard extends JFrame implements ActionListener{
 	
 	public void setColorOfSpace(Point p, Color c) {
 		board[p.x][p.y].setBackground(c);
+	}
+	
+	public void setSpaceClickable(Point p, boolean b) {
+		board[p.x][p.y].setEnabled(b);
+	}
+	
+	public boolean isSpaceClickable(Point p) {
+		return board[p.x][p.y].isEnabled();
 	}
 	
 	

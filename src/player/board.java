@@ -38,7 +38,7 @@ public class board {
 		}
 		turn = 0;
 		if (needBoard)
-			gui = new qBoard(this);
+			newGUI();
 	}
 	
 	// this is the constructor that will be used most often
@@ -68,11 +68,12 @@ public class board {
 		for (int i = 0; i < players.length; i++) {
 			gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
 		}
+		showMoves(players[turn], true);
 	}
 	
 	// I'm assuming the String for moving a piece will look like "M X Y"
 	// where X and Y are variables representing the coordinates of the move
-	public void readString(String input) {
+	public void readStringFromGUI(String input) {
 		Point xy = new Point();
 		Scanner sc = new Scanner(input);
 		if (sc.next().equals("M")) {
@@ -85,11 +86,57 @@ public class board {
 	// called by readString when a piece needs to be moved
 	// p is the location where the player wants to move their piece
 	private void move(Point p) {
+		showMoves(players[turn], false);
 		gui.setColorOfSpace(players[turn].getLocation(), BUTTON_DEFAULT_COLOR);
 		players[turn].setLocation(p);
 		gui.setColorOfSpace(players[turn].getLocation(), players[turn].getColor());
 		nextTurn();
+		showMoves(players[turn], true);
 
+	}
+	
+	// this method can show the available moves a player can make if b is true, this needs to be called again with
+	// b being false to stop showing the moves a player could make.
+	private void showMoves(Player pl, boolean b) {
+		Color c;
+		if (b == true) {
+			c = Color.pink;
+		} else {
+			c = BUTTON_DEFAULT_COLOR;
+		}
+
+		if (pl.up() != null) {
+			enableAndChangeColor(pl.up(), b, c);
+		}
+
+		if (pl.down() != null) {
+			enableAndChangeColor(pl.down(), b, c);
+		}
+
+		if (pl.left() != null) {
+			enableAndChangeColor(pl.left(), b, c);
+		}
+
+		if (pl.right() != null) {
+			enableAndChangeColor(pl.right(), b, c);
+		}
+		
+		enableAndChangeColor(pl.getLocation(), false, pl.getColor());
+	}
+	
+	private int PlayerOnSpace(Point p) {
+		for (int i = 0; i < players.length; i++) {
+			if (p.getLocation().equals(players[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	// just a small helper method
+	private void enableAndChangeColor(Point p, boolean b, Color c) {
+		gui.setColorOfSpace(p, c);
+		gui.setSpaceClickable(p, b);
 	}
 	
 	//will be called by readString to place a wall
