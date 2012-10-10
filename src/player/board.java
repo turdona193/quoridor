@@ -98,6 +98,13 @@ public class board {
 	// this method can show the available moves a player can make if b is true, this needs to be called again with
 	// b being false to stop showing the moves a player could make.
 	private void showMoves(Player pl, boolean b) {
+		showMoves(pl, b, 0);
+	}
+	
+	// rec is the number of times a recursive call was made
+	private void showMoves(Player pl, boolean b, int rec) {
+		if (rec >= players.length)
+			return;
 		Color c;
 		if (b == true) {
 			c = Color.pink;
@@ -106,27 +113,44 @@ public class board {
 		}
 
 		if (pl.up() != null) {
-			enableAndChangeColor(pl.up(), b, c);
+			int PID = PlayerOnSpace(pl.up());
+			if (PID >= 0)
+				showMoves(players[PID], b, rec+1);
+			else
+				enableAndChangeColor(pl.up(), b, c);
 		}
 
 		if (pl.down() != null) {
-			enableAndChangeColor(pl.down(), b, c);
+			int PID = PlayerOnSpace(pl.down());
+			if (PID >= 0)
+				showMoves(players[PID], b, rec+1);
+			else
+				enableAndChangeColor(pl.down(), b, c);
 		}
 
 		if (pl.left() != null) {
-			enableAndChangeColor(pl.left(), b, c);
+			int PID = PlayerOnSpace(pl.left());
+			if (PID >= 0)
+				showMoves(players[PID], b, rec+1);
+			else
+				enableAndChangeColor(pl.left(), b, c);
 		}
 
 		if (pl.right() != null) {
-			enableAndChangeColor(pl.right(), b, c);
+			int PID = PlayerOnSpace(pl.right());
+			if (PID >= 0)
+				showMoves(players[PID], b, rec+1);
+			else
+				enableAndChangeColor(pl.right(), b, c);
 		}
 		
 		enableAndChangeColor(pl.getLocation(), false, pl.getColor());
 	}
 	
+	// returns the ID of the player at location p, if no player is found, -1 is returned
 	private int PlayerOnSpace(Point p) {
 		for (int i = 0; i < players.length; i++) {
-			if (p.getLocation().equals(players[i])) {
+			if (p.getLocation().equals(players[i].getLocation())) {
 				return i;
 			}
 		}
