@@ -78,7 +78,7 @@ public class qBoard extends JFrame implements ActionListener{
 				if(!border){
 					if(j%2 == 0){
 						JButton button = new JButton(""); // sets the text
-						button.setName("M " + i/2 + " " + j/2);
+						button.setName("M " + j/2 + " " + i/2);
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
@@ -90,7 +90,7 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 25);
 						fromLeft += 26;
 						
-						board[i/2][j/2]=button;
+						board[j/2][i/2]=button;
 
 					}
 					else{
