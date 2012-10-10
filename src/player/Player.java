@@ -5,8 +5,8 @@ import java.awt.Point;
 
 public class Player {
 
-	private final int X[] = {4, 4, 0, 8};  //X[] and Y[] hold the starting coordinates of each of the 4 players
-	private final int Y[] = {8, 0, 4, 4};
+	private final int X[] = {0, 8, 4, 4};  //X[] and Y[] hold the starting coordinates of each of the 4 players
+	private final int Y[] = {4, 4, 0, 8};
 	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
 	
 	private Point xy;		// holds x and y as an ordered pair

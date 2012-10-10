@@ -77,8 +77,8 @@ public class board {
 		Point xy = new Point();
 		Scanner sc = new Scanner(input);
 		if (sc.next().equals("M")) {
-			xy.x = sc.nextInt();
 			xy.y = sc.nextInt();
+			xy.x = sc.nextInt();
 			move(xy);
 		}
 	}

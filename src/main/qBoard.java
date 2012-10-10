@@ -28,19 +28,11 @@ public class qBoard extends JFrame implements ActionListener{
 	private board playingBoard;
 	
 	public JButton[][] board = new JButton[9][9];
-	public JButton[][] wallVert = new JButton[8][9];
-	public JButton[][] wallHor = new JButton[9][8];
+	public JButton[][] wallVert = new JButton[9][8];
+	public JButton[][] wallHor = new JButton[8][9];
 
 	private JPanel buttonPanel; 
 
-	//broken 
-	public qBoard() {
-		// TODO Auto-generated constructor stub	
-		super();
-		playingBoard = new board(false);
-		initialize();
-
-	}
 	
 	//this is the constructor that should probably always be used, probably
 	public qBoard(board b) {
@@ -93,12 +85,12 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 25);
 						fromLeft += 26;
 						
-						board[j/2][i/2]=button;
+						board[i/2][j/2]=button;
 
 					}
 					else{
 						JButton button = new JButton(""); // sets the text
-						button.setName("W"+i+" "+j);
+						button.setName("V " + j/2 + " " + i/2);
 						//button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
@@ -109,13 +101,13 @@ public class qBoard extends JFrame implements ActionListener{
 						Insets insets = buttonPanel.getInsets();
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 10, 25);
 						fromLeft += 11;
-						wallVert[j/2][i/2]=button;
+						wallVert[i/2][j/2]=button;
 					}
 
 				}
 				if (border){
 					JButton button = new JButton(""); // sets the text
-					button.setName("wNumber"+i+" "+j);
+					button.setName("H " + j/2 + " " + i/2);
 					//button.addActionListener(this);
 					button.setRolloverEnabled(true);
 					button.setBackground(BUTTON_DEFAULT_COLOR);
@@ -128,7 +120,7 @@ public class qBoard extends JFrame implements ActionListener{
 					button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 10);
 					fromLeft += 37;
 					j++;
-					wallHor[j/2][i/2]=button;
+					wallHor[i/2][j/2]=button;
 				}
 
 			}
