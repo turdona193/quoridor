@@ -89,7 +89,7 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 25);
 						fromLeft += 26;
 						
-						board[j/2][i/2]=button;
+						board[i/2][j/2]=button;
 
 					}
 					else{
