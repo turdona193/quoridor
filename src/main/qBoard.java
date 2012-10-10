@@ -28,6 +28,9 @@ public class qBoard extends JFrame implements ActionListener{
 	private board playingBoard;
 	
 	public JButton[][] board = new JButton[9][9];
+	public JButton[][] wallVert = new JButton[8][9];
+	public JButton[][] wallHor = new JButton[9][8];
+
 	private JPanel buttonPanel; 
 
 	//broken 
@@ -70,10 +73,10 @@ public class qBoard extends JFrame implements ActionListener{
 
 		int fromTop = 0;
 		boolean border = false;
-		for(int i = 0;i < 17;i++){
+		for(int i = 0;i < 17;i++){ //Row
 			int fromLeft = 0;
 
-			for (int j = 0; j < 17; j++) {
+			for (int j = 0; j < 17; j++) { // Column
 
 				if(!border){
 					if(j%2 == 0){
@@ -95,7 +98,7 @@ public class qBoard extends JFrame implements ActionListener{
 					}
 					else{
 						JButton button = new JButton(""); // sets the text
-						button.setName("wNumber"+i+" "+j);
+						button.setName("W"+i+" "+j);
 						//button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
@@ -106,6 +109,7 @@ public class qBoard extends JFrame implements ActionListener{
 						Insets insets = buttonPanel.getInsets();
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 10, 25);
 						fromLeft += 11;
+						wallVert[j/2][i/2]=button;
 					}
 
 				}
@@ -124,10 +128,11 @@ public class qBoard extends JFrame implements ActionListener{
 					button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 10);
 					fromLeft += 37;
 					j++;
+					wallHor[j/2][i/2]=button;
 				}
 
 			}
-			if(!border){
+			if(!border){ // Fix Spacing
 				fromTop += 26;
 			}else{
 				fromTop += 11;
@@ -138,21 +143,6 @@ public class qBoard extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent action) {
 		playingBoard.readStringFromGUI(((JButton) action.getSource()).getName());
-		/*Color col = new Color(12,34,54);
-		for (int i = 0; i < boardLength; i++) {
-			for (int j = 0; j< boardLength ; j++){
-				if (action.getSource() == board[j][i]) {
-					//System.out.println(board[j][i].getBackground());
-					if(isDefaultColor(board[j][i].getBackground())){
-						col = new Color(i*20, i*j, j*20);
-						board[j][i].setBackground(col);
-					}else{
-						board[j][i].setBackground(BUTTON_DEFAULT_COLOR);
-					}
-					break;
-				}
-			}
-		}*/
 	}
 	
 	private boolean isDefaultColor(Color bColor){
