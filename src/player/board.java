@@ -8,6 +8,7 @@ import main.qBoard;
 
 public class board {
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
+	public static final Color WALL_COLOR = Color.black;  //This will eventually be switched to brown
 	
 	private int[][] walls;		// holds the locations of all the walls; 0 = no wall, 1 = vertical wall, 2 = horizontal wall
 	private Player players[];	// holds information about each player
@@ -76,13 +77,54 @@ public class board {
 	public void readStringFromGUI(String input) {
 		Point xy = new Point();
 		Scanner sc = new Scanner(input);
-		if (sc.next().equals("M")) {
-			xy.y = sc.nextInt();
+		String firstCh = sc.next();
+		if (firstCh.equals("M")) {
 			xy.x = sc.nextInt();
+			xy.y = sc.nextInt();
 			move(xy);
+		} else if (firstCh.equals("H")) {
+			xy.x = sc.nextInt();
+			xy.y = sc.nextInt();
+			placeHoriWall(xy);
+		} else if (firstCh.equals("V")) {
+			xy.x = sc.nextInt();
+			xy.y = sc.nextInt();
+			placeVertWall(xy);
 		}
 	}
 	
+	// called by readString when a horizontal wall needs to be placed
+	// p is the location where the wall is begin place
+	private void placeHoriWall(Point xy) {
+		if (players[turn].getWalls() > 0) {
+			gui.setHoriWallColor(xy, WALL_COLOR);
+			gui.setHoriWallColor(new Point(xy.x+1,xy.y), WALL_COLOR);
+		
+			gui.setHoriWallClickable(xy, false);
+			gui.setHoriWallClickable(new Point(xy.x+1,xy.y), false);
+			if (xy.x > 0) 
+				gui.setHoriWallClickable(new Point(xy.x-1,xy.y), false);
+			gui.setVertWallClickable(xy, false);
+			players[turn].decrementWall();
+			nextTurn();
+		}
+	}
+	
+	private void placeVertWall(Point xy) {
+		if (players[turn].getWalls() > 0) {
+			gui.setVertWallColor(xy, WALL_COLOR);
+			gui.setVertWallColor(new Point(xy.x,xy.y+1), WALL_COLOR);
+		
+			gui.setVertWallClickable(xy, false);
+			gui.setVertWallClickable(new Point(xy.x,xy.y+1), false);
+			if (xy.y > 0) 
+				gui.setVertWallClickable(new Point(xy.x,xy.y-1), false);
+			gui.setHoriWallClickable(xy, false);
+			players[turn].decrementWall();
+			nextTurn();
+		}
+	}
+
 	// called by readString when a piece needs to be moved
 	// p is the location where the player wants to move their piece
 	private void move(Point p) {
@@ -91,7 +133,7 @@ public class board {
 		players[turn].setLocation(p);
 		gui.setColorOfSpace(players[turn].getLocation(), players[turn].getColor());
 		nextTurn();
-		showMoves(players[turn], true);
+
 
 	}
 	
@@ -179,7 +221,9 @@ public class board {
 	}
 	
 	private void nextTurn() {
+		showMoves(players[turn], false);
 		turn = (turn + pl + 1) % pl;
+		showMoves(players[turn], true);
 	}
 	
 	public Point getPlayerLocation(int player) {

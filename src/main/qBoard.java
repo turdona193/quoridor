@@ -28,8 +28,8 @@ public class qBoard extends JFrame implements ActionListener{
 	private board playingBoard;
 	
 	public JButton[][] board = new JButton[9][9];
-	public JButton[][] wallVert = new JButton[9][8];
-	public JButton[][] wallHor = new JButton[8][9];
+	public JButton[][] wallVert = new JButton[8][9];
+	public JButton[][] wallHor = new JButton[9][8];
 
 	private JPanel buttonPanel; 
 
@@ -85,13 +85,13 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 25);
 						fromLeft += 26;
 						
-						board[i/2][j/2]=button;
+						board[j/2][i/2]=button;
 
 					}
 					else{
 						JButton button = new JButton(""); // sets the text
 						button.setName("V " + j/2 + " " + i/2);
-						//button.addActionListener(this);
+						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
 
@@ -101,14 +101,14 @@ public class qBoard extends JFrame implements ActionListener{
 						Insets insets = buttonPanel.getInsets();
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 10, 25);
 						fromLeft += 11;
-						wallVert[i/2][j/2]=button;
+						wallVert[j/2][i/2]=button;
 					}
 
 				}
 				if (border){
 					JButton button = new JButton(""); // sets the text
 					button.setName("H " + j/2 + " " + i/2);
-					//button.addActionListener(this);
+					button.addActionListener(this);
 					button.setRolloverEnabled(true);
 					button.setBackground(BUTTON_DEFAULT_COLOR);
 
@@ -120,7 +120,7 @@ public class qBoard extends JFrame implements ActionListener{
 					button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 10);
 					fromLeft += 37;
 					j++;
-					wallHor[i/2][j/2]=button;
+					wallHor[j/2][i/2]=button;
 				}
 
 			}
@@ -131,10 +131,22 @@ public class qBoard extends JFrame implements ActionListener{
 			}
 			border = !border;
 		}
+		disableEdgeWalls();
+	}
+	
+	// method which stops the user from clicking walls around the right and bottom edges
+	private void disableEdgeWalls() {
+		for (int i=0; i < wallVert.length; i++) {
+			wallVert[i][wallVert[0].length-1].setEnabled(false);
+		}
+		for (int j = 0; j < wallHor[0].length; j++) {
+			wallHor[wallHor.length-1][j].setEnabled(false);
+		}
 	}
 	
 	public void actionPerformed(ActionEvent action) {
 		playingBoard.readStringFromGUI(((JButton) action.getSource()).getName());
+		System.out.println(((JButton) action.getSource()).getName());
 	}
 	
 	private boolean isDefaultColor(Color bColor){
@@ -151,6 +163,30 @@ public class qBoard extends JFrame implements ActionListener{
 	
 	public boolean isSpaceClickable(Point p) {
 		return board[p.x][p.y].isEnabled();
+	}
+	
+	public void setHoriWallColor(Point p, Color c) {
+		wallHor[p.x][p.y].setBackground(c);
+	}
+	
+	public void setHoriWallClickable(Point p, boolean b) {
+		wallHor[p.x][p.y].setEnabled(b);
+	}
+	
+	public boolean isHoriWallClickable(Point p) {
+		return wallHor[p.x][p.y].isEnabled();
+	}
+	
+	public void setVertWallColor(Point p, Color c) {
+		wallVert[p.x][p.y].setBackground(c);
+	}
+	
+	public void setVertWallClickable(Point p, boolean b) {
+		wallVert[p.x][p.y].setEnabled(b);
+	}
+	
+	public boolean isVertWallClickable(Point p) {
+		return wallVert[p.x][p.y].isEnabled();
 	}
 	
 	
