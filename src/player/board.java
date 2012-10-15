@@ -97,6 +97,8 @@ public class board {
 	// p is the location where the wall is begin place
 	private void placeHoriWall(Point xy) {
 		if (players[turn].getWalls() > 0) {
+			showMoves(players[turn], false);
+			walls[xy.x][xy.y] = 2;
 			gui.setHoriWallColor(xy, WALL_COLOR);
 			gui.setHoriWallColor(new Point(xy.x+1,xy.y), WALL_COLOR);
 		
@@ -112,6 +114,8 @@ public class board {
 	
 	private void placeVertWall(Point xy) {
 		if (players[turn].getWalls() > 0) {
+			showMoves(players[turn], false);
+			walls[xy.x][xy.y] = 1;
 			gui.setVertWallColor(xy, WALL_COLOR);
 			gui.setVertWallColor(new Point(xy.x,xy.y+1), WALL_COLOR);
 		
@@ -143,7 +147,7 @@ public class board {
 		showMoves(pl, b, 0);
 	}
 	
-	// rec is the number of times a recursive call was made
+	// rec is the number of times a recursive call was made it should probably get a better name
 	private void showMoves(Player pl, boolean b, int rec) {
 		if (rec >= players.length)
 			return;
@@ -154,39 +158,75 @@ public class board {
 			c = BUTTON_DEFAULT_COLOR;
 		}
 
+		// These if statements really need to be made into a loop one of these days
 		if (pl.up() != null) {
-			int PID = PlayerOnSpace(pl.up());
-			if (PID >= 0)
-				showMoves(players[PID], b, rec+1);
-			else
-				enableAndChangeColor(pl.up(), b, c);
+			if (!isBlocked(pl.getLocation(), pl.up())) {
+				int PID = PlayerOnSpace(pl.up());
+				if (PID >= 0)
+					showMoves(players[PID], b, rec+1);
+				else
+					enableAndChangeColor(pl.up(), b, c);			
+			}
+
 		}
 
 		if (pl.down() != null) {
+			if (!isBlocked(pl.getLocation(), pl.down())) {
 			int PID = PlayerOnSpace(pl.down());
 			if (PID >= 0)
 				showMoves(players[PID], b, rec+1);
 			else
 				enableAndChangeColor(pl.down(), b, c);
+			}
 		}
 
 		if (pl.left() != null) {
+			if (!isBlocked(pl.getLocation(), pl.left())) {
 			int PID = PlayerOnSpace(pl.left());
 			if (PID >= 0)
 				showMoves(players[PID], b, rec+1);
 			else
 				enableAndChangeColor(pl.left(), b, c);
+			}
 		}
 
 		if (pl.right() != null) {
+			if (!isBlocked(pl.getLocation(), pl.right())) {
 			int PID = PlayerOnSpace(pl.right());
 			if (PID >= 0)
 				showMoves(players[PID], b, rec+1);
 			else
 				enableAndChangeColor(pl.right(), b, c);
+			}
 		}
 		
 		enableAndChangeColor(pl.getLocation(), false, pl.getColor());
+	}
+	
+	// method which will return true if there is a wall between the two points of false if there isn't.
+	// assumes that the two spaces are directly next to each other
+	private boolean isBlocked(Point p1, Point p2) {
+		int smaller = -1; // 
+		// if the two spaces are in the same column
+		if (p1.x == p2.x && p1.x < 8) {
+			smaller = Math.min(p1.y,p2.y); //finds the point that's higher up
+			if (walls[p1.x][smaller] == 2)
+				return true;
+			if (p1.x > 0)
+				if (walls[p1.x-1][smaller] == 2)
+					return true;
+		}
+		// if the two spaces are in the same row
+		else if (p1.y == p2.y && p1.y < 8) {
+			smaller = Math.min(p1.x,p2.x); //finds the space to the left
+			if (walls[smaller][p1.y] == 1)
+				return true;
+			if (p1.y > 0)
+				if (walls[smaller][p1.y-1] == 1)
+					return true;
+		}
+		
+		return false;
 	}
 	
 	// returns the ID of the player at location p, if no player is found, -1 is returned
