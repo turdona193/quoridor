@@ -83,5 +83,18 @@ public class PlayerTest {
 		assertNull(pl.right());
 	}
 	
+	@Test
+	public void testGoalLine() {
+		pl = new Player(0, 10);
+		boolean expectedResult = false;
+		assertThat(expectedResult, is(equalTo(pl.hasWon())));
+		for (int i = 0; i < 9; i++) {
+			pl.setLocation(i, 0);
+			expectedResult = true;
+			assertThat(expectedResult, is(equalTo(pl.hasWon())));
+		}
+
+	}
+	
 		
 }
