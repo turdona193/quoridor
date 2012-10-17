@@ -50,7 +50,7 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	private void initialize() {
 
 		setName(OPTIONS_WINDOW_TITLE);
-		setSize(800,400);
+		setSize(500,400);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLayout(null);
 		

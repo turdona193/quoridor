@@ -9,15 +9,17 @@ public class Player {
 	private final int Y[] = {8, 0, 4, 4};
 	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
 	
-	private Point xy;		// holds x and y as an ordered pair
-	private int playerID;	// playerID identifies the player as being player 1, player 2, etc.
-	private int walls;		// walls is the number of walls the player has left to place.
-	private Color col;		// stores the color of a player
+	private Point xy;			// holds the x and y coordinates of the player 
+	private int playerID;		// playerID identifies the player as being player 1, player 2, etc.
+	private int walls;			// walls is the number of walls the player has left to place.
+	private Color col;			// stores the color of a player
+	private Point[] goalLine;	// holds all of the spaces a player could move to to win
 	
 	// default constructor, exists only for testing
 	public Player() {
-		playerID = 0;
+		playerID = -1;
 		setStartingLocation();
+		setGoalLine();
 		setStartingWalls(0);
 		setDefaultColor();
 	}
@@ -26,19 +28,68 @@ public class Player {
 	public Player(int ID, int startingWalls) {
 		playerID = ID;
 		setStartingLocation();
+		setGoalLine();
 		setStartingWalls(startingWalls);
 		setDefaultColor();
-		
 	}
 	
 	//This constructor is used when a player has picked a color other than the default
 	public Player(int ID, int startingWalls, Color c) {
 		playerID = ID;
 		setStartingLocation();
+		setGoalLine();
 		setStartingWalls(startingWalls);
 		setColor(c);
 		
 	} 
+	
+	// fills the goalLine array with all the spaces a player could move to to win the game
+	private void setGoalLine() {
+		goalLine = new Point[9];
+		int temp = 0;
+		if (xy.x == 8) {
+			temp = 0;
+			for (int i = 0; i < goalLine.length; i++) {
+				goalLine[i] = new Point(temp, i);
+			}
+		} else if (xy.x == 0) {
+			temp = 8;
+			for (int i = 0; i < goalLine.length; i++) {
+				goalLine[i] = new Point(temp, i);
+			}
+		} else if (xy.y == 8) {
+			temp = 0;
+			for (int i = 0; i < goalLine.length; i++) {
+				goalLine[i] = new Point(i, temp);
+			}
+		} else if (xy.y == 0) {
+			temp = 8;
+			for (int i = 0; i < goalLine.length; i++) {
+				goalLine[i] = new Point(i, temp);
+			}
+		}	
+	}
+	
+	public void printGoal() {
+		for (int i = 0; i < goalLine.length; i++) {
+			System.out.println(goalLine[i].toString());
+		}
+	}
+	
+	// returns the array containing the location of the goalLine
+	public Point[] getGoalLine() {
+		return goalLine;
+	}
+
+	// method which checks to see whether a player is on the goalLine
+	public boolean hasWon() {
+		for (int i = 0; i < goalLine.length; i++) {
+			if (goalLine[i].equals(xy)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	// sets the color
 	private void setColor(Color c) {
@@ -52,9 +103,9 @@ public class Player {
 
 	//sets the default color of a player
 	private void setDefaultColor() {
-		if (playerID > 0 && playerID < 5) {
-			col = color[playerID-1];
-			col = color[playerID-1];
+		if (playerID > -1 && playerID < 4) {
+			col = color[playerID];
+			col = color[playerID];
 		} else {
 			col = Color.white;
 		}
@@ -72,7 +123,7 @@ public class Player {
 	}
 	
 	//decrements number of walls by one.
-	public void placeWall() {
+	public void decrementWall() {
 		walls--;
 	}
 
@@ -81,7 +132,7 @@ public class Player {
 		xy.setLocation(i, j);
 	}
 	
-	// sets location of peice on the board
+	// sets location of piece on the board
 	public void setLocation(Point loc) {
 		xy.setLocation(loc);
 	}
@@ -143,8 +194,8 @@ public class Player {
 	
 	//sets a starting location for the player.
 	private void setStartingLocation() {
-		if (playerID > 0 && playerID < 5) 
-			xy = new Point(X[playerID-1], Y[playerID-1]);
+		if (playerID > -1 && playerID < 4) 
+			xy = new Point(X[playerID], Y[playerID]);
 		else 
 			xy = new Point(0, 0);
 	}

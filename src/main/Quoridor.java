@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import player.board;
+
 public class Quoridor extends JFrame implements ActionListener {
 
 	public final static String MAIN_WINDOW_TITLE = "Qouridor";
@@ -25,7 +27,7 @@ public class Quoridor extends JFrame implements ActionListener {
 	// messages displayed by the label
 	public static final String INITIAL_MESSAGE = "GAME ON?";
 	public static final String[] MESSAGES = {"Play Game Clicked", "Options Clicked", "Exit Clicked"};
-
+	
 	public final static String BUTTON_NAME_PREFIX = "Button";
 	public final static String[] BUTTON_TEXTS = {"Play Game", "Options", "Exit"};
 	
@@ -181,27 +183,22 @@ public class Quoridor extends JFrame implements ActionListener {
 			return true;
 		}
 		return false;
-		// JMenuItem playMenuItem, optionsMenuItem, exitMenuItem;
+
 	}
 
-	//  The three following methods don't do much now, but someday they'll have real functions.
 	private void play() {
 		label.setText(MESSAGES[0]);
-		qBoard board = new qBoard();
+		board play = new board(players, colors);
 	}
 
 	private void options() {
 		label.setText(MESSAGES[1]);
-		OptionsMenu options = new OptionsMenu(this);
-		
+		OptionsMenu options = new OptionsMenu(this);		
 	}
 
 	private void exit() {
 		label.setText(MESSAGES[2]);
 		System.exit(0);
-	}
+	}		
 	
-	
-	
-
 }
