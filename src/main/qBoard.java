@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 
+import player.Player;
 import player.board;
 
 public class qBoard extends JFrame implements ActionListener{
@@ -77,7 +78,7 @@ public class qBoard extends JFrame implements ActionListener{
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
-						button.setEnabled(false);
+						//button.setEnabled(false);
 						
 						buttonPanel.add(button);
 
@@ -145,8 +146,14 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent action) {
-		playingBoard.readStringFromGUI(((JButton) action.getSource()).getName());
-		System.out.println(((JButton) action.getSource()).getName());
+		if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
+			String move = ((JButton) action.getSource()).getName();
+			if (playingBoard.isStringLegal(move)) {
+				playingBoard.readStringFromGUI(move);
+				System.out.println(((JButton) action.getSource()).getName());
+			}
+		}
+
 	}
 	
 	private boolean isDefaultColor(Color bColor){

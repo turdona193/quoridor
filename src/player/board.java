@@ -62,6 +62,78 @@ public class board {
 			}
 		
 	}
+		
+	// method to look at a String representing a move and return whether or not it represents a valid move
+	// works for players trying to move their piece; returns true whenever a player tries to place a wall
+	public boolean isStringLegal(String input) {
+		Point xy = new Point();
+		Scanner sc = new Scanner(input);
+		String firstCh = sc.next();
+		if (firstCh.equals("M")) {
+			xy.x = sc.nextInt();
+			xy.y = sc.nextInt();
+			return isMoveLegal(turn, xy);
+		} else if (firstCh.equals("H")) {
+			return true;
+		} else if (firstCh.equals("V")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isMoveLegal(int player, Point move) {
+		return isMoveLegal(player, move, 0);
+	}
+	
+	// will eventually return true if a move is legal and false if it is not legal
+	// player is the player's number, and move is where the player is attempting to move
+	private boolean isMoveLegal(int player, Point move, int rec) {
+		if (rec >= players.length)
+			return false;
+		
+		Player currentPlayer = players[player];
+		Point[] adjacentSpaces = new Point[4];
+		adjacentSpaces[0] = currentPlayer.up();
+		adjacentSpaces[1] = currentPlayer.down();
+		adjacentSpaces[2] = currentPlayer.left();
+		adjacentSpaces[3] = currentPlayer.right();
+		
+		for (int i = 0; i < adjacentSpaces.length; i++) {
+			if (adjacentSpaces[i] != null) {
+				if (!isBlocked(currentPlayer.getLocation(), adjacentSpaces[i])) {
+					int PID = PlayerOnSpace(adjacentSpaces[i]);
+					if (PID >= 0) {
+						if (isMoveLegal(PID, move, rec+1)) {
+							return true;
+						}
+					}
+					else if (adjacentSpaces[i].equals(move)) {
+						return true;	
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public int[][] getWallArray() {
+		return walls;
+	}
+	
+	public int getTurn() {
+		return turn;
+	}
+	
+	public Player[] getPlayersArray() {
+		return players;
+	}
+	
+	public int getCurrentPlayerType() {
+		return players[turn].getPlayerType();
+	}
+	
+
 	
 	// makes a new board appear on screen and sets default locations of the players 
 	public void newGUI() {
@@ -157,46 +229,22 @@ public class board {
 		} else {
 			c = BUTTON_DEFAULT_COLOR;
 		}
-
-		// These if statements really need to be made into a loop one of these days
-		if (pl.up() != null) {
-			if (!isBlocked(pl.getLocation(), pl.up())) {
-				int PID = PlayerOnSpace(pl.up());
-				if (PID >= 0)
-					showMoves(players[PID], b, rec+1);
-				else
-					enableAndChangeColor(pl.up(), b, c);			
-			}
-
-		}
-
-		if (pl.down() != null) {
-			if (!isBlocked(pl.getLocation(), pl.down())) {
-			int PID = PlayerOnSpace(pl.down());
-			if (PID >= 0)
-				showMoves(players[PID], b, rec+1);
-			else
-				enableAndChangeColor(pl.down(), b, c);
-			}
-		}
-
-		if (pl.left() != null) {
-			if (!isBlocked(pl.getLocation(), pl.left())) {
-			int PID = PlayerOnSpace(pl.left());
-			if (PID >= 0)
-				showMoves(players[PID], b, rec+1);
-			else
-				enableAndChangeColor(pl.left(), b, c);
-			}
-		}
-
-		if (pl.right() != null) {
-			if (!isBlocked(pl.getLocation(), pl.right())) {
-			int PID = PlayerOnSpace(pl.right());
-			if (PID >= 0)
-				showMoves(players[PID], b, rec+1);
-			else
-				enableAndChangeColor(pl.right(), b, c);
+		
+		Point[] adjacentSpaces = new Point[4];
+		adjacentSpaces[0] = pl.up();
+		adjacentSpaces[1] = pl.down();
+		adjacentSpaces[2] = pl.left();
+		adjacentSpaces[3] = pl.right();
+		
+		for (int i = 0; i < adjacentSpaces.length; i++) {
+			if (adjacentSpaces[i] != null) {
+				if (!isBlocked(pl.getLocation(), adjacentSpaces[i])) {
+					int PID = PlayerOnSpace(adjacentSpaces[i]);
+					if (PID >= 0)
+						showMoves(players[PID], b, rec+1);
+					else
+						enableAndChangeColor(adjacentSpaces[i], b, c);			
+				}
 			}
 		}
 		
@@ -205,7 +253,7 @@ public class board {
 	
 	// method which will return true if there is a wall between the two points of false if there isn't.
 	// assumes that the two spaces are directly next to each other
-	private boolean isBlocked(Point p1, Point p2) {
+	public boolean isBlocked(Point p1, Point p2) {
 		int smaller = -1; // 
 		// if the two spaces are in the same column
 		if (p1.x == p2.x && p1.x < 8) {
@@ -242,7 +290,7 @@ public class board {
 	// just a small helper method
 	private void enableAndChangeColor(Point p, boolean b, Color c) {
 		gui.setColorOfSpace(p, c);
-		gui.setSpaceClickable(p, b);
+		//gui.setSpaceClickable(p, b);
 	}
 	
 	//will be called by readString to place a wall
