@@ -14,7 +14,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package util;
+package ai.util;
 
 /**
  * Signals that an attempt to access a {@code Node} in a {@code Graph}

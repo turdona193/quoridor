@@ -15,8 +15,8 @@ public class board {
 	private int turn, pl;		// turn tells us which player's turn it is;  pl is the number of players
 	private qBoard gui;			// allows board to communicate with the gui
 	
-	// default constructor, assumes 2 players all using their default colors, and will not call the gui.
-	// will probably only be used for early testing
+	// default constructor, assumes 2 players all using their default colors
+	// will probably only be used for testing
 	public board() {
 		walls = new int[8][8];
 		initializeToZero(walls);
@@ -26,20 +26,24 @@ public class board {
 			players[i] = new Player(i, 10);
 		}
 		turn = 0;
+		newGUI();
 	}
 	
-	//if needBoard is true, a new gui will be displayed, otherwise, it won't
-	public board(boolean needBoard) {
+	// constructor that will make a 2 player game where player 0 is using the gui, and player 1 is an ai opponent
+	public board(boolean ai) {
 		walls = new int[8][8];
 		initializeToZero(walls);
 		pl = 2;
 		players = new Player[pl];
-		for (int i = 0; i < pl; i++) {
-			players[i] = new Player(i, 10);
+		players[0] = new Player(0, 10, Color.blue, Player.GUI_PLAYER);
+		if (ai) {
+			players[1] = new Player(1, 10, Color.red, Player.AI_PLAYER);
+			// call constructor for an ai object
 		}
+		else
+			players[1] = new Player(1, 10, Color.red, Player.GUI_PLAYER);
 		turn = 0;
-		if (needBoard)
-			newGUI();
+		newGUI();
 	}
 	
 	// this is the constructor that will be used most often

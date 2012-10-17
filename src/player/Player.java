@@ -9,8 +9,8 @@ public class Player {
 	private final int Y[] = {8, 0, 4, 4};
 	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
 	public final static int GUI_PLAYER = 0;
-	public final int AI_PLAYER = 1;
-	public final int NET_PLAYER = 2;
+	public final static int AI_PLAYER = 1;
+	public final static int NET_PLAYER = 2;
 	
 	private int playerType;		// holds whether a player is using the gui, is one of our AIs, or is playing over the network
 	private Point xy;			// holds the x and y coordinates of the player 
