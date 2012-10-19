@@ -14,40 +14,40 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package ai.util;
+package util;
 
 /**
- * Signals that an attempt to add a {@code Node} to a {@code Graph} with
- * replacement disabled has failed.
+ * Signals that a {@code Graph} exception of some sort has occurred.  This
+ * class is the general class of exceptions produces by failed or interrupted
+ * {@code Graph} operations.
  *
  * @author  <a href="mailto:barkle36@gmail.com">Andrew Allen Barkley</a>
  * @version 2012-10-10
  */
-public class GraphEdgeIsDuplicateException extends GraphException {
+public class GraphException extends Exception {
 
     /**
-     * Construct a {@code GraphEdgeIsDuplicateException} with {@code null} as
-     * its detail message.
+     * Construct a {@code GraphException} with {@code null} as its error
+     * detail message.
      */
-    public GraphEdgeIsDuplicateException() {
+    public GraphException() {
         super();
     }
 
     /**
-     * Construct a {@code GraphEdgeIsDuplicateException} with the specified
-     * detail message.
+     * Construct a {@code GraphException} with the specified detail message.
      *
      * @param message
      *        The detail message (which is saved for later retrieval by the
      *        {@link #getMessage()} method)
      */
-    public GraphEdgeIsDuplicateException(String message) {
+    public GraphException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a {@code GraphEdgeIsDuplicateException} with the specified
-     * detail message and cause.
+     * Constructs a {@code GraphException} with the specified detail message
+     * and cause.
      *
      * <p> Note that the detail message associated with {@code cause} is
      * <i>not</i> automatically incorporated into this exception's detail
@@ -62,22 +62,22 @@ public class GraphEdgeIsDuplicateException extends GraphException {
      *        {@link #getCause()} method).  (A null value is permitted, and
      *        indicates that the cause is nonexistent or unknown.)
      */
-    public GraphEdgeIsDuplicateException(String message, Throwable cause) {
+    public GraphException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a {@code GraphEdgeIsDuplicateException} with the specified
-     * cause and a detail message of
-     * {@code (cause==null ? null : cause.toString())} (which typically
-     * contains the class and detail message of {@code cause}).
+     * Constructs a {@code GraphException} with the specified cause and a
+     * detail message of {@code (cause==null ? null : cause.toString())}
+     * (which typically contains the class and detail message of {@code
+     * cause}).
      *
      * @param cause
      *        The cause (which is saved for later retrieval by the
      *        {@link #getCause()} method).  (A null value is permitted, and
      *        indicates that the cause is nonexistent or unknown.)
      */
-    public GraphEdgeIsDuplicateException(Throwable cause) {
+    public GraphException(Throwable cause) {
         super(cause);
     }
 }
