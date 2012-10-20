@@ -8,6 +8,7 @@ import java.util.concurrent.Semaphore;
 import javax.swing.JButton;
 
 import util.Graph;
+import util.GraphNodeIsDuplicateException;
 
 import main.qBoard;
 import ai.AI;
@@ -20,9 +21,9 @@ public class board {
 	private Player players[];	// holds information about each player
 	private int turn, pl;		// turn tells us which player's turn it is;  pl is the number of players
 	private qBoard gui;			// allows board to communicate with the gui
-	private AI ai;
-	public Graph<Point> graph;
-	public Semaphore sem;
+	private AI ai;				// allows board to communicate with the ai
+	public Graph<Point> graph;	// needed to find a path from a point to the goal
+	public Semaphore sem;		// used to tell the ai when it's turn is, needs a better name
 	
 	// default constructor, assumes 2 players all using their default colors
 	// will probably only be used for testing
@@ -78,6 +79,7 @@ public class board {
 		
 	}
 	
+	// checks to see if any of the players are AI players, and initializes an AI and Semaphore if there are
 	private void initializeAIIfNeeded() {
 		boolean isNeeded = false;
 		for (int i = 0; i < pl; i++) {
@@ -93,10 +95,21 @@ public class board {
 
 	}
 	
+	// creates a graph containing 81 nodes, each representing a space on the board, and add edges between
+	// nodes representing spaces directly adjacent to each other
 	private void initializeGraph() {
+		try {
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; i < 9; i++) {
+					graph.addNode(new Point(i,j));
+				}
+			}		
+		} catch (GraphNodeIsDuplicateException e) {
+			e.printStackTrace();
+		}
 		for (int i = 0; i < 9; i++) {
-			for (int j = 0; i < 9; i++) {
-				
+			for (int j = 0; j < 9; j++) {
+				//code to add appropriate edges
 			}
 		}
 	}
@@ -112,8 +125,44 @@ public class board {
 			xy.y = sc.nextInt();
 			return isMoveLegal(turn, xy);
 		} else if (firstCh.equals("H")) {
-			return true;
+			xy.x = sc.nextInt();
+			xy.y = sc.nextInt();
+			return isHoriWallLegal(turn, xy);
 		} else if (firstCh.equals("V")) {
+			xy.x = sc.nextInt();
+			xy.y = sc.nextInt();
+			return isVertWallLegal(turn, xy);
+		}
+		return false;
+	}
+	
+	// player is the ID of the player trying to place a wall, loc represents the location of the wall
+	public boolean isHoriWallLegal(int player, Point loc) {
+		if (players[player].getWalls() > 0 && loc.x < 8) {
+			if (walls[loc.x][loc.y] > 0)
+				return false;
+			if (loc.x < 7)
+				if (walls[loc.x+1][loc.y] == 2)
+					return false;
+			if (loc.x > 0)
+				if (walls[loc.x-1][loc.y] == 2)
+					return false;
+			return true;
+		}
+		return false;
+	}
+	
+	// player is the ID of the player trying to place a wall, loc represents the location of the wall
+	public boolean isVertWallLegal(int player, Point loc) {
+		if (players[player].getWalls() > 0 && loc.y < 8) {
+			if (walls[loc.x][loc.y] > 0)
+				return false;
+			if (loc.y < 7)
+				if (walls[loc.x][loc.y+1] == 1)
+					return false;
+			if (loc.y > 0)
+				if (walls[loc.x][loc.y-1] == 1)
+					return false;
 			return true;
 		}
 		return false;
@@ -212,11 +261,6 @@ public class board {
 			gui.setHoriWallColor(xy, WALL_COLOR);
 			gui.setHoriWallColor(new Point(xy.x+1,xy.y), WALL_COLOR);
 		
-			gui.setHoriWallClickable(xy, false);
-			gui.setHoriWallClickable(new Point(xy.x+1,xy.y), false);
-			if (xy.x > 0) 
-				gui.setHoriWallClickable(new Point(xy.x-1,xy.y), false);
-			gui.setVertWallClickable(xy, false);
 			players[turn].decrementWall();
 			nextTurn();
 		}
@@ -228,12 +272,7 @@ public class board {
 			walls[xy.x][xy.y] = 1;
 			gui.setVertWallColor(xy, WALL_COLOR);
 			gui.setVertWallColor(new Point(xy.x,xy.y+1), WALL_COLOR);
-		
-			gui.setVertWallClickable(xy, false);
-			gui.setVertWallClickable(new Point(xy.x,xy.y+1), false);
-			if (xy.y > 0) 
-				gui.setVertWallClickable(new Point(xy.x,xy.y-1), false);
-			gui.setHoriWallClickable(xy, false);
+
 			players[turn].decrementWall();
 			nextTurn();
 		}
@@ -294,19 +333,21 @@ public class board {
 	public boolean isBlocked(Point p1, Point p2) {
 		int smaller = -1; // 
 		// if the two spaces are in the same column
-		if (p1.x == p2.x && p1.x < 8) {
+		if (p1.x == p2.x) {
 			smaller = Math.min(p1.y,p2.y); //finds the point that's higher up
-			if (walls[p1.x][smaller] == 2)
-				return true;
+			if (p1.x < 8)
+				if (walls[p1.x][smaller] == 2)
+					return true;
 			if (p1.x > 0)
 				if (walls[p1.x-1][smaller] == 2)
 					return true;
 		}
 		// if the two spaces are in the same row
-		else if (p1.y == p2.y && p1.y < 8) {
+		else if (p1.y == p2.y) {
 			smaller = Math.min(p1.x,p2.x); //finds the space to the left
-			if (walls[smaller][p1.y] == 1)
-				return true;
+			if (p1.y < 8)
+				if (walls[smaller][p1.y] == 1)
+					return true;
 			if (p1.y > 0)
 				if (walls[smaller][p1.y-1] == 1)
 					return true;
@@ -337,7 +378,6 @@ public class board {
 	}
 	
 	private void nextTurn() {
-
 		showMoves(players[turn], false);
 		turn = (turn + pl + 1) % pl;
 		showMoves(players[turn], true);
@@ -352,6 +392,6 @@ public class board {
 	}
 
 	public static void main(String[] args) {
-		board b = new board(true);
+		board b = new board(false);
 	}
 }

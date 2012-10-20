@@ -132,7 +132,7 @@ public class qBoard extends JFrame implements ActionListener{
 			}
 			border = !border;
 		}
-		disableEdgeWalls();
+		//disableEdgeWalls();
 	}
 	
 	// method which stops the user from clicking walls around the right and bottom edges
