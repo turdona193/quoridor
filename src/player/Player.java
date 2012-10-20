@@ -8,7 +8,7 @@ public class Player {
 	private final int X[] = {4, 4, 0, 8};  //X[] and Y[] hold the starting coordinates of each of the 4 players
 	private final int Y[] = {8, 0, 4, 4};
 	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
-	public final static int GUI_PLAYER = 0;
+	public final static int GUI_PLAYER = 0;	//fields 
 	public final static int AI_PLAYER = 1;
 	public final static int NET_PLAYER = 2;
 	
