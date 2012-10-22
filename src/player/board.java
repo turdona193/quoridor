@@ -8,7 +8,9 @@ import java.util.concurrent.Semaphore;
 import javax.swing.JButton;
 
 import util.Graph;
+import util.GraphEdgeIsDuplicateException;
 import util.GraphNodeIsDuplicateException;
+import util.GraphNodeNotFoundException;
 
 import main.qBoard;
 import ai.AI;
@@ -53,6 +55,7 @@ public class board {
 			players[1] = new Player(1, 10, Color.red, Player.GUI_PLAYER);
 		}
 		turn = 0;
+		initializeGraph();
 		initializeAIIfNeeded();
 		newGUI();
 	}
@@ -98,19 +101,36 @@ public class board {
 	// creates a graph containing 81 nodes, each representing a space on the board, and add edges between
 	// nodes representing spaces directly adjacent to each other
 	private void initializeGraph() {
+		graph = new Graph<Point>();
 		try {
 			for (int i = 0; i < 9; i++) {
-				for (int j = 0; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
 					graph.addNode(new Point(i,j));
 				}
-			}		
-		} catch (GraphNodeIsDuplicateException e) {
-			e.printStackTrace();
-		}
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				//code to add appropriate edges
 			}
+			
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 9; j++) {
+					graph.addEdge(new Point(i, j), new Point(i + 1, j));
+				}
+			}
+			
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 9; j++) {
+					graph.addEdge(new Point(j, i), new Point(j, i + 1));
+				}
+			}
+			
+			System.out.println(graph);
+		} catch (GraphNodeIsDuplicateException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (GraphNodeNotFoundException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (GraphEdgeIsDuplicateException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 		
@@ -392,6 +412,6 @@ public class board {
 	}
 
 	public static void main(String[] args) {
-		board b = new board(false);
+		board b = new board(true);
 	}
 }
