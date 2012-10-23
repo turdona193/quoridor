@@ -324,11 +324,43 @@ class Node<E> {
                 edges.add(edge);
             }
             else {
-                throw new GraphEdgeIsDuplicateException();
+                throw new GraphEdgeIsDuplicateException(edge.toString());
             }
         }
         else {
             edges.add(edge);
+        }
+    }
+
+    /**
+     * Remove the edge with the specified origin and apex nodes and weight
+     * from this graph.  If this graph is not directed, remove the
+     * corresponding edge from this graph too.  If this graph is directed,
+     * only remove the first edge.
+     *
+     * @param origin
+     *     the origin {@code Node}
+     *
+     * @param apex
+     *     the apex {@code Node}
+     *
+     * @param weight
+     *     the cost of traversing the edge
+     *
+     * @throws GraphEdgeNotFoundException
+     *     if this graph does not contain the edge with the specified origin
+     *     and apex nodes and weight
+     */
+    public void removeEdge(Node<E> origin, Node<E> apex, double weight)
+        throws GraphEdgeNotFoundException {
+
+        Edge<E> edge = new Edge<E>(origin, apex, weight);
+
+        if (edges.contains(edge)) {
+            edges.remove(edge);
+        }
+        else {
+            throw new GraphEdgeNotFoundException(edge.toString());
         }
     }
 
@@ -410,7 +442,7 @@ class Edge<E> {
     public Edge(Node<E> origin, Node<E> apex) {
         this.origin = origin;
         this.apex = apex;
-        this.weight = 0d;
+        this.weight = 1d;
     }
 
     /**
@@ -514,7 +546,7 @@ class Edge<E> {
      *     a String representation of this edge
      */
     public String toString() {
-        if (weight != 0d) {
+        if (weight != 1d) {
             return origin + " ----(" + weight + ")----> " + apex;
         }
         else {
@@ -813,7 +845,7 @@ public class Graph<E> {
         Node<E> node = new Node<E>(element);
         if (nodes.contains(node)) {
             if (!replacement) {
-                throw new GraphNodeIsDuplicateException();
+                throw new GraphNodeIsDuplicateException(element.toString());
             }
         }
         else {
@@ -838,7 +870,7 @@ public class Graph<E> {
                 return n;
             }
 
-        throw new GraphNodeNotFoundException();
+        throw new GraphNodeNotFoundException(target.toString());
     }
 
     /**
@@ -849,18 +881,50 @@ public class Graph<E> {
      * node for the origin element.  If this graph is directed, only the first
      * edge as in above is created.
      *
-     * <p>Note: this method is an alias for {@code addEgg(origin, apex, 0d);}.
+     * <p>Note: this method is an alias for {@code addEgg(origin, apex, 1d);}.
      *
      * @param origin
      *     the element of the origin node
      *
      * @param apex
      *     the element of the apex node
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
+     * @throws GraphEdgeIsDuplicateException
+     *     if this graph already contains an edge with the specified origin
+     *     and apex elements
      */
     public void addEdge(E origin, E apex)
         throws GraphNodeNotFoundException,
                GraphEdgeIsDuplicateException {
-        addEdge(origin, apex, 0d);
+        addEdge(origin, apex, 1d);
+    }
+
+    /**
+     * Remove the edge with the specified origin and apex elements from this
+     * graph.  If this graph is not directed, remove the corresponding edge
+     * from this graph too.  If this graph is directed, only remove the first
+     * edge.
+     *
+     * @param origin
+     *     the element of the origin node
+     *
+     * @param apex
+     *     the element of the apex node
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
+     * @throws GraphEdgeNotFoundException
+     *     if this graph does not contain an edge with the specified origin
+     *     and apex elements
+     */
+    public void removeEdge(E origin, E apex)
+        throws GraphNodeNotFoundException,
+               GraphEdgeNotFoundException {
+        removeEdge(origin, apex, 1d);
     }
 
     /**
@@ -881,6 +945,13 @@ public class Graph<E> {
      *
      * @param weight
      *     the cost of traversing the edge
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain the node with the specified element
+     *
+     * @throws GraphEdgeNotFoundException
+     *     if this graph does not contain an edge with the specified origin
+     *     and apex elements
      */
     public void addEdge(E origin, E apex, double weight)
         throws GraphNodeNotFoundException,
@@ -893,7 +964,7 @@ public class Graph<E> {
             node(nodeA).addEdge(node(nodeA), node(nodeB), weight);
         }
         catch (GraphNodeNotFoundException e) {
-            throw new GraphNodeNotFoundException("a");
+            throw new GraphNodeNotFoundException(origin.toString());
         }
 
         if (!directed) {
@@ -901,8 +972,52 @@ public class Graph<E> {
                 node(nodeB).addEdge(node(nodeB), node(nodeA), weight);
             }
             catch (GraphNodeNotFoundException e) {
-                throw new GraphNodeNotFoundException("b");
+                throw new GraphNodeNotFoundException(apex.toString());
             }
+        }
+    }
+
+    /**
+     * Remove the edge with the specified origin and apex elements and weight
+     * from this graph.  If this graph is not directed, remove the
+     * corresponding edge from this graph too.  If this graph is directed,
+     * only remove the first edge.
+     *
+     * @param origin
+     *     the element of the origin node
+     *
+     * @param apex
+     *     the element of the apex node
+     *
+     * @param weight
+     *     the cost of traversing the edge
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
+     * @throws GraphEdgeNotFoundException
+     *     if this graph does not contain an edge with the specified origin
+     *     and apex elements
+     */
+    public void removeEdge(E origin, E apex, double weight)
+        throws GraphNodeNotFoundException,
+               GraphEdgeNotFoundException {
+
+        Node<E> nodeA = new Node<E>(origin);
+        Node<E> nodeB = new Node<E>(apex);
+
+        try {
+            node(nodeA).removeEdge(node(nodeA), node(nodeB), weight);
+            if (!directed) {
+                node(nodeB).removeEdge(node(nodeB), node(nodeA), weight);
+            }
+        }
+        catch (GraphNodeNotFoundException e) {
+            throw new GraphNodeNotFoundException();
+        }
+        catch (GraphEdgeNotFoundException e) {
+            Edge<E> edge = new Edge<E>(nodeA, nodeB, weight);
+            throw new GraphEdgeNotFoundException(edge.toString());
         }
     }
 
@@ -917,6 +1032,9 @@ public class Graph<E> {
      *
      * @param  goal
      *     the goal element
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
      *
      * @return
      *     the object array containing the search results where
@@ -938,7 +1056,12 @@ public class Graph<E> {
         throws GraphNodeNotFoundException,
                IllegalArgumentException
     {
-        return pathSearch("depth-first", initial, goal);
+        try {
+            return pathSearch("depth-first", initial, goal);
+        }
+        catch (IllegalArgumentException e) { // this will never run
+
+        }
     }
 
     /**
@@ -953,6 +1076,12 @@ public class Graph<E> {
      *
      * @param  goal
      *     the goal element
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
+     * @throws IllegalArgumentException
+     *     if the specified 
      *
      * @return
      *     the object array containing the search results where
@@ -978,7 +1107,7 @@ public class Graph<E> {
             Object[] results = { initial + ", " + goal + "\n", // path
                                  1,  // comparisons
                                  0,  // path maneuvers
-                                 0d, // path cost
+                                 1d, // path cost
             };
             return results;
         }
@@ -1013,6 +1142,9 @@ public class Graph<E> {
      * @param  goal
      *     the goal state
      *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
      * @return
      *     the object array containing the search results where
      *
@@ -1038,7 +1170,7 @@ public class Graph<E> {
         String   path          = "none";
         Integer  comparisons   = 1,
                  pathManeuvers = 0;
-        Double   pathLength    = 0d;
+        Double   pathLength    = 1d;
 
         Frontier<SearchNode<Node<E>>> frontier = null;
         if (algorithm.equals("breadth-first")) {
@@ -1047,7 +1179,7 @@ public class Graph<E> {
         if (algorithm.equals("depth-first")) {
             frontier = new StackFrontier<SearchNode<Node<E>>>();
         }
-        frontier.add(new SearchNode<Node<E>>(initial, null, 0d));
+        frontier.add(new SearchNode<Node<E>>(initial, null, 1d));
 
         NavigableSet<SearchNode<Node<E>>>
             explored = new TreeSet<SearchNode<Node<E>>>();
@@ -1088,6 +1220,9 @@ public class Graph<E> {
      * @param  goal
      *     the goal state
      *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
      * @return
      *     the object array containing the search results where
      *
@@ -1112,12 +1247,12 @@ public class Graph<E> {
         String   path          = "none";
         Integer  comparisons   = 1,
                  pathManeuvers = 0;
-        Double   pathLength    = 0d;
+        Double   pathLength    = 1d;
 
         Frontier<SearchNode<Node<E>>>
             frontier = new PriorityQueueFrontier<SearchNode<Node<E>>>(
                     11, new SearchNodeComparator());
-        frontier.add(new SearchNode<Node<E>>(initial, null, 0d));
+        frontier.add(new SearchNode<Node<E>>(initial, null, 1d));
 
         NavigableSet<SearchNode<Node<E>>>
             explored = new TreeSet<SearchNode<Node<E>>>();
