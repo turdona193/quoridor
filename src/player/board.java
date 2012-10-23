@@ -9,6 +9,7 @@ import javax.swing.JButton;
 
 import util.Graph;
 import util.GraphEdgeIsDuplicateException;
+import util.GraphEdgeNotFoundException;
 import util.GraphNodeIsDuplicateException;
 import util.GraphNodeNotFoundException;
 
@@ -70,6 +71,7 @@ public class board {
 			players[i] = new Player(i, 20/pl, colArray[i]);
 		}
 		turn = 0;
+		initializeGraph();
 		initializeAIIfNeeded();
 		newGUI();
 	}
@@ -121,7 +123,6 @@ public class board {
 				}
 			}
 			
-			System.out.println(graph);
 		} catch (GraphNodeIsDuplicateException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -280,6 +281,15 @@ public class board {
 			walls[xy.x][xy.y] = 2;
 			gui.setHoriWallColor(xy, WALL_COLOR);
 			gui.setHoriWallColor(new Point(xy.x+1,xy.y), WALL_COLOR);
+			try {
+				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
+				graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
+			}
+			catch (GraphNodeNotFoundException |
+				   GraphEdgeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
 		
 			players[turn].decrementWall();
 			nextTurn();
@@ -292,6 +302,15 @@ public class board {
 			walls[xy.x][xy.y] = 1;
 			gui.setVertWallColor(xy, WALL_COLOR);
 			gui.setVertWallColor(new Point(xy.x,xy.y+1), WALL_COLOR);
+			try {
+				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
+				graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
+			}
+			catch (GraphNodeNotFoundException |
+				   GraphEdgeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
 
 			players[turn].decrementWall();
 			nextTurn();
