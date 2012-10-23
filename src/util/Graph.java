@@ -1053,8 +1053,7 @@ public class Graph<E> {
      *     the length of the path from the initial state to the goal state.
      */
     public Object[] pathSearch(E initial, E goal)
-        throws GraphNodeNotFoundException,
-               IllegalArgumentException
+        throws GraphNodeNotFoundException
     {
         try {
             return pathSearch("depth-first", initial, goal);
@@ -1062,6 +1061,7 @@ public class Graph<E> {
         catch (IllegalArgumentException e) { // this will never run
 
         }
+        return null;
     }
 
     /**
