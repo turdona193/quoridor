@@ -122,8 +122,8 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 			blue.addActionListener(this);
 			
 			JComboBox box = new JComboBox(playerTypeNames);
+			box.setSelectedIndex(Q.playerTypes[i]);
 			box.addItemListener(this);
-			
 			
 			reds.add(red);
 			greens.add(green);
