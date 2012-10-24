@@ -8,7 +8,11 @@ public class Player {
 	private final int X[] = {4, 4, 0, 8};  //X[] and Y[] hold the starting coordinates of each of the 4 players
 	private final int Y[] = {8, 0, 4, 4};
 	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
+	public final static int GUI_PLAYER = 0;
+	public final static int AI_PLAYER = 1;
+	public final static int NET_PLAYER = 2;
 	
+	private int playerType;		// holds whether a player is using the gui, is one of our AIs, or is playing over the network
 	private Point xy;			// holds the x and y coordinates of the player 
 	private int playerID;		// playerID identifies the player as being player 1, player 2, etc.
 	private int walls;			// walls is the number of walls the player has left to place.
@@ -22,6 +26,7 @@ public class Player {
 		setGoalLine();
 		setStartingWalls(0);
 		setDefaultColor();
+		playerType = GUI_PLAYER;
 	}
 
 	// ID is 1 for player 1, 2 for player 2,...  NumOfPlayers is the number of players in this game.
@@ -31,6 +36,7 @@ public class Player {
 		setGoalLine();
 		setStartingWalls(startingWalls);
 		setDefaultColor();
+		playerType = GUI_PLAYER;
 	}
 	
 	//This constructor is used when a player has picked a color other than the default
@@ -40,8 +46,23 @@ public class Player {
 		setGoalLine();
 		setStartingWalls(startingWalls);
 		setColor(c);
-		
-	} 
+		playerType = GUI_PLAYER;
+	}
+	
+	// new constructor that lets you set a playerType
+	public Player(int ID, int startingWalls, Color c, int pType) {
+		playerID = ID;
+		setStartingLocation();
+		setGoalLine();
+		setStartingWalls(startingWalls);
+		setColor(c);
+		playerType = pType;
+	}
+	
+	// returns a value 
+	public int getPlayerType() {
+		return playerType;
+	}
 	
 	// fills the goalLine array with all the spaces a player could move to to win the game
 	private void setGoalLine() {
