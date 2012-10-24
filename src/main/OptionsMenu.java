@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,6 +31,8 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	private List<JTextField> blues;
 	private List<JTextField> greens;
 	private List<JTextField> showColor;
+	private List<JComboBox> boxes;
+	private String[] playerTypeNames = {"Local", "AI", "Net"};
 	
 	
 	public OptionsMenu() {
@@ -81,6 +84,7 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		blues = new ArrayList<JTextField>();
 		greens = new ArrayList<JTextField>();
 		showColor = new ArrayList<JTextField>();
+		boxes = new ArrayList<JComboBox>();
 		initializeColorPanels();
 		
 	}
@@ -89,18 +93,19 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		upperColorPanel = new JPanel();
 		lowerColorPanel = new JPanel();
 		
-		upperColorPanel.setSize(200, 60);
-		lowerColorPanel.setSize(200, 60);
+		upperColorPanel.setSize(300, 60);
+		lowerColorPanel.setSize(300, 60);
 		
 		upperColorPanel.setLocation(200, 100);
 		lowerColorPanel.setLocation(200, 160);
 		
-		upperColorPanel.setLayout(new GridLayout(2,4));
-		lowerColorPanel.setLayout(new GridLayout(2,4));
+		upperColorPanel.setLayout(new GridLayout(2,5));
+		lowerColorPanel.setLayout(new GridLayout(2,5));
 		
 		for (int i = 0; i < Q.colors.length; i++) {
 			JTextField color = new JTextField();
 			color.setName("Color" + i);
+			color.setText("P" + i);
 			color.setBackground(Q.colors[i]);
 			color.setEnabled(false);
 			
@@ -116,23 +121,39 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 			green.addActionListener(this);
 			blue.addActionListener(this);
 			
+			JComboBox box = new JComboBox(playerTypeNames);
+			box.addItemListener(this);
+			
 			
 			reds.add(red);
 			greens.add(green);
 			blues.add(blue);
 			showColor.add(color);
+			boxes.add(box);
+			
+			JPanel playerPanel = new JPanel();
+			playerPanel.setLayout(new GridLayout(1,2));
+			JPanel rgbPanel = new JPanel();
+			rgbPanel.setLayout(new GridLayout(1,3));
 			
 			if (i < 2) {
-				upperColorPanel.add(red);
-				upperColorPanel.add(green);
-				upperColorPanel.add(blue);
-				upperColorPanel.add(color);
+				playerPanel.add(color);
+				playerPanel.add(box);
+				rgbPanel.add(red);
+				rgbPanel.add(green);
+				rgbPanel.add(blue);
+				upperColorPanel.add(playerPanel);
+				upperColorPanel.add(rgbPanel);
 			}
 			else {
-				lowerColorPanel.add(red);
-				lowerColorPanel.add(green);
-				lowerColorPanel.add(blue);				
-				lowerColorPanel.add(color);
+				playerPanel.add(color);
+				playerPanel.add(box);
+				rgbPanel.add(red);
+				rgbPanel.add(green);
+				rgbPanel.add(blue);
+				lowerColorPanel.add(playerPanel);
+				lowerColorPanel.add(rgbPanel);
+			
 			}
 			
 		}
@@ -163,12 +184,19 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 			Q.players = 2;
 			remove(lowerColorPanel);
 			repaint();
+			return;
 		}
-		else if (item.getSource() == fourPlayers) {
+		if (item.getSource() == fourPlayers) {
 			Q.players = 4;
 			add(lowerColorPanel);
 			setVisible(true);
-		}		
+			return;
+		}
+		for (int i = 0; i < Q.players; i++) {
+			if (item.getSource() == boxes.get(i)) {
+				Q.playerTypes[i] = boxes.get(i).getSelectedIndex();
+			}
+		}
 		
 	}
 	

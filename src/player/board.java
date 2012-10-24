@@ -62,13 +62,13 @@ public class board {
 	}
 	
 	// this is the constructor that will be used most often
-	public board(int numOfPlayers, Color[] colArray) {
+	public board(int numOfPlayers, Color[] colArray, int[] playerTypes) {
 		walls = new int[8][8];
 		initializeToZero(walls);
 		pl = numOfPlayers;
 		players = new Player[pl];
 		for (int i = 0; i < pl; i++) {
-			players[i] = new Player(i, 20/pl, colArray[i]);
+			players[i] = new Player(i, 20/pl, colArray[i], playerTypes[i]);
 		}
 		turn = 0;
 		initializeGraph();
@@ -285,12 +285,12 @@ public class board {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
 				graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
 			}
-			catch (GraphNodeNotFoundException |
-				   GraphEdgeNotFoundException e) {
+			catch (GraphNodeNotFoundException  |
+					GraphEdgeNotFoundException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
-		
+			
 			players[turn].decrementWall();
 			nextTurn();
 		}
@@ -306,8 +306,8 @@ public class board {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
 				graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
 			}
-			catch (GraphNodeNotFoundException |
-				   GraphEdgeNotFoundException e) {
+			catch (GraphNodeNotFoundException  |
+					GraphEdgeNotFoundException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}

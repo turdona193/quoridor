@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import player.Player;
 import player.board;
 
 public class Quoridor extends JFrame implements ActionListener {
@@ -33,6 +34,9 @@ public class Quoridor extends JFrame implements ActionListener {
 	
 	private final Color[] DEFAULT_COLORS = {Color.blue, Color.red, Color.green, Color.yellow};
 	public Color[] colors;
+	
+	private final int DEFAULT_PLAYER_TYPE = Player.GUI_PLAYER;
+	public int[] playerTypes;
 	
 	public int players;
 	
@@ -94,8 +98,10 @@ public class Quoridor extends JFrame implements ActionListener {
 		setFileMenu();
 		
 		colors = new Color[4];
+		playerTypes = new int[4];
 		for (int i = 0; i < DEFAULT_COLORS.length; i++) {
 			colors[i] = DEFAULT_COLORS[i];
+			playerTypes[i] = DEFAULT_PLAYER_TYPE;
 		}
 		
 		players = 2;
@@ -188,7 +194,7 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	private void play() {
 		label.setText(MESSAGES[0]);
-		board play = new board(players, colors);
+		board play = new board(players, colors, playerTypes);
 	}
 
 	private void options() {
