@@ -1022,6 +1022,62 @@ public class Graph<E> {
     }
 
     /**
+     * Returns a path from initial element to the 'closest' goal element.
+     *
+     * <p>Note: this is a wrapper for
+     * {@code pathSearch("depth-first", initial, goal);.}
+     *
+     * @param  initial
+     *     the initial element
+     *
+     * @param  goals
+     *     the set of goal elements to chooses from
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
+     * @return
+     *     the object array containing the search results where
+     *
+     *         <blockquote><pre>
+     *         {@code results[0] = path}
+     *         {@code results[1] = comparisons}
+     *         {@code results[2] = pathManeuvers}
+     *         {@code results[3] = pathLength}
+     *         </blockquote></pre>
+     *
+     *     and where {@code path} is a string list of path elements from the
+     *     initial state to the goal state, {@code comparisons} is an integer,
+     *     the number of comparisons performed by the search, {@code
+     *     pathManeuvers} is an integer, the number of maneuvers from the
+     *     initial state to the goal state, and {@code pathLength} is a
+     *     double, the length of the path from the initial state to the goal
+     *     state.
+     */
+    public Object[] shortestPathSearch(E initial, Set<E> goals)
+        throws GraphNodeNotFoundException
+    {
+        Object[] path = { "", 0, 0, 0d };
+        Object[] shortestPath = { "", 0, 0, 0d };
+
+        for (E goal : goals) {
+            try {
+                path = pathSearch("depth-first", initial, goal);
+            }
+            catch (IllegalArgumentException e) { // this will never run
+
+            }
+            shortestPath[1] = (int)shortestPath[1] + (int)path[1]; // comparisons accumulate
+            if ((double)path[3] < (double)shortestPath[3]) {
+                shortestPath[0] = path[0];
+                shortestPath[2] = path[2];
+                shortestPath[3] = path[3];
+            }
+        }
+        return shortestPath;
+    }
+
+    /**
      * Returns a path from initial element to goal element.
      *
      * <p>Note: this is a wrapper for
