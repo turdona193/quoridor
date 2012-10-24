@@ -779,6 +779,12 @@ class PriorityQueueFrontier<E> implements Frontier<E> {
  */
 public class Graph<E> {
     /**
+     * Constant storing the string indicating the default search algorithm for
+     * the path searching methods to use.
+     */
+    private static final String DEFAULT_SEARCH = "depth-first";
+
+    /**
      * Boolean storing the directed option value.  This is {@code true} if and
      * only if this graph is directed.
      */
@@ -1025,7 +1031,7 @@ public class Graph<E> {
      * Returns a path from initial element to the 'closest' goal element.
      *
      * <p>Note: this is a wrapper for
-     * {@code pathSearch("depth-first", initial, goal);.}
+     * {@code pathSearch(DEFAULT_SEARCH, initial, goal);.}
      *
      * @param  initial
      *     the initial element
@@ -1062,12 +1068,12 @@ public class Graph<E> {
 
         for (E goal : goals) {
             try {
-                path = pathSearch("depth-first", initial, goal);
+                path = pathSearch(DEFAULT_SEARCH, initial, goal);
             }
             catch (IllegalArgumentException e) { // this will never run
 
             }
-            shortestPath[1] = (int)shortestPath[1] + (int)path[1]; // comparisons accumulate
+            shortestPath[1] = (int)shortestPath[1] + (int)path[1];
             if ((double)path[3] < (double)shortestPath[3]) {
                 shortestPath[0] = path[0];
                 shortestPath[2] = path[2];
@@ -1081,7 +1087,7 @@ public class Graph<E> {
      * Returns a path from initial element to goal element.
      *
      * <p>Note: this is a wrapper for
-     * {@code pathSearch("depth-first", initial, goal);.}
+     * {@code pathSearch(DEFAULT_SEARCH, initial, goal);.}
      *
      * @param  initial
      *     the initial element
@@ -1112,7 +1118,7 @@ public class Graph<E> {
         throws GraphNodeNotFoundException
     {
         try {
-            return pathSearch("depth-first", initial, goal);
+            return pathSearch(DEFAULT_SEARCH, initial, goal);
         }
         catch (IllegalArgumentException e) { // this will never run
 
