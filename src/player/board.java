@@ -285,8 +285,11 @@ public class board {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
 				graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
 			}
-			catch (GraphNodeNotFoundException  |
-					GraphEdgeNotFoundException e) {
+			catch (GraphNodeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			catch (GraphEdgeNotFoundException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
@@ -306,8 +309,11 @@ public class board {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
 				graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
 			}
-			catch (GraphNodeNotFoundException  |
-					GraphEdgeNotFoundException e) {
+			catch (GraphNodeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			catch (GraphEdgeNotFoundException e) {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
