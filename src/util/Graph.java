@@ -1073,8 +1073,10 @@ public class Graph<E> {
             catch (IllegalArgumentException e) { // this will never run
 
             }
-            shortestPath[1] = (int)shortestPath[1] + (int)path[1];
-            if ((double)path[3] < (double)shortestPath[3]) {
+            shortestPath[1] = Integer.valueOf(String.valueOf(shortestPath[1]))
+                + Integer.valueOf(String.valueOf(path[1]));
+            if (Double.valueOf(String.valueOf(path[3])) <
+                    Double.valueOf(String.valueOf(shortestPath[3]))) {
                 shortestPath[0] = path[0];
                 shortestPath[2] = path[2];
                 shortestPath[3] = path[3];
