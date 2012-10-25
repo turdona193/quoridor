@@ -25,6 +25,7 @@
   <target name="init">
     <mkdir dir="build" />
     <mkdir dir="build/classes" />
+    <mkdir dir="build/classes-tst" />
     <mkdir dir="build/jars" />
   </target>
 
@@ -37,7 +38,7 @@
 
   
   <target name="compile-test" depends="compile">
-    <javac srcdir="test" destdir = "build/classes-test">
+    <javac srcdir="tst" destdir = "build/classes-tst">
       <classpath refid="classpath.test"/>
     </javac>
   </target>
