@@ -34,6 +34,7 @@ import main_test.QuoridorTest;
 
 public class qBoardTest {
 
+    /*
 	JFrameDriver driver;
 	
 	@SuppressWarnings("unchecked")
@@ -80,4 +81,5 @@ public class qBoardTest {
 			}
 		}
     }
+    */
    }

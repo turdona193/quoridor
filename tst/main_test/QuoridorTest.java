@@ -28,8 +28,17 @@ import com.objogate.wl.swing.*;
 
 import main_test.QuoridorTest;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    //main_test.qBoardTest.class,
+    player_test.PlayerTest.class,
+})
 public class QuoridorTest {
 
+    /*
 	JFrameDriver driver;
 	
 	@SuppressWarnings("unchecked")
@@ -78,4 +87,5 @@ public class QuoridorTest {
 		}
     	
     }
+    */
 }
