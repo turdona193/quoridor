@@ -159,7 +159,7 @@ public class board {
 	
 	// player is the ID of the player trying to place a wall, loc represents the location of the wall
 	public boolean isHoriWallLegal(int player, Point loc) {
-		if (players[player].getWalls() > 0 && loc.x < 8) {
+		if (players[player].getWalls() > 0 && loc.x < 8 && loc.x > -1 && loc.y > -1 && loc.y < 8) {
 			if (walls[loc.x][loc.y] > 0)
 				return false;
 			if (loc.x < 7)
@@ -168,9 +168,34 @@ public class board {
 			if (loc.x > 0)
 				if (walls[loc.x-1][loc.y] == 2)
 					return false;
-			return true;
+			try {
+				graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
+				graph.removeEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
+				Object path[];
+				for (int i = 0; i < pl; i++) {
+					path = graph.shortestPathSearch(players[i].getLocation(), players[i].goalSet);
+					System.out.println(path[0]);
+					System.out.println(path[1]);
+					System.out.println(path[2]);
+					System.out.println(Double.valueOf(String.valueOf(path[3])));
+				}
+				graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
+				graph.addEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
+				
+			} catch (GraphNodeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			} catch (GraphEdgeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			} catch (GraphEdgeIsDuplicateException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			
 		}
-		return false;
+
+		return true;
 	}
 	
 	// player is the ID of the player trying to place a wall, loc represents the location of the wall
