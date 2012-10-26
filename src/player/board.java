@@ -279,8 +279,8 @@ public class board {
 		if (players[turn].getWalls() > 0) {
 			showMoves(players[turn], false);
 			walls[xy.x][xy.y] = 2;
-			gui.setHoriWallColor(xy, WALL_COLOR);
-			gui.setHoriWallColor(new Point(xy.x+1,xy.y), WALL_COLOR);
+			gui.setHoriWallColor(xy, players[turn].getColor());
+			gui.setHoriWallColor(new Point(xy.x+1,xy.y), players[turn].getColor());
 			try {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
 				graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
@@ -303,8 +303,8 @@ public class board {
 		if (players[turn].getWalls() > 0) {
 			showMoves(players[turn], false);
 			walls[xy.x][xy.y] = 1;
-			gui.setVertWallColor(xy, WALL_COLOR);
-			gui.setVertWallColor(new Point(xy.x,xy.y+1), WALL_COLOR);
+			gui.setVertWallColor(xy, players[turn].getColor());
+			gui.setVertWallColor(new Point(xy.x,xy.y+1), players[turn].getColor());
 			try {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
 				graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
@@ -347,7 +347,10 @@ public class board {
 			return;
 		Color c;
 		if (b == true) {
-			c = Color.pink;
+			int re = Math.min((players[turn].getColor().getRed() + 255)/2, 240);
+			int gr = Math.min((players[turn].getColor().getGreen() + 255)/2, 240);
+			int bl = Math.min((players[turn].getColor().getBlue() + 255)/2, 240);
+			c = new Color(re, gr, bl);
 		} else {
 			c = BUTTON_DEFAULT_COLOR;
 		}

@@ -2,24 +2,69 @@ package player;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * This class stores all the required information about a Player.
+ */
 
 public class Player {
-
-	private final int X[] = {4, 4, 0, 8};  //X[] and Y[] hold the starting coordinates of each of the 4 players
+	/**
+	 * X holds all of the starting X values of the Players.
+	 */
+	private final int X[] = {4, 4, 0, 8};
+	/**
+	 * Y holds all of the starting Y values of the Players.
+	 */
 	private final int Y[] = {8, 0, 4, 4};
-	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};  //default colors 
+	/**
+	 * color holds the default Colors of the Players.
+	 */
+	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};
+	/**
+	 * Constant representing a local player
+	 */
 	public final static int GUI_PLAYER = 0;
+	/**
+	 * Constant representing an ai player.
+	 */
 	public final static int AI_PLAYER = 1;
+	/**
+	 * Constant representing a player playing over a network
+	 */
 	public final static int NET_PLAYER = 2;
 	
-	private int playerType;		// holds whether a player is using the gui, is one of our AIs, or is playing over the network
-	private Point xy;			// holds the x and y coordinates of the player 
-	private int playerID;		// playerID identifies the player as being player 1, player 2, etc.
-	private int walls;			// walls is the number of walls the player has left to place.
-	private Color col;			// stores the color of a player
-	private Point[] goalLine;	// holds all of the spaces a player could move to to win
+	/**
+	 * holds whether a player is using the gui, is an ai, or is playing over a network.
+	 */
+	private int playerType;
+	/**
+	 * holds the location of the player on the board.
+	 */
+	private Point xy;
+	/**
+	 * Holds a Player's ID number.
+	 */
+	private int playerID;
+	/**
+	 * Holds the number of walls a Player has left.
+	 */
+	private int walls;
+	/**
+	 * Holds the Player's Color.
+	 */
+	private Color col;
+	/**
+	 * Holds all of the spaces a Player can move to to win the game.
+	 */
+	private Point[] goalLine;
 	
-	// default constructor, exists only for testing
+	public Set<Point> goalSet;
+	
+	/**
+	 * Only still exists because I'll have to redo the Player tests if this is removed.
+	 */
 	public Player() {
 		playerID = -1;
 		setStartingLocation();
@@ -36,16 +81,6 @@ public class Player {
 		setGoalLine();
 		setStartingWalls(startingWalls);
 		setDefaultColor();
-		playerType = GUI_PLAYER;
-	}
-	
-	//This constructor is used when a player has picked a color other than the default
-	public Player(int ID, int startingWalls, Color c) {
-		playerID = ID;
-		setStartingLocation();
-		setGoalLine();
-		setStartingWalls(startingWalls);
-		setColor(c);
 		playerType = GUI_PLAYER;
 	}
 	
@@ -67,26 +102,31 @@ public class Player {
 	// fills the goalLine array with all the spaces a player could move to to win the game
 	private void setGoalLine() {
 		goalLine = new Point[9];
+		goalSet = new HashSet<Point>();
 		int temp = 0;
 		if (xy.x == 8) {
 			temp = 0;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(temp, i);
+				goalSet.add(new Point(temp, i));
 			}
 		} else if (xy.x == 0) {
 			temp = 8;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(temp, i);
+				goalSet.add(new Point(temp, i));
 			}
 		} else if (xy.y == 8) {
 			temp = 0;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(i, temp);
+				goalSet.add(new Point(i, temp));
 			}
 		} else if (xy.y == 0) {
 			temp = 8;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(i, temp);
+				goalSet.add(new Point(i, temp));
 			}
 		}	
 	}
@@ -105,7 +145,7 @@ public class Player {
 	// method which checks to see whether a player is on the goalLine
 	public boolean hasWon() {
 		for (int i = 0; i < goalLine.length; i++) {
-			if (goalLine[i].equals(xy)) {
+			if (goalSet.contains(xy)) {
 				return true;
 			}
 		}
