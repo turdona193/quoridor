@@ -1059,30 +1059,54 @@ public class Graph<E> {
      *     initial state to the goal state, and {@code pathLength} is a
      *     double, the length of the path from the initial state to the goal
      *     state.
+     *
+     *     When no path exists between the initial element and a goal element,
+     *     path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
     public Object[] shortestPathSearch(E initial, Set<E> goals)
         throws GraphNodeNotFoundException
     {
-        Object[] path = { "", 0, 0, 0d };
-        Object[] shortestPath = { "", 0, 0, 0d };
+        Object[] pathArray = { "", 0, 0, 0d };
+
+        String   path            = "";
+        Integer  pathComparisons = 0;
+        Integer  pathManeuvers   = 0;
+        Double   pathLength      = 0d;
+
+        String   shortestPath            = "";
+        Integer  shortestPathComparisons = 0;
+        Integer  shortestPathManeuvers   = 0;
+        Double   shortestPathLength      = Double.POSITIVE_INFINITY;
 
         for (E goal : goals) {
+
             try {
-                path = pathSearch(DEFAULT_SEARCH, initial, goal);
+                pathArray       = pathSearch(DEFAULT_SEARCH, initial, goal);
             }
             catch (IllegalArgumentException e) { // this will never run
 
             }
-            shortestPath[1] = Integer.valueOf(String.valueOf(shortestPath[1]))
-                + Integer.valueOf(String.valueOf(path[1]));
-            if (Double.valueOf(String.valueOf(path[3])) <
-                    Double.valueOf(String.valueOf(shortestPath[3]))) {
-                shortestPath[0] = path[0];
-                shortestPath[2] = path[2];
-                shortestPath[3] = path[3];
+
+            path = (String)pathArray[0];
+            pathComparisons = (Integer)pathArray[1];
+            pathManeuvers = (Integer)pathArray[2];
+            pathLength = (Double)pathArray[3];
+
+            shortestPathComparisons = 0;
+            shortestPathComparisons += pathComparisons;
+
+            if (pathLength < shortestPathLength) {
+                shortestPath = path;
+                shortestPathManeuvers = pathManeuvers;
+                shortestPathLength = pathLength;
             }
         }
-        return shortestPath;
+
+        Object[] result = { shortestPath,
+                            shortestPathComparisons,
+                            shortestPathManeuvers,
+                            shortestPathLength };
+        return result;
     }
 
     /**
@@ -1115,6 +1139,9 @@ public class Graph<E> {
      *     by the search, {@code pathManeuvers} is the number of maneuvers
      *     from the initial state to the goal state, and {@code pathLength} is
      *     the length of the path from the initial state to the goal state.
+     *
+     *     When no path exists between the initial element and the goal
+     *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
     public Object[] pathSearch(E initial, E goal)
         throws GraphNodeNotFoundException
@@ -1162,6 +1189,9 @@ public class Graph<E> {
      *     by the search, {@code pathManeuvers} is the number of maneuvers
      *     from the initial state to the goal state, and {@code pathLength} is
      *     the length of the path from the initial state to the goal state.
+     *
+     *     When no path exists between the initial element and the goal
+     *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
     public Object[] pathSearch(String algorithm, E initial, E goal)
         throws GraphNodeNotFoundException,
@@ -1171,7 +1201,7 @@ public class Graph<E> {
             Object[] results = { initial + ", " + goal + "\n", // path
                                  1,  // comparisons
                                  0,  // path maneuvers
-                                 1d, // path cost
+                                 0d, // path cost
             };
             return results;
         }
@@ -1224,6 +1254,10 @@ public class Graph<E> {
      *     by the search, {@code pathManeuvers} is the number of maneuvers
      *     from the initial state to the goal state, and {@code pathLength} is
      *     the length of the path from the initial state to the goal state.
+     *
+     *     When no path exists between the node for the initial element and
+     *     the node for the goal element, path is "none" and pathLength is
+     *     Double.POSITIVE_INFINITY.
      */
     private Object[] breadthOrDepthFirstPathSearch(
             String algorithm,
@@ -1234,7 +1268,7 @@ public class Graph<E> {
         String   path          = "none";
         Integer  comparisons   = 1,
                  pathManeuvers = 0;
-        Double   pathLength    = 1d;
+        Double   pathLength    = Double.POSITIVE_INFINITY;
 
         Frontier<SearchNode<Node<E>>> frontier = null;
         if (algorithm.equals("breadth-first")) {
@@ -1243,7 +1277,7 @@ public class Graph<E> {
         if (algorithm.equals("depth-first")) {
             frontier = new StackFrontier<SearchNode<Node<E>>>();
         }
-        frontier.add(new SearchNode<Node<E>>(initial, null, 1d));
+        frontier.add(new SearchNode<Node<E>>(initial, null, 0d));
 
         NavigableSet<SearchNode<Node<E>>>
             explored = new TreeSet<SearchNode<Node<E>>>();
@@ -1255,8 +1289,6 @@ public class Graph<E> {
                 return results;
             }
             SearchNode<Node<E>> n = frontier.remove();
-            System.out.println("...Exploring " + n.state() +
-                               " (" + n.pathCost() + ")");
             explored.add(n);
             for (Edge<E> e : n.state().edges()) {
                 SearchNode<Node<E>> child = new SearchNode<Node<E>>(
@@ -1302,6 +1334,10 @@ public class Graph<E> {
      *     by the search, {@code pathManeuvers} is the number of maneuvers
      *     from the initial state to the goal state, and {@code pathLength} is
      *     the length of the path from the initial state to the goal state.
+     *
+     *     When no path exists between the node for the initial element and
+     *     the node for the goal element, path is "none" and pathLength is
+     *     Double.POSITIVE_INFINITY.
      */
     private Object[] uniformCostPathSearch(
             Node<E> initial,
@@ -1311,12 +1347,12 @@ public class Graph<E> {
         String   path          = "none";
         Integer  comparisons   = 1,
                  pathManeuvers = 0;
-        Double   pathLength    = 1d;
+        Double   pathLength    = Double.POSITIVE_INFINITY;
 
         Frontier<SearchNode<Node<E>>>
             frontier = new PriorityQueueFrontier<SearchNode<Node<E>>>(
                     11, new SearchNodeComparator());
-        frontier.add(new SearchNode<Node<E>>(initial, null, 1d));
+        frontier.add(new SearchNode<Node<E>>(initial, null, 0d));
 
         NavigableSet<SearchNode<Node<E>>>
             explored = new TreeSet<SearchNode<Node<E>>>();
@@ -1328,8 +1364,6 @@ public class Graph<E> {
                 return results;
             }
             SearchNode<Node<E>> n = frontier.remove();
-            System.out.println("...Exploring " + n.state() +
-                    " (" + n.pathCost() + ")");
             comparisons++;
             if (n.state().equals(goal)) {
                 return searchResults(n, path, comparisons,
@@ -1401,7 +1435,7 @@ public class Graph<E> {
         while (!stack.isEmpty()) {
             SearchNode<Node<E>> sn = stack.pop();
             path += sn.state() +
-                " (" + sn.pathCost() + " km)\n";
+                " (" + sn.pathCost() + ")\n";
         }
         Object[] results = { path, comparisons,
                              pathManeuvers, pathLength };
@@ -1423,7 +1457,7 @@ public class Graph<E> {
             s += n + ": ";
             String sep = "";
             for (Edge<E> e : n.edges()) {
-                s += sep + e.apex() + " (" + e.weight() + " km)";
+                s += sep + e.apex() + " (" + e.weight() + ")";
                 sep = ", ";
             }
             s += "\n";
