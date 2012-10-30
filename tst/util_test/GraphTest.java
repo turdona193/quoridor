@@ -167,4 +167,71 @@ public class GraphTest {
                             "b: a (1.0)\n" +
                             "a: c (1.0), b (1.0)\n"));
     }
+
+    @Test public void testGraphWithMultipleWeightedEdgesToString() {
+        try {
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addEdge("a", "b", 42.0);
+            graph.addEdge("a", "c", 42.0);
+        }
+        catch (GraphNodeIsDuplicateException e) {
+            fail();
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
+        String s = graph.toString();
+        assertTrue(s.equals("a: b (42.0), c (42.0)\n" +
+                            "b: a (42.0)\n" +
+                            "c: a (42.0)\n") ||
+
+                   s.equals("a: b (42.0), c (42.0)\n" +
+                            "c: a (42.0)\n" +
+                            "b: a (42.0)\n") ||
+
+                   s.equals("b: a (42.0)\n" +
+                            "a: b (42.0), c (42.0)\n" +
+                            "c: a (42.0)\n") ||
+
+                   s.equals("c: a (42.0)\n" +
+                            "a: b (42.0), c (42.0)\n" +
+                            "b: a (42.0)\n") ||
+
+                   s.equals("b: a (42.0)\n" +
+                            "c: a (42.0)\n" +
+                            "a: b (42.0), c (42.0)\n") ||
+
+                   s.equals("c: a (42.0)\n" +
+                            "b: a (42.0)\n" +
+                            "a: b (42.0), c (42.0)\n") ||
+
+                   s.equals("a: c (42.0), b (42.0)\n" +
+                            "b: a (42.0)\n" +
+                            "c: a (42.0)\n") ||
+
+                   s.equals("a: c (42.0), b (42.0)\n" +
+                            "c: a (42.0)\n" +
+                            "b: a (42.0)\n") ||
+
+                   s.equals("b: a (42.0)\n" +
+                            "a: c (42.0), b (42.0)\n" +
+                            "c: a (42.0)\n") ||
+
+                   s.equals("c: a (42.0)\n" +
+                            "a: c (42.0), b (42.0)\n" +
+                            "b: a (42.0)\n") ||
+
+                   s.equals("b: a (42.0)\n" +
+                            "c: a (42.0)\n" +
+                            "a: b (42.0), b (42.0)\n") ||
+
+                   s.equals("c: a (42.0)\n" +
+                            "b: a (42.0)\n" +
+                            "a: c (42.0), b (42.0)\n"));
+    }
 }
