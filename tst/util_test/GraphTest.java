@@ -79,4 +79,71 @@ public class GraphTest {
         assertTrue(s.equals("a: b (1.0)\n" + "b: a (1.0)\n") ||
                    s.equals("b: a (1.0)\n" + "a: b (1.0)\n"));
     }
+
+    @Test public void testGraphWithMultipleEdgesToString() {
+        try {
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addNode("c");
+            graph.addEdge("a", "b");
+            graph.addEdge("a", "c");
+        }
+        catch (GraphNodeIsDuplicateException e) {
+            fail();
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
+        String s = graph.toString();
+        assertTrue(s.equals("a: b (1.0), c (1.0)\n" +
+                            "b: a (1.0)\n" +
+                            "c: a (1.0)\n") ||
+
+                   s.equals("a: b (1.0), c (1.0)\n" +
+                            "c: a (1.0)\n" +
+                            "b: a (1.0)\n") ||
+
+                   s.equals("b: a (1.0)\n" +
+                            "a: b (1.0), c (1.0)\n" +
+                            "c: a (1.0)\n") ||
+
+                   s.equals("c: a (1.0)\n" +
+                            "a: b (1.0), c (1.0)\n" +
+                            "b: a (1.0)\n") ||
+
+                   s.equals("b: a (1.0)\n" +
+                            "c: a (1.0)\n" +
+                            "a: b (1.0), c (1.0)\n") ||
+
+                   s.equals("c: a (1.0)\n" +
+                            "b: a (1.0)\n" +
+                            "a: b (1.0), c (1.0)\n") ||
+
+                   s.equals("a: c (1.0), b (1.0)\n" +
+                            "b: a (1.0)\n" +
+                            "c: a (1.0)\n") ||
+
+                   s.equals("a: c (1.0), b (1.0)\n" +
+                            "c: a (1.0)\n" +
+                            "b: a (1.0)\n") ||
+
+                   s.equals("b: a (1.0)\n" +
+                            "a: c (1.0), b (1.0)\n" +
+                            "c: a (1.0)\n") ||
+
+                   s.equals("c: a (1.0)\n" +
+                            "a: c (1.0), b (1.0)\n" +
+                            "b: a (1.0)\n") ||
+
+                   s.equals("b: a (1.0)\n" +
+                            "c: a (1.0)\n" +
+                            "a: b (1.0), b (1.0)\n") ||
+
+                   s.equals("c: a (1.0)\n" +
+                            "b: a (1.0)\n" +
+                            "a: c (1.0), b (1.0)\n"));
+    }
 }
