@@ -80,6 +80,27 @@ public class GraphTest {
                    s.equals("b: a (1.0)\n" + "a: b (1.0)\n"));
     }
 
+    @Test
+    public void testGraphWithSingleWeightedEdgeToString() {
+        try {
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addEdge("a", "b", 42.0);
+        }
+        catch (GraphNodeIsDuplicateException e) {
+            fail();
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
+        String s = graph.toString();
+        assertTrue(s.equals("a: b (42.0)\n" + "b: a (42.0)\n") ||
+                   s.equals("b: a (42.0)\n" + "a: b (42.0)\n"));
+    }
+
     @Test public void testGraphWithMultipleEdgesToString() {
         try {
             graph.addNode("a");
