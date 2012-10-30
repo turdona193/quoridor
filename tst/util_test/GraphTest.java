@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import util.Graph;
 import util.GraphNodeIsDuplicateException;
+import util.GraphNodeNotFoundException;
+import util.GraphEdgeIsDuplicateException;
 
 /**
  * A JUnit test fixture for util.Graph.
@@ -14,11 +16,11 @@ import util.GraphNodeIsDuplicateException;
  */
 public class GraphTest {
 
-    Graph<Integer> graph;
+    Graph<String> graph;
 
     @Before
     public void initTests() {
-        graph = new Graph<Integer>();
+        graph = new Graph<String>();
     }
 
     @Test
@@ -29,31 +31,31 @@ public class GraphTest {
     @Test
     public void testSingleNodeToString() {
         try {
-            graph.addNode(42);
+            graph.addNode("a");
         }
         catch(GraphNodeIsDuplicateException e) {
             fail();
         }
-        assertEquals("42: \n", graph.toString());
+        assertEquals("a: \n", graph.toString());
     }
 
     @Test(expected=util.GraphNodeIsDuplicateException.class)
     public void testAddDuplicateNodeThrowsGraphNodeIsDuplicateException()
         throws GraphNodeIsDuplicateException {
-        graph.addNode(42);
-        graph.addNode(42);
+        graph.addNode("a");
+        graph.addNode("a");
     }
 
     @Test
     public void testMultipleNodesToString() {
         try {
-            graph.addNode(42);
-            graph.addNode(43);
+            graph.addNode("a");
+            graph.addNode("b");
         }
         catch(GraphNodeIsDuplicateException e) {
             fail();
         }
-        assertTrue(graph.toString().equals("42: \n" + "43: \n") ||
-                   graph.toString().equals("43: \n" + "42: \n"));
+        assertTrue(graph.toString().equals("a: \n" + "b: \n") ||
+                   graph.toString().equals("b: \n" + "a: \n"));
     }
 }
