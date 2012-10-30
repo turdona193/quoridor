@@ -58,4 +58,25 @@ public class GraphTest {
         assertTrue(graph.toString().equals("a: \n" + "b: \n") ||
                    graph.toString().equals("b: \n" + "a: \n"));
     }
+
+    @Test
+    public void testGraphWithSingleEdgeToString() {
+        try {
+            graph.addNode("a");
+            graph.addNode("b");
+            graph.addEdge("a", "b");
+        }
+        catch (GraphNodeIsDuplicateException e) {
+            fail();
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
+        String s = graph.toString();
+        assertTrue(s.equals("a: b (1.0)\n" + "b: a (1.0)\n") ||
+                   s.equals("b: a (1.0)\n" + "a: b (1.0)\n"));
+    }
 }
