@@ -1,10 +1,8 @@
-<project name = "Quoridor" default = "run">
+<project name="Quoridor" default="run">
 
   <presetdef name="javac">
      <javac includeantruntime="false" />
   </presetdef>
-
-  <property file = "build.properties" />
 
   <path id="classpath.base">
     <pathelement location="build/classes" />
@@ -18,27 +16,25 @@
     <path refid="classpath.base" />
   </path>
 
-  <target name = "clean" description = "Delete all build targets">
-    <delete dir = "build" />
+  <target name="clean">
+    <delete dir="build" />
   </target>
 
   <target name="init">
     <mkdir dir="build" />
     <mkdir dir="build/classes" />
-    <mkdir dir="build/classes-tst" />
     <mkdir dir="build/jars" />
   </target>
 
-  <target name = "compile" depends = "init" 
-          description = "Compile the program">
-    <javac srcdir = "src" destdir = "build/classes">
+  <target name="compile" depends="init">
+    <javac srcdir="src" destdir="build/classes">
       <classpath refid="classpath.base"/>
     </javac>
   </target>
 
   
   <target name="compile-test" depends="compile">
-    <javac srcdir="tst" destdir = "build/classes">
+    <javac srcdir="tst" destdir="build/classes">
       <classpath refid="classpath.test"/>
     </javac>
   </target>
