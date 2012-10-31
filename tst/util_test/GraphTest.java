@@ -10,6 +10,9 @@ import util.GraphNodeIsDuplicateException;
 import util.GraphNodeNotFoundException;
 import util.GraphEdgeIsDuplicateException;
 
+import java.util.Set;
+import java.util.HashSet;
+
 /**
  * A JUnit test fixture for util.Graph.
  * @author Andrew Allen Barkley
@@ -237,29 +240,12 @@ public class GraphTest {
 
     @Test
     public void testPathSearch() {
+        populateGraph();
         Object[] pathElements = null;
         try {
-            graph.addNode("a");
-            graph.addNode("b1");
-            graph.addEdge("a", "b1");
-            graph.addNode("b2");
-            graph.addEdge("a", "b2");
-            graph.addNode("c1");
-            graph.addNode("c2");
-            graph.addEdge("a", "c2");
-            graph.addEdge("b2", "c1");
-            graph.addEdge("b2", "c2");
-            graph.addNode("d");
-            graph.addEdge("c2", "d");
             pathElements = graph.pathSearch("a", "d");
         }
-        catch (GraphNodeIsDuplicateException e) {
-            fail();
-        }
         catch (GraphNodeNotFoundException e) {
-            fail();
-        }
-        catch(GraphEdgeIsDuplicateException e) {
             fail();
         }
 
@@ -276,8 +262,83 @@ public class GraphTest {
                                "c2 (1.0)\n" +
                                "d (2.0)\n"));
         assertTrue(comparisons > 2);
-        System.out.println(maneuvers);
         assertTrue(maneuvers == 2 || maneuvers == 3);
         assertTrue(length == 2.0 || length == 3.0);
+    }
+
+    @Test
+    public void testShortestPathSearch() {
+        populateGraph();
+        Object[] pathElements = null;
+        try {
+            pathElements = graph.shortestPathSearch("a", "d");
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+
+        String  path        = (String) pathElements[0];
+        Integer comparisons = (Integer)pathElements[1];
+        Integer maneuvers   = (Integer)pathElements[2];
+        Double  length      = (Double) pathElements[3];
+
+        assertTrue(path.equals("a (0.0)\n" +
+                               "c2 (1.0)\n" +
+                               "d (2.0)\n"));
+        assertTrue(comparisons > 2);
+        assertTrue(maneuvers == 2);
+        assertTrue(length == 2.0);
+    }
+
+    @Test
+    public void testShortestPathSearchForASetOfGoals() {
+        populateGraph();
+        Object[] pathElements = null;
+        Set<String> goals = new HashSet<String>();
+        goals.add("a");
+        goals.add("d");
+        try {
+            pathElements = graph.shortestPathSearch("a", goals);
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+
+        String  path        = (String) pathElements[0];
+        Integer comparisons = (Integer)pathElements[1];
+        Integer maneuvers   = (Integer)pathElements[2];
+        Double  length      = (Double) pathElements[3];
+
+        assertTrue(path.equals("a (0.0)\n" +
+                               "a (0.0)\n"));
+        assertTrue(comparisons > 0);
+        assertTrue(maneuvers == 0);
+        assertTrue(length == 0.0);
+    }
+
+    private void populateGraph() {
+        try {
+            graph.addNode("a");
+            graph.addNode("b1");
+            graph.addEdge("a", "b1");
+            graph.addNode("b2");
+            graph.addEdge("a", "b2");
+            graph.addNode("c1");
+            graph.addNode("c2");
+            graph.addEdge("a", "c2");
+            graph.addEdge("b2", "c1");
+            graph.addEdge("b2", "c2");
+            graph.addNode("d");
+            graph.addEdge("c2", "d");
+        }
+        catch (GraphNodeIsDuplicateException e) {
+            fail();
+        }
+        catch (GraphNodeNotFoundException e) {
+            fail();
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
     }
 }
