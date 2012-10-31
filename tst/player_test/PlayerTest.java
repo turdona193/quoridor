@@ -1,7 +1,6 @@
 package player_test;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -15,7 +14,16 @@ import player.Player;
 
 public class PlayerTest {
 	private Player pl;
+	private Player[] players;
 		
+	@Before
+	public void initialize(){
+		players = new Player[4];
+		for (int i = 0; i < 4; i++) {
+			players[i] = new Player(i, 5, Player.color[i], 0);
+		}
+	}
+	
 	private void testXAndYValues(int expectX, int expectY) {
 		assertThat(expectX, is(equalTo(pl.getX())));
 		assertThat(expectY, is(equalTo(pl.getY())));	
@@ -33,21 +41,17 @@ public class PlayerTest {
 	
 	@Test
 	public void testStartingLocationsOfPlayers() {
-		int expectedX[] = {4, 4, 0, 8};
-		int expectedY[] = {8, 0, 4, 4};
-		for (int i = 0; i < expectedX.length; i++) {
-			pl = new Player(i, 4);
-			testXAndYValues(expectedX[i], expectedY[i]);
+		for (int i = 0; i < Player.X.length; i++) {
+			pl = players[i];
+			testXAndYValues(Player.X[i], Player.Y[i]);
 		}
 	}
 	
 	@Test
 	public void testDefaultColors() {
-		Color expectedColor[] = {Color.blue, Color.red, Color.green, Color.yellow};
-		
-		for (int i = 0; i < expectedColor.length; i++) {
-			pl = new Player(i, 4);
-			assertThat(expectedColor[i], is(equalTo(pl.getColor())));
+		for (int i = 0; i < Player.color.length; i++) {
+			pl = players[i];
+			assertThat(Player.color[i], is(equalTo(pl.getColor())));
 		}
 		
 	}
@@ -73,7 +77,6 @@ public class PlayerTest {
 	
 	@Test
 	public void testDirectionMethodsWhenNextToEdges() {
-		Point expectedLoc = new Point(-1,-1);
 		pl = new Player();
 		pl.setLocation(0,0);
 		assertNull(pl.up());
@@ -85,7 +88,7 @@ public class PlayerTest {
 	
 	@Test
 	public void testGoalLine() {
-		pl = new Player(0, 10);
+		pl = new Player(0, 10, Color.green, 0);
 		boolean expectedResult = false;
 		assertThat(expectedResult, is(equalTo(pl.hasWon())));
 		for (int i = 0; i < 9; i++) {
@@ -94,6 +97,15 @@ public class PlayerTest {
 			assertThat(expectedResult, is(equalTo(pl.hasWon())));
 		}
 
+	}
+	
+	@Test
+	public void testWalls() {
+		pl = new Player(0, 2, Color.blue, 0);
+		assertTrue(pl.decrementWall());
+		assertTrue(pl.decrementWall());
+		assertFalse(pl.decrementWall());
+		assertThat(0, is(equalTo(pl.getWalls())));
 	}
 	
 		
