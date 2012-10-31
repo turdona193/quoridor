@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import util.Graph;
 import util.GraphEdgeIsDuplicateException;
@@ -27,6 +29,7 @@ public class board {
 	private AI ai;				// allows board to communicate with the ai
 	public Graph<Point> graph;	// needed to find a path from a point to the goal
 	public Semaphore sem;		// used to tell the ai when it's turn is, needs a better name
+	public JFrame winFrame;		// holds the message when a player wins the game
 	
 	// default constructor, assumes 2 players all using their default colors
 	// will probably only be used for testing
@@ -484,6 +487,11 @@ public class board {
 	
 	private void nextTurn() {
 		showMoves(players[turn], false);
+		if(players[turn].hasWon()){
+			JOptionPane.showMessageDialog(winFrame,
+		    "Player " + (turn) + " has won!");
+		}
+		
 		turn = (turn + pl + 1) % pl;
 		showMoves(players[turn], true);
 		if (getCurrentPlayerType() == Player.AI_PLAYER) {

@@ -33,7 +33,7 @@ public class qBoard extends JFrame implements ActionListener{
 	public JButton[][] wallHor = new JButton[9][8];
 
 	private JPanel buttonPanel; 
-
+	private JPanel statusPanel;
 	
 	//this is the constructor that should probably always be used, probably
 	public qBoard(board b) {
@@ -50,13 +50,17 @@ public class qBoard extends JFrame implements ActionListener{
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		buttonPanel = new JPanel();
+		statusPanel = new JPanel();
 		buttonPanel.setLayout(null);
-
+		statusPanel.setLayout(null);
+		
 		initializeButtons();
 		buttonPanel.setSize(512, 512);
+		statusPanel.setSize(64, 64);
 
 		//add(buttonPanel, BorderLayout.PAGE_START);
 		add (buttonPanel);
+		add (statusPanel);
 		//setSize(512,512);
 
 		setVisible(true);
