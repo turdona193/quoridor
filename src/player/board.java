@@ -159,7 +159,7 @@ public class board {
 	
 	// player is the ID of the player trying to place a wall, loc represents the location of the wall
 	public boolean isHoriWallLegal(int player, Point loc) {
-		if (players[player].getWalls() > 0 && loc.x < 8) {
+		if (players[player].getWalls() > 0 && loc.x < 8 && loc.x > -1 && loc.y > -1 && loc.y < 8) {
 			if (walls[loc.x][loc.y] > 0)
 				return false;
 			if (loc.x < 7)
@@ -168,14 +168,43 @@ public class board {
 			if (loc.x > 0)
 				if (walls[loc.x-1][loc.y] == 2)
 					return false;
-			return true;
+			
+			boolean legal = true;	//if any player would be blocked by the wall, this will be set to false
+			
+			try {
+				graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
+				graph.removeEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
+				Object path[];
+				for (int i = 0; i < pl; i++) {
+					// The code should test to see if any Player cannot reach their goal inside this for loop.
+					// But I can't seem to figure out how to do that.
+					path = graph.shortestPathSearch(players[i].getLocation(), players[i].goalSet);
+					if (Double.valueOf(String.valueOf(path[3])) == Double.POSITIVE_INFINITY) {
+						legal = false;
+					}
+				}
+				graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
+				graph.addEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
+				
+			} catch (GraphNodeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			} catch (GraphEdgeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			} catch (GraphEdgeIsDuplicateException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			return legal;
 		}
+
 		return false;
 	}
 	
 	// player is the ID of the player trying to place a wall, loc represents the location of the wall
 	public boolean isVertWallLegal(int player, Point loc) {
-		if (players[player].getWalls() > 0 && loc.y < 8) {
+		if (players[player].getWalls() > 0 && loc.x < 8 && loc.x > -1 && loc.y > -1 && loc.y < 8) {
 			if (walls[loc.x][loc.y] > 0)
 				return false;
 			if (loc.y < 7)
@@ -184,7 +213,35 @@ public class board {
 			if (loc.y > 0)
 				if (walls[loc.x][loc.y-1] == 1)
 					return false;
-			return true;
+			
+			boolean legal = true;	//if any player would be blocked by the wall, this will be set to false
+			
+			try {
+				graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
+				graph.removeEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
+				Object path[];
+				for (int i = 0; i < pl; i++) {
+					// The code should test to see if any Player cannot reach their goal inside this for loop.
+					// But I can't seem to figure out how to do that.
+					path = graph.shortestPathSearch(players[i].getLocation(), players[i].goalSet);
+					if (Double.valueOf(String.valueOf(path[3])) == Double.POSITIVE_INFINITY) {
+						legal = false;
+					}
+				}
+				graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
+				graph.addEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
+				
+			} catch (GraphNodeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			} catch (GraphEdgeNotFoundException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			} catch (GraphEdgeIsDuplicateException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			return legal;
 		}
 		return false;
 	}
@@ -279,8 +336,8 @@ public class board {
 		if (players[turn].getWalls() > 0) {
 			showMoves(players[turn], false);
 			walls[xy.x][xy.y] = 2;
-			gui.setHoriWallColor(xy, WALL_COLOR);
-			gui.setHoriWallColor(new Point(xy.x+1,xy.y), WALL_COLOR);
+			gui.setHoriWallColor(xy, players[turn].getColor());
+			gui.setHoriWallColor(new Point(xy.x+1,xy.y), players[turn].getColor());
 			try {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
 				graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
@@ -303,8 +360,8 @@ public class board {
 		if (players[turn].getWalls() > 0) {
 			showMoves(players[turn], false);
 			walls[xy.x][xy.y] = 1;
-			gui.setVertWallColor(xy, WALL_COLOR);
-			gui.setVertWallColor(new Point(xy.x,xy.y+1), WALL_COLOR);
+			gui.setVertWallColor(xy, players[turn].getColor());
+			gui.setVertWallColor(new Point(xy.x,xy.y+1), players[turn].getColor());
 			try {
 				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
 				graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
@@ -347,7 +404,10 @@ public class board {
 			return;
 		Color c;
 		if (b == true) {
-			c = Color.pink;
+			int re = Math.min((players[turn].getColor().getRed() + 255)/2, 240);
+			int gr = Math.min((players[turn].getColor().getGreen() + 255)/2, 240);
+			int bl = Math.min((players[turn].getColor().getBlue() + 255)/2, 240);
+			c = new Color(re, gr, bl);
 		} else {
 			c = BUTTON_DEFAULT_COLOR;
 		}
