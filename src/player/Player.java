@@ -13,15 +13,15 @@ public class Player {
 	/**
 	 * X holds all of the starting X values of the Players.
 	 */
-	private final int X[] = {4, 4, 0, 8};
+	public final static int X[] = {4, 4, 0, 8};
 	/**
 	 * Y holds all of the starting Y values of the Players.
 	 */
-	private final int Y[] = {8, 0, 4, 4};
+	public final static int Y[] = {8, 0, 4, 4};
 	/**
 	 * color holds the default Colors of the Players.
 	 */
-	private final Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};
+	public final static Color[] color = {Color.blue, Color.red, Color.green, Color.yellow};
 	/**
 	 * Constant representing a local player
 	 */
@@ -77,24 +77,6 @@ public class Player {
 		playerType = GUI_PLAYER;
 	}
 
-	/**
-	 * Also only exists for testing purposes.  Will probably be removed when the test class gets updated.
-	 * 
-	 * @param ID
-	 * 		This is the Player's ID number.  It should be a number between 0 and 3.
-	 * 
-	 * @param startingWalls
-	 * 		This is the number of walls the player starts with.
-	 */
-	public Player(int ID, int startingWalls) {
-		playerID = ID;
-		setStartingLocation();
-		setGoalLine();
-		setStartingWalls(startingWalls);
-		setDefaultColor();
-		playerType = GUI_PLAYER;
-	}
-	
 	/**
 	 * This is the constructor that is called in the constructor for the board class.
 	 * 
