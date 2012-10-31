@@ -1031,7 +1031,7 @@ public class Graph<E> {
      * Returns a path from initial element to the 'closest' goal element.
      *
      * <p>Note: this is a wrapper for
-     * {@code pathSearch(DEFAULT_SEARCH, initial, goal);.}
+     * {@code findPath(DEFAULT_SEARCH, initial, goal);.}
      *
      * @param  initial
      *     the initial element
@@ -1063,7 +1063,7 @@ public class Graph<E> {
      *     When no path exists between the initial element and a goal element,
      *     path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
-    public Object[] shortestPathSearch(E initial, Set<E> goals)
+    public Object[] findPath(E initial, Set<E> goals)
         throws GraphNodeNotFoundException
     {
         Object[] pathArray = { "", 0, 0, 0d };
@@ -1081,7 +1081,7 @@ public class Graph<E> {
         for (E goal : goals) {
 
             try {
-                pathArray       = pathSearch(DEFAULT_SEARCH, initial, goal);
+                pathArray       = findPath(DEFAULT_SEARCH, initial, goal);
             }
             catch (IllegalArgumentException e) { // this will never run
 
@@ -1113,7 +1113,7 @@ public class Graph<E> {
      * Returns a path from initial element to goal element.
      *
      * <p>Note: this is a wrapper for
-     * {@code pathSearch(DEFAULT_SEARCH, initial, goal);.}
+     * {@code findPath(DEFAULT_SEARCH, initial, goal);.}
      *
      * @param  initial
      *     the initial element
@@ -1143,11 +1143,11 @@ public class Graph<E> {
      *     When no path exists between the initial element and the goal
      *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
-    public Object[] pathSearch(E initial, E goal)
+    public Object[] findPath(E initial, E goal)
         throws GraphNodeNotFoundException
     {
         try {
-            return pathSearch(DEFAULT_SEARCH, initial, goal);
+            return findPath(DEFAULT_SEARCH, initial, goal);
         }
         catch (IllegalArgumentException e) { // this will never run
 
@@ -1193,12 +1193,12 @@ public class Graph<E> {
      *     When no path exists between the initial element and the goal
      *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
-    public Object[] pathSearch(String algorithm, E initial, E goal)
+    public Object[] findPath(String algorithm, E initial, E goal)
         throws GraphNodeNotFoundException,
                IllegalArgumentException
     {
         if (initial.equals(goal)) {
-            Object[] results = { initial + ", " + goal + "\n", // path
+            Object[] results = { initial + " (0.0)\n" + goal + " (0.0)\n", // path
                                  1,  // comparisons
                                  0,  // path maneuvers
                                  0d, // path cost
@@ -1431,7 +1431,7 @@ public class Graph<E> {
             child = child.parent();
         }
         path = "";
-        pathManeuvers = stack.size();
+        pathManeuvers = stack.size() - 1;
         while (!stack.isEmpty()) {
             SearchNode<Node<E>> sn = stack.pop();
             path += sn.state() +

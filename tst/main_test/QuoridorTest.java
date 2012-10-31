@@ -34,7 +34,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     //main_test.qBoardTest.class,
-    player_test.PlayerTest.class
+    //player_test.PlayerTest.class,
+    util_test.GraphTest.class
 })
 public class QuoridorTest {
 
