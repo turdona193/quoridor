@@ -170,7 +170,7 @@ public class qBoard extends JFrame implements ActionListener{
 	 * 
 	 * @return
 	 * 		returns true if the argument color is the same as
-	 * 		the button default color. Otherwise, returns false.
+	 * 		the button default color. Otherwise, returns false
 	 */
 	private boolean isDefaultColor(Color bColor){
 		return (bColor.equals(BUTTON_DEFAULT_COLOR));
@@ -181,44 +181,129 @@ public class qBoard extends JFrame implements ActionListener{
 	 * 
 	 * @param p
 	 * 		the point of the chosen space. This contains x and
-	 * 		y coordinates.
+	 * 		y coordinates
 	 * 
 	 * @param c
 	 * 		the new color of the space, held in a color object
-	 * 		and indicated by new RGB values.
+	 * 		and indicated by new RGB values
 	 */
 	public void setColorOfSpace(Point p, Color c) {
 		board[p.x][p.y].setBackground(c);
 	}
 	
+	/**
+	 * Enables or disables the ability for the user to click a certain space.
+	 * 
+	 * @param p
+	 * 		the point of the chosen space. This contains x and
+	 * 		y coordinates
+	 * 
+	 * @param b
+	 * 		Enable (true) or disable (false) the ability to click
+	 * 		on the chosen space
+	 */
 	public void setSpaceClickable(Point p, boolean b) {
 		board[p.x][p.y].setEnabled(b);
 	}
 	
+	/**
+	 * Checks if the space is enabled and returns true if it is. Otherwise, the
+	 * method returns false.
+	 * 
+	 * @param p
+	 * 		the point of the chosen space
+	 * 
+	 * @return
+	 * 		returns true if the space is enabled, otherwise the method will return false
+	 */
 	public boolean isSpaceClickable(Point p) {
 		return board[p.x][p.y].isEnabled();
 	}
 	
+	/**
+	 * Takes a "point" from the wallHor 2D array and changes the color
+	 * value of that wall.
+	 * 
+	 * @param p
+	 * 		the point of the chosen wall
+	 * 
+	 * @param c
+	 * 		the new color of the wall, held in a color object
+	 * 		and indicated by new RGB values
+	 */
 	public void setHoriWallColor(Point p, Color c) {
 		wallHor[p.x][p.y].setBackground(c);
 	}
 	
+	/**
+	 * Enables or disables the ability for the user to click a certain horizontal wall.
+	 * 
+	 * @param p
+	 * 		the point of the chosen wall. This contains x and
+	 * 		y coordinates
+	 * 
+	 * @param b
+	 * 		Enable (true) or disable (false) the ability to click
+	 * 		on the chosen space
+	 */
 	public void setHoriWallClickable(Point p, boolean b) {
 		wallHor[p.x][p.y].setEnabled(b);
 	}
 	
+	/**
+	 * Checks if the space is enabled and returns true if it is. Otherwise, the
+	 * method returns false.
+	 * 
+	 * @param p
+	 * 		the point of the chosen wall
+	 * 
+	 * @return
+	 * 		returns true if the horizontal wall is enabled, otherwise the method will return false
+	 */
 	public boolean isHoriWallClickable(Point p) {
 		return wallHor[p.x][p.y].isEnabled();
 	}
 	
+	/**
+	 * Takes a "point" from the wallVert 2D array and changes the color
+	 * value of that wall.
+	 * 
+	 * @param p
+	 * 		the point of the chosen wall
+	 * 
+	 * @param c
+	 * 		the new color of the wall, held in a color object
+	 * 		and indicated by new RGB values
+	 */
 	public void setVertWallColor(Point p, Color c) {
 		wallVert[p.x][p.y].setBackground(c);
 	}
 	
+	/**
+	 * Enables or disables the ability for the user to click a certain vertical wall.
+	 * 
+	 * @param p
+	 * 		the point of the chosen wall. This contains x and
+	 * 		y coordinates
+	 * 
+	 * @param b
+	 * 		Enable (true) or disable (false) the ability to click
+	 * 		on the chosen space
+	 */
 	public void setVertWallClickable(Point p, boolean b) {
 		wallVert[p.x][p.y].setEnabled(b);
 	}
 	
+	/**
+	 * Checks if the space is enabled and returns true if it is. Otherwise, the
+	 * method returns false.
+	 * 
+	 * @param p
+	 * 		the point of the chosen wall
+	 * 
+	 * @return
+	 * 		returns true if the vertical wall is enabled, otherwise the method will return false
+	 */
 	public boolean isVertWallClickable(Point p) {
 		return wallVert[p.x][p.y].isEnabled();
 	}
