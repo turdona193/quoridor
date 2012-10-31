@@ -239,11 +239,11 @@ public class GraphTest {
     }
 
     @Test
-    public void testPathSearch() {
+    public void testFindPath() {
         populateGraph();
         Object[] pathElements = null;
         try {
-            pathElements = graph.pathSearch("a", "d");
+            pathElements = graph.findPath("a", "d");
         }
         catch (GraphNodeNotFoundException e) {
             fail();
@@ -267,38 +267,14 @@ public class GraphTest {
     }
 
     @Test
-    public void testShortestPathSearch() {
-        populateGraph();
-        Object[] pathElements = null;
-        try {
-            pathElements = graph.shortestPathSearch("a", "d");
-        }
-        catch (GraphNodeNotFoundException e) {
-            fail();
-        }
-
-        String  path        = (String) pathElements[0];
-        Integer comparisons = (Integer)pathElements[1];
-        Integer maneuvers   = (Integer)pathElements[2];
-        Double  length      = (Double) pathElements[3];
-
-        assertTrue(path.equals("a (0.0)\n" +
-                               "c2 (1.0)\n" +
-                               "d (2.0)\n"));
-        assertTrue(comparisons > 2);
-        assertTrue(maneuvers == 2);
-        assertTrue(length == 2.0);
-    }
-
-    @Test
-    public void testShortestPathSearchForASetOfGoals() {
+    public void testFindPathForASetOfGoals() {
         populateGraph();
         Object[] pathElements = null;
         Set<String> goals = new HashSet<String>();
         goals.add("a");
         goals.add("d");
         try {
-            pathElements = graph.shortestPathSearch("a", goals);
+            pathElements = graph.findPath("a", goals);
         }
         catch (GraphNodeNotFoundException e) {
             fail();

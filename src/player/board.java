@@ -178,7 +178,7 @@ public class board {
 				for (int i = 0; i < pl; i++) {
 					// The code should test to see if any Player cannot reach their goal inside this for loop.
 					// But I can't seem to figure out how to do that.
-					path = graph.shortestPathSearch(players[i].getLocation(), players[i].goalSet);
+					path = graph.findPath(players[i].getLocation(), players[i].goalSet);
 					if (Double.valueOf(String.valueOf(path[3])) == Double.POSITIVE_INFINITY) {
 						legal = false;
 					}
@@ -223,7 +223,7 @@ public class board {
 				for (int i = 0; i < pl; i++) {
 					// The code should test to see if any Player cannot reach their goal inside this for loop.
 					// But I can't seem to figure out how to do that.
-					path = graph.shortestPathSearch(players[i].getLocation(), players[i].goalSet);
+					path = graph.findPath(players[i].getLocation(), players[i].goalSet);
 					if (Double.valueOf(String.valueOf(path[3])) == Double.POSITIVE_INFINITY) {
 						legal = false;
 					}

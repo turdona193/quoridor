@@ -1028,55 +1028,10 @@ public class Graph<E> {
     }
 
     /**
-     * Returns a path from initial element to the goal element.
-     *
-     * <p>Note: this is a wrapper for
-     * {@code shortestPathSearch(DEFAULT_SEARCH, E initial, Set<E> goals);},
-     * where goals is the set containing goal.
-     *
-     * @param  initial
-     *     the initial element
-     *
-     * @param  goal
-     *     the goal element
-     *
-     * @throws GraphNodeNotFoundException
-     *     if this graph does not contain a node with the specified element
-     *
-     * @return
-     *     the object array containing the search results where
-     *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
-     *
-     *     and where {@code path} is a string list of path elements from the
-     *     initial state to the goal state, {@code comparisons} is an integer,
-     *     the number of comparisons performed by the search, {@code
-     *     pathManeuvers} is an integer, the number of maneuvers from the
-     *     initial state to the goal state, and {@code pathLength} is a
-     *     double, the length of the path from the initial state to the goal
-     *     state.
-     *
-     *     When no path exists between the initial element and a goal element,
-     *     path is "none" and pathLength is Double.POSITIVE_INFINITY.
-     */
-    public Object[] shortestPathSearch(E initial, E goal)
-        throws GraphNodeNotFoundException
-    {
-        Set<E> goals = new HashSet<E>();
-        goals.add(goal);
-        return shortestPathSearch(initial, goals);
-    }
-
-    /**
      * Returns a path from initial element to the 'closest' goal element.
      *
      * <p>Note: this is a wrapper for
-     * {@code pathSearch(DEFAULT_SEARCH, initial, goal);.}
+     * {@code findPath(DEFAULT_SEARCH, initial, goal);.}
      *
      * @param  initial
      *     the initial element
@@ -1108,7 +1063,7 @@ public class Graph<E> {
      *     When no path exists between the initial element and a goal element,
      *     path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
-    public Object[] shortestPathSearch(E initial, Set<E> goals)
+    public Object[] findPath(E initial, Set<E> goals)
         throws GraphNodeNotFoundException
     {
         Object[] pathArray = { "", 0, 0, 0d };
@@ -1126,7 +1081,7 @@ public class Graph<E> {
         for (E goal : goals) {
 
             try {
-                pathArray       = pathSearch(DEFAULT_SEARCH, initial, goal);
+                pathArray       = findPath(DEFAULT_SEARCH, initial, goal);
             }
             catch (IllegalArgumentException e) { // this will never run
 
@@ -1158,7 +1113,7 @@ public class Graph<E> {
      * Returns a path from initial element to goal element.
      *
      * <p>Note: this is a wrapper for
-     * {@code pathSearch(DEFAULT_SEARCH, initial, goal);.}
+     * {@code findPath(DEFAULT_SEARCH, initial, goal);.}
      *
      * @param  initial
      *     the initial element
@@ -1188,11 +1143,11 @@ public class Graph<E> {
      *     When no path exists between the initial element and the goal
      *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
-    public Object[] pathSearch(E initial, E goal)
+    public Object[] findPath(E initial, E goal)
         throws GraphNodeNotFoundException
     {
         try {
-            return pathSearch(DEFAULT_SEARCH, initial, goal);
+            return findPath(DEFAULT_SEARCH, initial, goal);
         }
         catch (IllegalArgumentException e) { // this will never run
 
@@ -1238,7 +1193,7 @@ public class Graph<E> {
      *     When no path exists between the initial element and the goal
      *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
      */
-    public Object[] pathSearch(String algorithm, E initial, E goal)
+    public Object[] findPath(String algorithm, E initial, E goal)
         throws GraphNodeNotFoundException,
                IllegalArgumentException
     {
