@@ -1028,10 +1028,64 @@ public class Graph<E> {
     }
 
     /**
-     * Returns a path from initial element to the 'closest' goal element.
+     * Returns a path from initial element to goal element.
      *
-     * <p>Note: this is a wrapper for
-     * {@code findPath(DEFAULT_SEARCH, initial, goal);.}
+     * @param  initial
+     *     the initial element
+     *
+     * @param  goal
+     *     the goal element
+     *
+     * @throws GraphNodeNotFoundException
+     *     if this graph does not contain a node with the specified element
+     *
+     * @return
+     *     the object array containing the search results where the elements
+     *     in the array are as follows:
+     *
+     *         <blockquote>
+     *         <dt>element 0</dt>
+     *             <dd>a {@code String}, the list of strings representing path
+     *             elements and distances from the initial state (one per
+     *             line) from the initial state to the goal state, e.g.,
+     *
+     *                 <blockquote><pre>
+     *                 stringForPathElement1 (42.0)
+     *                 stringForPathElement2 (43.0)
+     *                 </blockquote></pre>
+     *
+     *              or "none" if no path was found</dd>
+     *
+     *         <dt>element 1</dt>
+     *             <dd>an {@code Integer}, the number of comparisons performed
+     *             by the search</dd>
+     *
+     *         <dt>element 2</dt>
+     *             <dd>an {@code Integer}, the number of maneuvers from the
+     *             initial state to the goal state, or zero when no path was
+     *             found</dd>
+     *
+     *         <dt>element 3</dt>
+     *             <dd>a {@code Double}, the length of the path from the
+     *             initial state to the goal state or Double.POSITIVE_INFINITY
+     *             when no path was found</dd>
+     *         </dl>
+     *         </blockquote>
+     */
+    public Object[] findPath(E initial, E goal)
+        throws GraphNodeNotFoundException
+    {
+        try {
+            return findPath(DEFAULT_SEARCH, initial, goal);
+        }
+        catch (IllegalArgumentException e) { // this will never run
+
+        }
+        return null;
+    }
+
+    /**
+     * Returns a path from initial element to the 'closest' goal element.
      *
      * @param  initial
      *     the initial element
@@ -1043,25 +1097,37 @@ public class Graph<E> {
      *     if this graph does not contain a node with the specified element
      *
      * @return
-     *     the object array containing the search results where
+     *     the object array containing the search results where the elements
+     *     in the array are as follows:
      *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
+     *         <blockquote>
+     *         <dt>element 0</dt>
+     *             <dd>a {@code String}, the list of strings representing path
+     *             elements and distances from the initial state (one per
+     *             line) from the initial state to the goal state, e.g.,
      *
-     *     and where {@code path} is a string list of path elements from the
-     *     initial state to the goal state, {@code comparisons} is an integer,
-     *     the number of comparisons performed by the search, {@code
-     *     pathManeuvers} is an integer, the number of maneuvers from the
-     *     initial state to the goal state, and {@code pathLength} is a
-     *     double, the length of the path from the initial state to the goal
-     *     state.
+     *                 <blockquote><pre>
+     *                 stringForPathElement1 (42.0)
+     *                 stringForPathElement2 (43.0)
+     *                 </blockquote></pre>
      *
-     *     When no path exists between the initial element and a goal element,
-     *     path is "none" and pathLength is Double.POSITIVE_INFINITY.
+     *              or "none" if no path was found</dd>
+     *
+     *         <dt>element 1</dt>
+     *             <dd>an {@code Integer}, the number of comparisons performed
+     *             by the search</dd>
+     *
+     *         <dt>element 2</dt>
+     *             <dd>an {@code Integer}, the number of maneuvers from the
+     *             initial state to the goal state, or zero when no path was
+     *             found</dd>
+     *
+     *         <dt>element 3</dt>
+     *             <dd>a {@code Double}, the length of the path from the
+     *             initial state to the goal state or Double.POSITIVE_INFINITY
+     *             when no path was found</dd>
+     *         </dl>
+     *         </blockquote>
      */
     public Object[] findPath(E initial, Set<E> goals)
         throws GraphNodeNotFoundException
@@ -1112,55 +1178,9 @@ public class Graph<E> {
     /**
      * Returns a path from initial element to goal element.
      *
-     * <p>Note: this is a wrapper for
-     * {@code findPath(DEFAULT_SEARCH, initial, goal);.}
-     *
-     * @param  initial
-     *     the initial element
-     *
-     * @param  goal
-     *     the goal element
-     *
-     * @throws GraphNodeNotFoundException
-     *     if this graph does not contain a node with the specified element
-     *
-     * @return
-     *     the object array containing the search results where
-     *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
-     *
-     *     and where {@code} is the path from the initial state to the goal
-     *     state, {@code comparisons} is the number of comparisons performed
-     *     by the search, {@code pathManeuvers} is the number of maneuvers
-     *     from the initial state to the goal state, and {@code pathLength} is
-     *     the length of the path from the initial state to the goal state.
-     *
-     *     When no path exists between the initial element and the goal
-     *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
-     */
-    public Object[] findPath(E initial, E goal)
-        throws GraphNodeNotFoundException
-    {
-        try {
-            return findPath(DEFAULT_SEARCH, initial, goal);
-        }
-        catch (IllegalArgumentException e) { // this will never run
-
-        }
-        return null;
-    }
-
-    /**
-     * Returns a path from initial element to goal element.
-     *
      * @param  algorithm
-     *     the algorithm to use to search for the path;
-     *     currently one of: breadth-first, depth-first, best-first
+     *     the algorithm to use to search for the path; currently one of:
+     *     breadth-first, depth-first, best-first
      *
      * @param  initial
      *     the initial element
@@ -1175,23 +1195,37 @@ public class Graph<E> {
      *     if the specified 
      *
      * @return
-     *     the object array containing the search results where
+     *     the object array containing the search results where the elements
+     *     in the array are as follows:
      *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
+     *         <blockquote>
+     *         <dt>element 0</dt>
+     *             <dd>a {@code String}, the list of strings representing path
+     *             elements and distances from the initial state (one per
+     *             line) from the initial state to the goal state, e.g.,
      *
-     *     and where {@code} is the path from the initial state to the goal
-     *     state, {@code comparisons} is the number of comparisons performed
-     *     by the search, {@code pathManeuvers} is the number of maneuvers
-     *     from the initial state to the goal state, and {@code pathLength} is
-     *     the length of the path from the initial state to the goal state.
+     *                 <blockquote><pre>
+     *                 stringForPathElement1 (42.0)
+     *                 stringForPathElement2 (43.0)
+     *                 </blockquote></pre>
      *
-     *     When no path exists between the initial element and the goal
-     *     element, path is "none" and pathLength is Double.POSITIVE_INFINITY.
+     *              or "none" if no path was found</dd>
+     *
+     *         <dt>element 1</dt>
+     *             <dd>an {@code Integer}, the number of comparisons performed
+     *             by the search</dd>
+     *
+     *         <dt>element 2</dt>
+     *             <dd>an {@code Integer}, the number of maneuvers from the
+     *             initial state to the goal state, or zero when no path was
+     *             found</dd>
+     *
+     *         <dt>element 3</dt>
+     *             <dd>a {@code Double}, the length of the path from the
+     *             initial state to the goal state or Double.POSITIVE_INFINITY
+     *             when no path was found</dd>
+     *         </dl>
+     *         </blockquote>
      */
     public Object[] findPath(String algorithm, E initial, E goal)
         throws GraphNodeNotFoundException,
@@ -1227,8 +1261,8 @@ public class Graph<E> {
      * search.
      *
      * @param  algorithm
-     *     the algorithm to use to search for the path;
-     *     currently one of: breadth-first, depth-first
+     *     the algorithm to use to search for the path; currently one of:
+     *     breadth-first, depth-first
      *
      * @param  initial
      *     the initial state
@@ -1240,24 +1274,37 @@ public class Graph<E> {
      *     if this graph does not contain a node with the specified element
      *
      * @return
-     *     the object array containing the search results where
+     *     the object array containing the search results where the elements
+     *     in the array are as follows:
      *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
+     *         <blockquote>
+     *         <dt>element 0</dt>
+     *             <dd>a {@code String}, the list of strings representing path
+     *             elements and distances from the initial state (one per
+     *             line) from the initial state to the goal state, e.g.,
      *
-     *     and where {@code} is the path from the initial state to the goal
-     *     state, {@code comparisons} is the number of comparisons performed
-     *     by the search, {@code pathManeuvers} is the number of maneuvers
-     *     from the initial state to the goal state, and {@code pathLength} is
-     *     the length of the path from the initial state to the goal state.
+     *                 <blockquote><pre>
+     *                 stringForPathElement1 (42.0)
+     *                 stringForPathElement2 (43.0)
+     *                 </blockquote></pre>
      *
-     *     When no path exists between the node for the initial element and
-     *     the node for the goal element, path is "none" and pathLength is
-     *     Double.POSITIVE_INFINITY.
+     *              or "none" if no path was found</dd>
+     *
+     *         <dt>element 1</dt>
+     *             <dd>an {@code Integer}, the number of comparisons performed
+     *             by the search</dd>
+     *
+     *         <dt>element 2</dt>
+     *             <dd>an {@code Integer}, the number of maneuvers from the
+     *             initial state to the goal state, or zero when no path was
+     *             found</dd>
+     *
+     *         <dt>element 3</dt>
+     *             <dd>a {@code Double}, the length of the path from the
+     *             initial state to the goal state or Double.POSITIVE_INFINITY
+     *             when no path was found</dd>
+     *         </dl>
+     *         </blockquote>
      */
     private Object[] breadthOrDepthFirstPathSearch(
             String algorithm,
@@ -1320,24 +1367,37 @@ public class Graph<E> {
      *     if this graph does not contain a node with the specified element
      *
      * @return
-     *     the object array containing the search results where
+     *     the object array containing the search results where the elements
+     *     in the array are as follows:
      *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
+     *         <blockquote>
+     *         <dt>element 0</dt>
+     *             <dd>a {@code String}, the list of strings representing path
+     *             elements and distances from the initial state (one per
+     *             line) from the initial state to the goal state, e.g.,
      *
-     *     and where {@code} is the path from the initial state to the goal
-     *     state, {@code comparisons} is the number of comparisons performed
-     *     by the search, {@code pathManeuvers} is the number of maneuvers
-     *     from the initial state to the goal state, and {@code pathLength} is
-     *     the length of the path from the initial state to the goal state.
+     *                 <blockquote><pre>
+     *                 stringForPathElement1 (42.0)
+     *                 stringForPathElement2 (43.0)
+     *                 </blockquote></pre>
      *
-     *     When no path exists between the node for the initial element and
-     *     the node for the goal element, path is "none" and pathLength is
-     *     Double.POSITIVE_INFINITY.
+     *              or "none" if no path was found</dd>
+     *
+     *         <dt>element 1</dt>
+     *             <dd>an {@code Integer}, the number of comparisons performed
+     *             by the search</dd>
+     *
+     *         <dt>element 2</dt>
+     *             <dd>an {@code Integer}, the number of maneuvers from the
+     *             initial state to the goal state, or zero when no path was
+     *             found</dd>
+     *
+     *         <dt>element 3</dt>
+     *             <dd>a {@code Double}, the length of the path from the
+     *             initial state to the goal state or Double.POSITIVE_INFINITY
+     *             when no path was found</dd>
+     *         </dl>
+     *         </blockquote>
      */
     private Object[] uniformCostPathSearch(
             Node<E> initial,
@@ -1401,20 +1461,37 @@ public class Graph<E> {
      *     the length of the path from the initial state to the goal state
      *
      * @return
-     *     the object array containing the search results where
+     *     the object array containing the search results where the elements
+     *     in the array are as follows:
      *
-     *         <blockquote><pre>
-     *         {@code results[0] = path}
-     *         {@code results[1] = comparisons}
-     *         {@code results[2] = pathManeuvers}
-     *         {@code results[3] = pathLength}
-     *         </blockquote></pre>
+     *         <blockquote>
+     *         <dt>element 0</dt>
+     *             <dd>a {@code String}, the list of strings representing path
+     *             elements and distances from the initial state (one per
+     *             line) from the initial state to the goal state, e.g.,
      *
-     *     and where {@code} is the path from the initial state to the goal
-     *     state, {@code comparisons} is the number of comparisons performed
-     *     by the search, {@code pathManeuvers} is the number of maneuvers
-     *     from the initial state to the goal state, and {@code pathLength} is
-     *     the length of the path from the initial state to the goal state.
+     *                 <blockquote><pre>
+     *                 stringForPathElement1 (42.0)
+     *                 stringForPathElement2 (43.0)
+     *                 </blockquote></pre>
+     *
+     *              or "none" if no path was found</dd>
+     *
+     *         <dt>element 1</dt>
+     *             <dd>an {@code Integer}, the number of comparisons performed
+     *             by the search</dd>
+     *
+     *         <dt>element 2</dt>
+     *             <dd>an {@code Integer}, the number of maneuvers from the
+     *             initial state to the goal state, or zero when no path was
+     *             found</dd>
+     *
+     *         <dt>element 3</dt>
+     *             <dd>a {@code Double}, the length of the path from the
+     *             initial state to the goal state or Double.POSITIVE_INFINITY
+     *             when no path was found</dd>
+     *         </dl>
+     *         </blockquote>
      */
     private Object[] searchResults(
             SearchNode<Node<E>> child, String path,
