@@ -160,10 +160,33 @@ public class qBoard extends JFrame implements ActionListener{
 
 	}
 	
+	/**
+	 * Checks to see if the supplied color is equivalent to the
+	 * button default color.
+	 * 
+	 * @param bColor
+	 * 		the color that will be compared to the default color
+	 * 		by inspecting its RGB values
+	 * 
+	 * @return
+	 * 		returns true if the argument color is the same as
+	 * 		the button default color. Otherwise, returns false.
+	 */
 	private boolean isDefaultColor(Color bColor){
 		return (bColor.equals(BUTTON_DEFAULT_COLOR));
 	}
 	
+	/**
+	 * Changes the color of a chosen space to a new color.
+	 * 
+	 * @param p
+	 * 		the point of the chosen space. This contains x and
+	 * 		y coordinates.
+	 * 
+	 * @param c
+	 * 		the new color of the space, held in a color object
+	 * 		and indicated by new RGB values.
+	 */
 	public void setColorOfSpace(Point p, Color c) {
 		board[p.x][p.y].setBackground(c);
 	}
