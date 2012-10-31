@@ -36,7 +36,7 @@ public class board {
 		pl = 2;
 		players = new Player[pl];
 		for (int i = 0; i < pl; i++) {
-			players[i] = new Player(i, 10);
+			players[i] = new Player(i, 10, Player.color[i], 0);
 		}
 		turn = 0;
 		newGUI();
