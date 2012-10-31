@@ -1431,7 +1431,7 @@ public class Graph<E> {
             child = child.parent();
         }
         path = "";
-        pathManeuvers = stack.size();
+        pathManeuvers = stack.size() - 1;
         while (!stack.isEmpty()) {
             SearchNode<Node<E>> sn = stack.pop();
             path += sn.state() +
