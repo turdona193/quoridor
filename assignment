@@ -1,0 +1,341 @@
+
+------------------------------------------------------------------------
+
+Quoridor
+
+Your team has been retained to build a computer implementation of the
+board game Quoridor (http://en.wikipedia.org/wiki/Quoridor). The game
+is a 2 or 4 person game with simple movement rules and an (initially)
+simple board.
+
+Quoridor was designed by Mirko Marchesi and published by Gigamatic
+Games, winning the Mensa Mind Game award in 1997 and Game of the Year
+that year in Belgium, Canada, and France.
+
+Deliverables
+
+The initial version of the game is a central display object that can
+connect to two "playing" objects, all three objects existing in the
+same executable. The playing objects actually play the game (their
+interface is discussed below), probably starting with a simple
+text-based input system permitting humans to play against each other.
+It is expected that you will implement a strategy player that actually
+plays the game _against_ a human (or other strategy) player. 
+
+At about the time you have a running strategy, the player server(s)
+will be separated from the display client (communication done using a
+class-wide protocol to permit strategies to face off against one
+another). It is expected that we will use something approximating the
+Half-Object Plus Protocol design pattern. 
+
+Using the same protocol, I should be able to build a simple
+round-robin tournament player (or double elimination) to be able to
+run a tournament across the different strategies. If you have multiple
+players (say one for humans and one for a strategy), they will run in
+separate servers.
+
+Quoridor Components and Rules
+
+The game is played on a 9x9 grid. Each player begins in the center of
+the grid on the top or the bottom of the grid (two-player game) or
+the center of one of the sides (four-player game). No matter
+where a player starts, their goal is to reach the row (or column)
+opposite their starting side.
+
+The following is a text-based representation of the board. Assuming a
+two-player game, the first player, represented by the '&', starts in
+cell (0, 4) and is trying to reach row 8 while the second player,
+represented by the '*', starts in cell (8, 4) and is trying to reach
+row 0. 
+
+|---+---+---+---+---+---+---+---+---+---|
+|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 0 |   |   |   |   | & |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 1 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 2 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 3 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 4 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 5 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 6 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 7 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 8 |   |   |   |   | * |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+
+(The other players will be represented by '#' (column 0 start) and '+'
+(column 8 start) for 4 player games.)
+
+The game would be boring if the board were just this big grid. Player
+1 just avoids running into player 2 and in 8 moves, game over. To
+keep it interesting, each player begins the game with 10 (5 in
+4-player mode) walls. A wall is as long as 2 squares and can be
+placed along any horizontal or vertical edge (so long as it is
+completely on the board: HORIZONTALLY below row 7 is valid but
+vertically below row 7 would go off the board (walls are 2 squares
+long) and would not be legal.
+
+On their turn, either player can move their piece one square
+horizontally or vertically (as long as they do not cross a wall) OR
+they may place a wall anywhere on the board so long as
+  * they have a remaining wall
+  * the wall does not INTERSECT another wall
+  * the wall is completely on the board
+  * the wall does not block ANY player from reaching some goal square
+
+The following shows some walls placed with the players in their
+starting places:
+
+|---+---+---+---+---+---+---+---+---+---|
+|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |  ?|   |
+| 0 |   |   |   |   | & |   |   |  ?|   |
+|   |   |   |   |   |   |   |   |  ?|   |
+|---+---+---+---+---+---+---+---+--?+---|
+|   |   |   |   |   |   |   |   |  ?|   |
+| 1 |   |   |   |   |   |   |   |  ?|   |
+|   |   |   |---+---|---+---|---+--?|   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |  ||   |   |   |   |   |   |   |
+| 2 |   |  ||   |   |   |   |   |   |   |
+|   |   |  ||   |   |   |   |   |   |   |
+|---+---+--++---+---+---+---+---+---+---|
+|   |   |  ||   |  ||   |   |   |   |   |
+| 3 |   |  ||   |  ||   |   |   |   |   |
+|   |---+--+|   |  ||   |   |---+---|   |
+|---+---+---+---+--++---+---+---+---+---|
+|   |   |   |   |  ||   |  ||   |   |   |
+| 4 |   |   |   |  ||   |  ||   |   |   |
+|   |   |   |   |  ||   |  ||   |   |   |
+|---+---+---+---+---+---+--++---+---+---|
+|   |   |   |   |  ||   |  ||   |   |   |
+| 5 |   |   |   |  ||   |  ||   |   |   |
+|   |   |   |   |  ||---+--+|---+---|   |
+|---+---+---+---+--++---+---+---+---+---|
+|   |   |   |   |  ||   |   |   |   |   |
+| 6 |   |   |   |  ||   |   |   |   |   |
+|   |   |   |---+--+|   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   ||  |   |   |   |   |   |
+| 7 |   |   |   ||  |   |   |   |   |   |
+|   |   |   |   ||  |   |   |   |   |   |
+|---+---+---+---++--+---+---+---+---+---|
+|   |   |   |   ||  |   |   |   |   |   |
+| 8 |   |   |   ||  | * |   |   |   |   |
+|   |   |   |   ||  |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+
+If it is player 2's turn, they cannot place a vertical wall at (0, 7)
+where the question marks are in the diagram because player 1 would be
+cut off from his goal.
+
+Legal Moves 
+
+A player can move up, down, right, or left one row or one column
+EXCEPT:
+
+  * A player cannot move off of the board.
+  * A player cannot move across a wall.
+  * A player cannot move into a square with another player.
+
+The last case results in a jump move. A player who has a move blocked
+solely by another piece can jump over, to the right of, or to the
+left of the other piece SO LONG AS the piece being jumped could have
+moved to that square (is not blocked by a wall or another piece).
+
+------------------------------------------------------------------------
+
+Quoridor Client/Server Protocol
+
+General 
+
+The server in this case is a move-server. You can imagine that it is
+either a GUI/terminal where a player enters their moves or it is an AI
+that can play a game.
+
+The client is the "game player" or a display GUI. The model of
+starting is that the client starts and receives two machine:port pairs
+where two (or four) move servers live. It then contacts the servers
+(giving each its player number and the number of competitors at this
+time). 
+
+Since the initial board configuration is completely determined by the
+number of players, there is no need to communicate the whole board
+configuration at this time (or any other, really).
+
+After all move-servers are contacted, the game-client queries each in
+turn (by player number) for a move. If the game-client receives a
+legal move, that move is communicated to all move-servers (including
+the originating move-server); if the move is illegal, the game-client
+advises all players (including the originating one) that the player
+has been removed from the game. In any case, the game-client goes on
+to ask the next player for a move. 
+
+The game-client will not communicate with a move-server after it has
+been REMOVED for an illegal move.
+
+In order to win by default, the last player in the game must make one
+legal move after the last competitor is removed from the game. Failure
+to do so results in a draw (the only way to draw in the game).
+
+A second class of servers is to be supported: observer-servers are
+contacted by the game-client at the beginning of the game but they do
+not, themselves, make any moves. Thus they only receive the MOVED,
+REMOVED, WINNER, and DRAW messages. (I am not sure why an
+observer-server would be useful though I might set up my tournament
+runner to be able to be watched by an observer server rather than
+giving it its own GUI.)
+
+Coordinates
+Rows and columns are numbered from the upper-left corner, down and to
+the right. Thus the upper-left square is (0, 0), player 0 begins in
+square (0, 4), and player 1 begins in square (8, 4).
+
+A wall is specified by two coordinates, the coordinates to the right
+or below the intersections where the wall begins and ends.
+
+    
+|---+---+---+---+---+---+---+---+---+---|
+|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---+---+---+---+---+---+---+---+---+---|
+|   |  ||   |   |   |   |   |   |   |   |
+| 0 |  ||   |   |   | & |   |   |   |   |
+|   |  ||   |   |   |   |   |   |   |   |
+|---+--++---+---+---+---+---+---+---+---|
+|   |  ||   |   |   |   |   |   |   |   |
+| 1 |  ||   |   |   |   |   |   |   |   |
+|   |  ||   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 2 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 3 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 4 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 5 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |---+---|
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 6 |   |   |   |   |   |   |   |   |   |
+|   |   |   |---+---|   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 7 |   |   |   |   |   |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+|   |   |   |   |   |   |   |   |   |   |
+| 8 |   |   |   |   | * |   |   |   |   |
+|   |   |   |   |   |   |   |   |   |   |
+|---+---+---+---+---+---+---+---+---+---|
+
+There is a vertical wall (0, 1), (2, 1) and two horizontal walls, one
+at (6, 7) (6, 9) and one at (7, 2), (7, 4)
+
+
+Messages
+
+QUORIDOR <number-of-players> <player-id>
+
+    The message sent by the game-client to a move-server to start a
+    game. The numbers are printed in text in decimal. Each move-server
+    is to get a unique <player-id> on the range 
+    0 <= <player-id> < <number-of-players>
+    
+    Players are numbered (clockwise from the top of the board) 
+    0, 3, 1, 2. This means that the player moving from lower to higher
+    numbers (be it rows for player 0 and columns for player 2) comes
+    first in the pair. The order of play is clockwise around the board
+    from player 0.
+    
+WATCH <number-of-players>
+
+    Message sent by the game-client to any observer-server. An
+    observer-server is just a recorder of the course of a game. It
+    receives only MOVED, REMOVED, WINNER, and DRAW messages.
+
+READY <display-name>
+
+    Message returned by the move-server to a QUORIDOR or WATCH
+    message. Indicates that it is ready to play. <display-name> is a
+    suggested name to display for the pawn controlled by the
+    move-server. 
+
+MOVE?
+
+    Message sent from game-client to request a next move from the
+    move-server.
+
+MOVE <op> <location-1> <location-2>
+
+    Message returned by move-server with its move. The <op> is a move
+    operation code of M (for (m)ove pawn) or W (for place (w)all). The
+    locations are each a (<row>, <column>) pair; the parentheses are
+    part of a location.
+
+    For an M move, <location-1> is where the move-server's pawn starts
+    and <location-2> is where the move-server's pawn ends the move.
+    Nothing special is required to indicate a jump move.
+
+    For a W move, <location-1> is the top or left end of the wall
+    placed and <location-2> is the bottom or right end.
+
+MOVED <player-id> <op> <location-1> <location-2>
+    
+    Message sent by game-client to all move-servers forwarding the
+    move for <player-id>. All fields after <player-id> are as
+    described in the MOVE message.
+
+REMOVED <player-id>
+    
+    Message sent by game-client to all move-servers informing them
+    that <player-id> made an illegal move and is no longer in the
+    game. The pawn for <player-id> should be removed from the game
+    board and any remaining walls are lost. Note: sent as the very
+    last message to the offending move-server.
+
+WINNER <player-id>
+
+    Message sent by game-client to all move-servers informing them
+    that the game is over and the given player won. The game-client
+    cannot send any additional messages to any move-server after
+    sending this message.
+
+DRAW
+
+    Message sent by game-client to all observer-servers after the last
+    player in a game is REMOVED without having won the game. The
+    game-client cannot send any additional messages to any observer-server
+    after sending this message.
