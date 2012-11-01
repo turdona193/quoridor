@@ -5,7 +5,7 @@
   </presetdef>
 
   <path id="classpath.base">
-    <pathelement location="build/classes" />
+    <pathelement location="bin/classes" />
   </path>
 
   <path id="classpath.test">
@@ -17,24 +17,24 @@
   </path>
 
   <target name="clean">
-    <delete dir="build" />
+    <delete dir="bin" />
   </target>
 
   <target name="init">
-    <mkdir dir="build" />
-    <mkdir dir="build/classes" />
-    <mkdir dir="build/jars" />
+    <mkdir dir="bin" />
+    <mkdir dir="bin/classes" />
+    <mkdir dir="bin/jars" />
   </target>
 
   <target name="compile" depends="init">
-    <javac srcdir="src" destdir="build/classes">
+    <javac srcdir="src" destdir="bin/classes">
       <classpath refid="classpath.base"/>
     </javac>
   </target>
 
   
   <target name="compile-test" depends="compile">
-    <javac srcdir="tst" destdir="build/classes">
+    <javac srcdir="tst" destdir="bin/classes">
       <classpath refid="classpath.test"/>
     </javac>
   </target>
@@ -48,8 +48,8 @@
   </target>
 
   <target name="jar" depends="compile">
-    <mkdir dir="build/jars"/>
-    <jar destfile="build/jars/Quoridor.jar" basedir="build/classes">
+    <mkdir dir="bin/jars"/>
+    <jar destfile="bin/jars/Quoridor.jar" basedir="bin/classes">
       <manifest>
         <attribute name="Main-Class" value="main.Quoridor"/>
       </manifest>
@@ -57,7 +57,7 @@
   </target>
 
   <target name="run" depends="jar">
-    <java jar="build/jars/Quoridor.jar" fork="true">
+    <java jar="bin/jars/Quoridor.jar" fork="true">
       <classpath refid="classpath.base"/>
     </java>
   </target>

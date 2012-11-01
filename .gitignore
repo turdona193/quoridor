@@ -1,5 +1,8 @@
 .*\.class
 .*\.swp
 .*\.vim
-build/
+.classpath
+.project
+.settings
+bin/
 docs/
