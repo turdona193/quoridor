@@ -64,7 +64,7 @@ public class GraphTest {
     }
 
     @Test(expected=util.GraphNodeNotFoundException.class)
-    public void testGraphNodeNotFoundException()
+    public void testAddEdgeNonexistantNode()
         throws GraphNodeNotFoundException
     {
         try {
@@ -94,6 +94,18 @@ public class GraphTest {
         String s = graph.toString();
         assertTrue(s.equals("a: b (1.0)\n" + "b: a (1.0)\n") ||
                    s.equals("b: a (1.0)\n" + "a: b (1.0)\n"));
+    }
+
+    @Test(expected=util.GraphNodeNotFoundException.class)
+    public void testAddEdgeWeightedNonexistantNode()
+        throws GraphNodeNotFoundException
+    {
+        try {
+            graph.addEdge("a", "b", 42.0);
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
     }
 
     @Test
