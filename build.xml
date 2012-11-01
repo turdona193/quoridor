@@ -67,7 +67,7 @@
              sourcepath="src"
              excludepackagenames=""
              defaultexcludes="yes"
-             destdir="docs/api"
+             destdir="doc/api"
              author="true"
              version="true"
              use="true"
