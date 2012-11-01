@@ -44,7 +44,8 @@ public class GraphTest {
 
     @Test(expected=util.GraphNodeIsDuplicateException.class)
     public void testAddDuplicateNodeThrowsGraphNodeIsDuplicateException()
-        throws GraphNodeIsDuplicateException {
+        throws GraphNodeIsDuplicateException
+    {
         graph.addNode("a");
         graph.addNode("a");
     }
@@ -60,6 +61,18 @@ public class GraphTest {
         }
         assertTrue(graph.toString().equals("a: \n" + "b: \n") ||
                    graph.toString().equals("b: \n" + "a: \n"));
+    }
+
+    @Test(expected=util.GraphNodeNotFoundException.class)
+    public void testGraphNodeNotFoundException()
+        throws GraphNodeNotFoundException
+    {
+        try {
+            graph.addEdge("a", "b");
+        }
+        catch(GraphEdgeIsDuplicateException e) {
+            fail();
+        }
     }
 
     @Test
