@@ -62,4 +62,18 @@
     </java>
   </target>
 
+  <target name="javadoc" depends="compile">
+    <javadoc packagenames="*"
+             sourcepath="src"
+             excludepackagenames=""
+             defaultexcludes="yes"
+             destdir="docs/api"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="Quoridor API">
+      <doctitle><![CDATA[<h1>Quoridor API</h1>]]></doctitle>
+    </javadoc>
+  </target>
+
 </project>
