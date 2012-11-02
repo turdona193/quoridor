@@ -264,9 +264,22 @@ public class GraphTest {
     }
 
     @Test(expected=util.GraphNodeNotFoundException.class)
-    public void testFindPathNonexistantNode()
+    public void testFindPathNonexistantOriginNode()
         throws GraphNodeNotFoundException
     {
+        graph.findPath("a", "b");
+    }
+
+    @Test(expected=util.GraphNodeNotFoundException.class)
+    public void testFindPathNonexistantApexNode()
+        throws GraphNodeNotFoundException
+    {
+        try {
+            graph.addNode("a");
+        }
+        catch(GraphNodeIsDuplicateException e) {
+            fail();
+        }
         graph.findPath("a", "b");
     }
 
