@@ -319,6 +319,34 @@ public class GraphTest {
     }
 
     @Test
+    public void testFindPathSetOfGoalsEmpty() {
+        try {
+            graph.addNode("a");
+        }
+        catch(GraphNodeIsDuplicateException e) {
+            fail();
+        }
+
+        Object[] pathElements = null;
+        try {
+            pathElements = graph.findPath("a", new HashSet<String>());
+        }
+        catch(GraphNodeNotFoundException e) {
+            fail();
+        }
+
+        String  path        = (String) pathElements[0];
+        Integer comparisons = (Integer)pathElements[1];
+        Integer maneuvers   = (Integer)pathElements[2];
+        Double  length      = (Double) pathElements[3];
+
+        assertTrue(path.equals("none"));
+        assertTrue(comparisons == 0);
+        assertTrue(maneuvers == 0);
+        assertTrue(length == Double.POSITIVE_INFINITY);
+    }
+
+    @Test
     public void testFindPathSetOfGoals() {
         populateGraph();
         Object[] pathElements = null;

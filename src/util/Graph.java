@@ -1111,7 +1111,8 @@ public class Graph<E> {
      *                 stringForPathElement2 (43.0)
      *                 </blockquote></pre>
      *
-     *              or "none" if no path was found</dd>
+     *              or "none" if no path was found (one case in which this
+     *              happens is if goals is empty)</dd>
      *
      *         <dt>element 1</dt>
      *             <dd>an {@code Integer}, the number of comparisons performed
@@ -1132,46 +1133,43 @@ public class Graph<E> {
     public Object[] findPath(E initial, Set<E> goals)
         throws GraphNodeNotFoundException
     {
-        Object[] pathArray = { "", 0, 0, 0d };
+        node(new Node(initial)); // if (!nodes.contains(node equiv. to initial))
+                                 //    throw GraphNodeNotFoundException
 
-        String   path            = "";
-        Integer  pathComparisons = 0;
-        Integer  pathManeuvers   = 0;
-        Double   pathLength      = 0d;
+        String   path        = "none";
+        Integer  comparisons = 0;
+        Integer  maneuvers   = 0;
+        Double   length      = Double.POSITIVE_INFINITY;
 
-        String   shortestPath            = "";
-        Integer  shortestPathComparisons = 0;
-        Integer  shortestPathManeuvers   = 0;
-        Double   shortestPathLength      = Double.POSITIVE_INFINITY;
+        Object[] array       = { path, comparisons, maneuvers, length };
+
+        String  shortestPath        = path;
+        Integer shortestComparisons = comparisons;
+        Integer shortestManeuvers   = maneuvers;
+        Double  shortestLength      = length;
 
         for (E goal : goals) {
-
             try {
-                pathArray       = findPath(DEFAULT_SEARCH, initial, goal);
+                array = findPath(initial, goal);
             }
-            catch (IllegalArgumentException e) { // this will never run
+            catch (IllegalArgumentException e) { }
 
-            }
+            path        = (String) array[0];
+            comparisons = (Integer)array[1];
+            maneuvers   = (Integer)array[2];
+            length      = (Double) array[3];
 
-            path = (String)pathArray[0];
-            pathComparisons = (Integer)pathArray[1];
-            pathManeuvers = (Integer)pathArray[2];
-            pathLength = (Double)pathArray[3];
+            shortestComparisons += comparisons;
 
-            shortestPathComparisons = 0;
-            shortestPathComparisons += pathComparisons;
-
-            if (pathLength < shortestPathLength) {
-                shortestPath = path;
-                shortestPathManeuvers = pathManeuvers;
-                shortestPathLength = pathLength;
+            if (length < shortestLength) {
+                shortestPath      = path;
+                shortestManeuvers = maneuvers;
+                shortestLength    = length;
             }
         }
 
-        Object[] result = { shortestPath,
-                            shortestPathComparisons,
-                            shortestPathManeuvers,
-                            shortestPathLength };
+        Object[] result = { shortestPath, shortestComparisons,
+                            shortestManeuvers, shortestLength };
         return result;
     }
 
