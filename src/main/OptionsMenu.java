@@ -256,13 +256,13 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	}
 
 	public void itemStateChanged(ItemEvent item) {
-		if (item.getSource() == twoPlayers) {
+		if (twoPlayers.isSelected()) {
 			Q.players = 2;
 			remove(lowerColorPanel);
 			repaint();
 			return;
 		}
-		if (item.getSource() == fourPlayers) {
+		if (fourPlayers.isSelected()) {
 			Q.players = 4;
 			add(lowerColorPanel);
 			setVisible(true);
