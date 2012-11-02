@@ -13,43 +13,101 @@ import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
+/**
+ * This class makes an options menu pop up for Quoridor.  OptionsMenu takes a Quoridor Object as a parameter, and 
+ * changes variables in Quoridor whenever an appropriate button is clicked or an option is selected.
+ */
 public class OptionsMenu extends JFrame implements ActionListener, ItemListener {
 
+	/**
+	 * This holds the name of the options menu.
+	 */
 	public final static String OPTIONS_WINDOW_TITLE = "Options";
-	List<Color> colors;
+	/**
+	 * Holds the name of the Radio Buttons.
+	 */
+	public final static String[] RADIO_BUTTON_TITLES = {"Radio2", "Radio4"};
+	/**
+	 * This points to the Quoridor object that called the options menu.  Pretty much everything in 
+	 * the options menu class makes changes to variables in this quoridor object.
+	 */
 	Quoridor Q;
 	
+	/**
+	 * This label just says Players on it and sits above the Radio buttons controlling the number of players.
+	 */
 	private JLabel PlayersLabel;
+	/**
+	 * These Radiobuttons are used to choose the number of Players.
+	 */
 	private JRadioButton twoPlayers, fourPlayers;
+	/**
+	 * This makes it so that when one button is clicked, the other is unclicked.
+	 */
 	private ButtonGroup numberOfPlayers;
+	/**
+	 * these panels hold TextFields and a jcombobox for each Player.
+	 */
 	private JPanel upperColorPanel, lowerColorPanel;
+	/**
+	 * Holds the Textfields which hold the red value of each Player's color.
+	 */
 	private List<JTextField> reds;
+	/**
+	 * Holds the Textfields which hold the blue value of each Player's color.
+	 */
 	private List<JTextField> blues;
+	/**
+	 * Holds the Textfields which hold the green value of each Player's color.
+	 */
 	private List<JTextField> greens;
+	/**
+	 * The textFields in this list will show the current Color of the Player.
+	 */
 	private List<JTextField> showColor;
+	/**
+	 * These comboBoxes will be used to select the Player's type.
+	 */
 	private List<JComboBox> boxes;
+	/**
+	 * This holds all of the options in the comboBoxes.
+	 */
 	private String[] playerTypeNames = {"Local", "AI", "Net"};
 	
+	/**
+	 * Used to make a box pop up when an error occurs.
+	 */
+	private JFrame errorFrame;
 	
+	/**
+	 * Might be useful for testing, maybe.
+	 */
 	public OptionsMenu() {
 		super(OPTIONS_WINDOW_TITLE);
 		Q = new Quoridor();
-		colors = new ArrayList<Color>();
 		initialize();
 		setVisible(true);
 	}
 	
+	/**
+	 * The constructor that will be called by Quoridor.
+	 * 
+	 * @param Qu
+	 * 		The Quoridor Object that's opening the options menu.
+	 */
 	public OptionsMenu(Quoridor Qu) {
 		super(OPTIONS_WINDOW_TITLE);
 		Q = Qu;
 		initialize();
 		setVisible(true);	
 	}
-	
+	/**
+	 * Initializes everything.
+	 */
 	private void initialize() {
 
 		setName(OPTIONS_WINDOW_TITLE);
@@ -64,6 +122,9 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		
 		twoPlayers = new JRadioButton("2 Players");
 		fourPlayers = new JRadioButton("4 Players");
+		
+		twoPlayers.setName(RADIO_BUTTON_TITLES[0]);
+		fourPlayers.setName(RADIO_BUTTON_TITLES[1]);
 		
 		twoPlayers.setSize(100, 30);
 		fourPlayers.setSize(100, 30);
@@ -88,7 +149,9 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		initializeColorPanels();
 		
 	}
-	
+	/**
+	 * Initializes the two panels that contain information about individual Players.
+	 */
 	private void initializeColorPanels() {
 		upperColorPanel = new JPanel();
 		lowerColorPanel = new JPanel();
@@ -164,17 +227,30 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		}
 	
 	}
-	
+
 	public void actionPerformed(ActionEvent action) {
 		Color c;
 		int r, b, g;
-		for (int i = 0; i < Q.players; i++) {
-			r = Integer.parseInt(reds.get(i).getText());
-			g = Integer.parseInt(greens.get(i).getText());
-			b = Integer.parseInt(blues.get(i).getText());
-			c = new Color(r, g, b);
-			showColor.get(i).setBackground(c);
-			Q.colors[i] = c;
+		try {
+			for (int i = 0; i < Q.players; i++) {
+				if (Integer.parseInt(reds.get(i).getText()) > 255 || Integer.parseInt(reds.get(i).getText()) < 0)
+					reds.get(i).setText("0");
+				if (Integer.parseInt(greens.get(i).getText()) > 255 || Integer.parseInt(greens.get(i).getText()) < 0)
+					greens.get(i).setText("0");
+				if (Integer.parseInt(blues.get(i).getText()) > 255 || Integer.parseInt(blues.get(i).getText()) < 0)
+					blues.get(i).setText("0");
+				r = Integer.parseInt(reds.get(i).getText());
+				g = Integer.parseInt(greens.get(i).getText());
+				b = Integer.parseInt(blues.get(i).getText());
+				c = new Color(r, g, b);
+				showColor.get(i).setBackground(c);
+				Q.colors[i] = c;
+			}
+		}
+		catch(NumberFormatException e) {
+			JOptionPane.showMessageDialog(errorFrame,
+				    "Please only enter Integers in the boxes.");
+
 		}
 		
 	}
@@ -200,12 +276,9 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		
 	}
 	
-
 	public static void main(String[] args) {
 		OptionsMenu menu = new OptionsMenu();
 		//Window.run();
 	}
-
-
 
 }
