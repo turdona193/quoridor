@@ -34,6 +34,7 @@ public class qBoard extends JFrame implements ActionListener{
 
 	private JPanel buttonPanel; 
 	private JPanel statusPanel;
+	private JLabel statusLabel;
 	
 	//this is the constructor that should probably always be used, probably
 	public qBoard(board b) {
@@ -46,21 +47,24 @@ public class qBoard extends JFrame implements ActionListener{
 	private void initialize() {
 		setName(BOARD_WINDOW_TITLE);
 		setTitle(BOARD_WINDOW_TITLE);
-		setSize(400,400);
+		setSize(512, 356);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setLayout(new BorderLayout());
 
 		buttonPanel = new JPanel();
 		statusPanel = new JPanel();
+		statusLabel = new JLabel();
 		buttonPanel.setLayout(null);
-		statusPanel.setLayout(null);
+		statusPanel.setLayout(new BorderLayout());
 		
 		initializeButtons();
-		buttonPanel.setSize(512, 512);
-		statusPanel.setSize(64, 64);
+		buttonPanel.setSize(356, 356);
+		statusPanel.setSize(100, 356);
+		initializeStatus();
+		statusPanel.add(statusLabel);
 
-		//add(buttonPanel, BorderLayout.PAGE_START);
 		add (buttonPanel);
-		add (statusPanel);
+		add (statusPanel, BorderLayout.EAST);
 		//setSize(512,512);
 
 		setVisible(true);
@@ -139,6 +143,9 @@ public class qBoard extends JFrame implements ActionListener{
 		//disableEdgeWalls();
 	}
 	
+	private void initializeStatus(){
+		statusLabel.setText("Welcome to Quoridor, \n Hope you Enjoy");
+	}
 	// method which stops the user from clicking walls around the right and bottom edges
 	private void disableEdgeWalls() {
 		for (int i=0; i < wallVert.length; i++) {
