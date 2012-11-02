@@ -59,7 +59,7 @@ public class qBoard extends JFrame implements ActionListener{
 		
 		initializeButtons();
 		buttonPanel.setSize(356, 356);
-		statusPanel.setSize(100, 356);
+		statusPanel.setPreferredSize(new Dimension(100, 356));
 		initializeStatus();
 		statusPanel.add(statusLabel);
 
@@ -144,7 +144,7 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	private void initializeStatus(){
-		statusLabel.setText("Welcome to Quoridor, \n Hope you Enjoy");
+		statusLabel.setText("Player 1: 10");
 	}
 	// method which stops the user from clicking walls around the right and bottom edges
 	private void disableEdgeWalls() {
