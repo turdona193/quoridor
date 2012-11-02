@@ -28,9 +28,29 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	 */
 	public final static String OPTIONS_WINDOW_TITLE = "Options";
 	/**
-	 * Holds the name of the Radio Buttons.
+	 * Holds the names of the Radio Buttons.
 	 */
 	public final static String[] RADIO_BUTTON_TITLES = {"Radio2", "Radio4"};
+	/**
+	 * Holds the names of the text fields showing the Player number and color.
+	 */
+	public final static String[] COLOR_TEXT_FIELD_TITLES = {"col0", "col1", "col2", "col3"};
+	/**
+	 * Holds the names of the red text boxes containing the red value of the color.
+	 */
+	public final static String[] RED_TEXT_FIELD_TITLES = {"red0", "red1", "red2", "red3"};
+	/**
+	 * Holds the names of the red text boxes containing the green value of the color.
+	 */
+	public final static String[] GREEN_TEXT_FIELD_TITLES = {"green0", "green1", "green2", "green3"};
+	/**
+	 * Holds the names of the red text boxes containing the blue value of the color.
+	 */
+	public final static String[] BLUE_TEXT_FIELD_TITLES = {"blue0", "blue1", "blue2", "blue3"};
+	/**
+	 * Holds the names of the combo boxes.
+	 */
+	public final static String[] COMBO_BOX_TITLES = {"combo0", "combo1", "combo2", "combo3"};
 	/**
 	 * This points to the Quoridor object that called the options menu.  Pretty much everything in 
 	 * the options menu class makes changes to variables in this quoridor object.
@@ -84,7 +104,7 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	private JFrame errorFrame;
 	
 	/**
-	 * Might be useful for testing, maybe.
+	 * Might be useful for testing, maybe.  Initial tests show that it's probably not.
 	 */
 	public OptionsMenu() {
 		super(OPTIONS_WINDOW_TITLE);
@@ -167,17 +187,17 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		
 		for (int i = 0; i < Q.colors.length; i++) {
 			JTextField color = new JTextField();
-			color.setName("Color" + i);
-			color.setText("P" + i);
+			color.setName(COLOR_TEXT_FIELD_TITLES[i]);
+			color.setText("P" + (i + 1));
 			color.setBackground(Q.colors[i]);
 			color.setEnabled(false);
 			
 			JTextField red = new JTextField("" + Q.colors[i].getRed());
-			red.setName("Red" + i);
+			red.setName(RED_TEXT_FIELD_TITLES[i]);
 			JTextField green = new JTextField("" + Q.colors[i].getGreen());
-			green.setName("Green" + i);
+			green.setName(GREEN_TEXT_FIELD_TITLES[i]);
 			JTextField blue = new JTextField("" + Q.colors[i].getBlue());
-			blue.setName("Blue" + i);
+			blue.setName(BLUE_TEXT_FIELD_TITLES[i]);
 			
 			
 			red.addActionListener(this);
@@ -185,6 +205,7 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 			blue.addActionListener(this);
 			
 			JComboBox box = new JComboBox(playerTypeNames);
+			box.setName(COMBO_BOX_TITLES[i]);
 			box.setSelectedIndex(Q.playerTypes[i]);
 			box.addItemListener(this);
 			
