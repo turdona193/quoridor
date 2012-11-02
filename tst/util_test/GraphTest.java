@@ -33,12 +33,7 @@ public class GraphTest {
 
     @Test
     public void testSingleNodeToString() {
-        try {
-            graph.addNode("a");
-        }
-        catch(GraphNodeIsDuplicateException e) {
-            fail();
-        }
+        addNodeToGraphOrFailOnGraphNodeIsDuplicateException("a");
         assertEquals("a: \n", graph.toString());
     }
 
@@ -52,13 +47,8 @@ public class GraphTest {
 
     @Test
     public void testMultipleNodesToString() {
-        try {
-            graph.addNode("a");
-            graph.addNode("b");
-        }
-        catch(GraphNodeIsDuplicateException e) {
-            fail();
-        }
+        String[] strings = { "a", "b" };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
         assertTrue(graph.toString().equals("a: \n" + "b: \n") ||
                    graph.toString().equals("b: \n" + "a: \n"));
     }
@@ -77,20 +67,9 @@ public class GraphTest {
 
     @Test
     public void testGraphWithSingleEdgeToString() {
-        try {
-            graph.addNode("a");
-            graph.addNode("b");
-            graph.addEdge("a", "b");
-        }
-        catch (GraphNodeIsDuplicateException e) {
-            fail();
-        }
-        catch (GraphNodeNotFoundException e) {
-            fail();
-        }
-        catch(GraphEdgeIsDuplicateException e) {
-            fail();
-        }
+        String[] strings = { "a", "b" };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
+        addEdgeToGraphOrFailOnGraphException("a", "b");
         String s = graph.toString();
         assertTrue(s.equals("a: b (1.0)\n" + "b: a (1.0)\n") ||
                    s.equals("b: a (1.0)\n" + "a: b (1.0)\n"));
@@ -110,13 +89,10 @@ public class GraphTest {
 
     @Test
     public void testGraphWithSingleWeightedEdgeToString() {
+        String[] strings = { "a", "b" };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
         try {
-            graph.addNode("a");
-            graph.addNode("b");
             graph.addEdge("a", "b", 42.0);
-        }
-        catch (GraphNodeIsDuplicateException e) {
-            fail();
         }
         catch (GraphNodeNotFoundException e) {
             fail();
@@ -130,22 +106,11 @@ public class GraphTest {
     }
 
     @Test public void testGraphWithMultipleEdgesToString() {
-        try {
-            graph.addNode("a");
-            graph.addNode("b");
-            graph.addNode("c");
-            graph.addEdge("a", "b");
-            graph.addEdge("a", "c");
-        }
-        catch (GraphNodeIsDuplicateException e) {
-            fail();
-        }
-        catch (GraphNodeNotFoundException e) {
-            fail();
-        }
-        catch(GraphEdgeIsDuplicateException e) {
-            fail();
-        }
+        String[] strings = { "a", "b", "c" };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
+        String[] origins = { "a", "a" };
+        String[] apices  = { "b", "c" };
+        addEdgesToGraphOrFailOnGraphException(origins, apices);
         String s = graph.toString();
         assertTrue(s.equals("a: b (1.0), c (1.0)\n" +
                             "b: a (1.0)\n" +
@@ -197,15 +162,11 @@ public class GraphTest {
     }
 
     @Test public void testGraphWithMultipleWeightedEdgesToString() {
+        String[] strings = { "a", "b", "c" };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
         try {
-            graph.addNode("a");
-            graph.addNode("b");
-            graph.addNode("c");
             graph.addEdge("a", "b", 42.0);
             graph.addEdge("a", "c", 42.0);
-        }
-        catch (GraphNodeIsDuplicateException e) {
-            fail();
         }
         catch (GraphNodeNotFoundException e) {
             fail();
@@ -274,12 +235,7 @@ public class GraphTest {
     public void testFindPathNonexistantApexNode()
         throws GraphNodeNotFoundException
     {
-        try {
-            graph.addNode("a");
-        }
-        catch(GraphNodeIsDuplicateException e) {
-            fail();
-        }
+        addNodeToGraphOrFailOnGraphNodeIsDuplicateException("a");
         graph.findPath("a", "b");
     }
 
@@ -320,12 +276,7 @@ public class GraphTest {
 
     @Test
     public void testFindPathSetOfGoalsEmpty() {
-        try {
-            graph.addNode("a");
-        }
-        catch(GraphNodeIsDuplicateException e) {
-            fail();
-        }
+        addNodeToGraphOrFailOnGraphNodeIsDuplicateException("a");
 
         Object[] pathElements = null;
         try {
@@ -344,6 +295,16 @@ public class GraphTest {
         assertTrue(comparisons == 0);
         assertTrue(maneuvers == 0);
         assertTrue(length == Double.POSITIVE_INFINITY);
+    }
+
+    @Test(expected=util.GraphNodeNotFoundException.class)
+    public void testFindPathSetOfGoalsNonexistantApexNode()
+        throws GraphNodeNotFoundException
+    {
+        addNodeToGraphOrFailOnGraphNodeIsDuplicateException("a");
+        Set<String> goals = new HashSet<String>();
+        goals.add("b");
+        graph.findPath("a", goals);
     }
 
     @Test
@@ -373,28 +334,51 @@ public class GraphTest {
     }
 
     private void populateGraph() {
-        try {
-            graph.addNode("a");
-            graph.addNode("b1");
-            graph.addEdge("a", "b1");
-            graph.addNode("b2");
-            graph.addEdge("a", "b2");
-            graph.addNode("c1");
-            graph.addNode("c2");
-            graph.addEdge("a", "c2");
-            graph.addEdge("b2", "c1");
-            graph.addEdge("b2", "c2");
-            graph.addNode("d");
-            graph.addEdge("c2", "d");
+        String[] strings = {  "a", "b1", "b2", "c1", "c2",  "d" };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
+
+        String[] origins = {  "a",  "a",  "a", "b2", "b2", "c2" };
+        String[] apices  = { "b1", "b2", "c2", "c1", "c2",  "d" };
+        addEdgesToGraphOrFailOnGraphException(origins, apices);
+    }
+
+    private void
+    addNodeToGraphOrFailOnGraphNodeIsDuplicateException(String s) {
+        String[] strings = { s };
+        addNodesToGraphOrFailOnGraphNodeIsDuplicateException(strings);
+    }
+
+    private void
+    addNodesToGraphOrFailOnGraphNodeIsDuplicateException(String[] strings) {
+        for (int i = 0; i < strings.length; i++) {
+            try {
+                graph.addNode(strings[i]);
+            }
+            catch(GraphNodeIsDuplicateException e) {
+                fail();
+            }
         }
-        catch (GraphNodeIsDuplicateException e) {
-            fail();
-        }
-        catch (GraphNodeNotFoundException e) {
-            fail();
-        }
-        catch(GraphEdgeIsDuplicateException e) {
-            fail();
+    }
+
+    private void
+    addEdgeToGraphOrFailOnGraphException(String origin, String apex) {
+        String[] origins = { origin };
+        String[] apices = { apex };
+        addEdgesToGraphOrFailOnGraphException(origins, apices);
+    }
+
+    private void
+    addEdgesToGraphOrFailOnGraphException(String[] origins, String[] apices) {
+        for (int i = 0; i < origins.length; i++) {
+            try {
+                graph.addEdge(origins[i], apices[i]);
+            }
+            catch(GraphNodeNotFoundException e) {
+                fail();
+            }
+            catch(GraphEdgeIsDuplicateException e) {
+                fail();
+            }
         }
     }
 }

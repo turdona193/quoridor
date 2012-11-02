@@ -500,6 +500,10 @@ public class board {
 
 	}
 	
+	public int getNumOfPlayers(){
+		return pl;
+	}
+	
 	public Point getPlayerLocation(int player) {
 		return players[player].getLocation();
 	}
