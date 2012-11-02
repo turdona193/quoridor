@@ -263,6 +263,13 @@ public class GraphTest {
                             "a: c (42.0), b (42.0)\n"));
     }
 
+    @Test(expected=util.GraphNodeNotFoundException.class)
+    public void testFindPathNonexistantNode()
+        throws GraphNodeNotFoundException
+    {
+        graph.findPath("a", "b");
+    }
+
     @Test
     public void testFindPath() {
         populateGraph();
