@@ -311,8 +311,15 @@ public class GraphTest {
         assertTrue(length == 2.0 || length == 3.0);
     }
 
+    @Test(expected=util.GraphNodeNotFoundException.class)
+    public void testFindPathSetOfGoalsNonexistantOriginNode()
+        throws GraphNodeNotFoundException
+    {
+        graph.findPath("a", new HashSet<String>());
+    }
+
     @Test
-    public void testFindPathForASetOfGoals() {
+    public void testFindPathSetOfGoals() {
         populateGraph();
         Object[] pathElements = null;
         Set<String> goals = new HashSet<String>();
