@@ -41,7 +41,7 @@ public class AI extends Thread {
 
     }
 
-    //Calls either placeHoriWall
+    //Keeps picking a random location and orientation until it finds a legal move, then makes it.
     private void placeRandomWall() {
     	while(true) {
     		int VertOrHori = (int)(Math.random()*2);
@@ -62,35 +62,9 @@ public class AI extends Thread {
 				}	
         	}
     	}
-    	
-   
-	}
-    
-    //Picks a random location and places a wall there if it's legal.
-    private void placeHoriWall() {
-     	while(true) {
-			int x = (int)(Math.random()*8);
-			int y = (int)(Math.random()*8);
-			String str = ("H" + " " + x + " " + y);
-			if(board.isStringLegal(str)) {
-				board.readStringFromGUI(str);
-				return;
-			}				
-		}
 	}
 
-	private void placeVertWall() {
-	 	while(true) {
-			int x = (int)(Math.random()*8);
-			int y = (int)(Math.random()*8);
-			String str = ("V" + " " + x + " " + y);
-			if(board.isStringLegal(str)) {
-				board.readStringFromGUI(str);
-				return;
-			}
-		}
-    }
-
+    //Keeps picking a random location until a legal move has been found, then makes it.
 	private void makeRandomMove() {
 		while(true) {
 			int x = (int)(Math.random()*9);

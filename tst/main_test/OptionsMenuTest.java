@@ -92,12 +92,32 @@ public class OptionsMenuTest {
 	}
 	
 	@Test
+	public void randomlyChangeTextFields() {
+		click4PButton();
+		JTextFieldDriver tfDrivers[] = new JTextFieldDriver[12];
+		for (int i = 0; i < 4; i++) {
+			tfDrivers[i*3] = text(OptionsMenu.RED_TEXT_FIELD_TITLES[i]);
+			tfDrivers[i*3+1] = text(OptionsMenu.GREEN_TEXT_FIELD_TITLES[i]);
+			tfDrivers[i*3+2] = text(OptionsMenu.BLUE_TEXT_FIELD_TITLES[i]);
+		}
+		
+		for (int i = 0; i < 15; i++) {
+			int j = (int)(Math.random()*256);
+			int k = (int)(Math.random()*12);
+			tfDrivers[k].focusWithMouse();
+			tfDrivers[k].replaceAllText("" + j);
+			tfDrivers[k].pressReturn();
+		}
+		
+	}
+	
+	@Test
 	public void testComboBox() throws InterruptedException {
 		click4PButton();
 		String comboName = OptionsMenu.COMBO_BOX_TITLES[3];
 		JComboBoxDriver comboDriver = combo(comboName);
 		comboDriver.selectItem(1);
-		Thread.sleep(2000);
+		Thread.sleep(100);
 	}
 	
 	private void click4PButton() {
@@ -105,4 +125,5 @@ public class OptionsMenuTest {
     	JRadioButtonDriver rbDriver = radioButton(buttonName);
 		rbDriver.click();
 	}
+	
 }

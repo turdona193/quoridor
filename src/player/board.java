@@ -41,8 +41,9 @@ public class board {
 		for (int i = 0; i < pl; i++) {
 			players[i] = new Player(i, 10, Player.color[i], 0);
 		}
-		turn = 0;
+		turn = pl-1;
 		newGUI();
+		nextTurn();
 	}
 	
 	// constructor that will make a 2 player game where player 0 is using the gui, and player 1 is an ai opponent
@@ -58,10 +59,11 @@ public class board {
 		else {
 			players[1] = new Player(1, 10, Color.red, Player.GUI_PLAYER);
 		}
-		turn = 0;
+		turn = pl-1;
 		initializeGraph();
 		initializeAIIfNeeded();
 		newGUI();
+		nextTurn();
 	}
 	
 	// this is the constructor that will be used most often

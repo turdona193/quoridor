@@ -291,7 +291,6 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		}
 		for (int i = 0; i < Q.players; i++) {
 			if (item.getSource() == boxes.get(i)) {
-				System.out.println(i + " " + Q.playerTypes[i]);
 				Q.playerTypes[i] = boxes.get(i).getSelectedIndex();
 			}
 		}
