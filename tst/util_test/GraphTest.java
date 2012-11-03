@@ -306,6 +306,16 @@ public class GraphTest {
         graph.removeEdge("a", "b");
     }
 
+    @Test(expected=util.GraphEdgeNotFoundException.class)
+    public void testRemoveEdgeWeighted()
+        throws GraphNodeNotFoundException,
+               GraphEdgeNotFoundException
+    {
+        addNodeOrFail("a");
+        addNodeOrFail("b");
+        graph.removeEdge("a", "b", 42.0);
+    }
+
     private void populateGraph() {
         String[] strings = {  "a", "b1", "b2", "c1", "c2",  "d" };
         addNodesOrFail(strings);
