@@ -9,6 +9,7 @@ import util.Graph;
 import util.GraphNodeIsDuplicateException;
 import util.GraphNodeNotFoundException;
 import util.GraphEdgeIsDuplicateException;
+import util.GraphEdgeNotFoundException;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -55,14 +56,10 @@ public class GraphTest {
 
     @Test(expected=util.GraphNodeNotFoundException.class)
     public void testAddEdgeNonexistantNode()
-        throws GraphNodeNotFoundException
+        throws GraphNodeNotFoundException,
+               GraphEdgeIsDuplicateException
     {
-        try {
-            graph.addEdge("a", "b");
-        }
-        catch(GraphEdgeIsDuplicateException e) {
-            fail();
-        }
+        graph.addEdge("a", "b");
     }
 
     @Test
@@ -77,14 +74,10 @@ public class GraphTest {
 
     @Test(expected=util.GraphNodeNotFoundException.class)
     public void testAddEdgeWeightedNonexistantNode()
-        throws GraphNodeNotFoundException
+        throws GraphNodeNotFoundException,
+               GraphEdgeIsDuplicateException
     {
-        try {
-            graph.addEdge("a", "b", 42.0);
-        }
-        catch(GraphEdgeIsDuplicateException e) {
-            fail();
-        }
+        graph.addEdge("a", "b", 42.0);
     }
 
     @Test
@@ -224,15 +217,10 @@ public class GraphTest {
     }
 
     @Test
-    public void testFindPath() {
+    public void testFindPath() throws GraphNodeNotFoundException {
         populateGraph();
         Object[] pathElements = null;
-        try {
-            pathElements = graph.findPath("a", "d");
-        }
-        catch (GraphNodeNotFoundException e) {
-            fail();
-        }
+        pathElements = graph.findPath("a", "d");
 
         String  path        = (String) pathElements[0];
         Integer comparisons = (Integer)pathElements[1];
@@ -259,16 +247,12 @@ public class GraphTest {
     }
 
     @Test
-    public void testFindPathSetOfGoalsEmpty() {
+    public void testFindPathSetOfGoalsEmpty() throws GraphNodeNotFoundException
+    {
         addNodeOrFail("a");
 
         Object[] pathElements = null;
-        try {
-            pathElements = graph.findPath("a", new HashSet<String>());
-        }
-        catch(GraphNodeNotFoundException e) {
-            fail();
-        }
+        pathElements = graph.findPath("a", new HashSet<String>());
 
         String  path        = (String) pathElements[0];
         Integer comparisons = (Integer)pathElements[1];
@@ -292,18 +276,13 @@ public class GraphTest {
     }
 
     @Test
-    public void testFindPathSetOfGoals() {
+    public void testFindPathSetOfGoals() throws GraphNodeNotFoundException {
         populateGraph();
         Object[] pathElements = null;
         Set<String> goals = new HashSet<String>();
         goals.add("a");
         goals.add("d");
-        try {
-            pathElements = graph.findPath("a", goals);
-        }
-        catch (GraphNodeNotFoundException e) {
-            fail();
-        }
+        pathElements = graph.findPath("a", goals);
 
         String  path        = (String) pathElements[0];
         Integer comparisons = (Integer)pathElements[1];
@@ -315,6 +294,16 @@ public class GraphTest {
         assertTrue(comparisons > 0);
         assertTrue(maneuvers == 0);
         assertTrue(length == 0.0);
+    }
+
+    @Test(expected=util.GraphEdgeNotFoundException.class)
+    public void testRemoveEdge()
+        throws GraphNodeNotFoundException,
+               GraphEdgeNotFoundException
+    {
+        addNodeOrFail("a");
+        addNodeOrFail("b");
+        graph.removeEdge("a", "b");
     }
 
     private void populateGraph() {
