@@ -277,13 +277,13 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	}
 
 	public void itemStateChanged(ItemEvent item) {
-		if (twoPlayers.isSelected()) {
+		if (item.getSource() == twoPlayers) {
 			Q.players = 2;
 			remove(lowerColorPanel);
 			repaint();
 			return;
 		}
-		if (fourPlayers.isSelected()) {
+		if (item.getSource() == fourPlayers) {
 			Q.players = 4;
 			add(lowerColorPanel);
 			setVisible(true);
@@ -291,6 +291,7 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 		}
 		for (int i = 0; i < Q.players; i++) {
 			if (item.getSource() == boxes.get(i)) {
+				System.out.println(i + " " + Q.playerTypes[i]);
 				Q.playerTypes[i] = boxes.get(i).getSelectedIndex();
 			}
 		}

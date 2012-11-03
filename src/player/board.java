@@ -73,10 +73,11 @@ public class board {
 		for (int i = 0; i < pl; i++) {
 			players[i] = new Player(i, 20/pl, colArray[i], playerTypes[i]);
 		}
-		turn = 0;
+		turn = pl - 1;
 		initializeGraph();
 		initializeAIIfNeeded();
 		newGUI();
+		nextTurn();
 	}
 	
 	private void initializeToZero(int[][] w) {
@@ -136,6 +137,10 @@ public class board {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean hasWalls(int player) {
+		return players[player].hasWalls();
 	}
 		
 	// method to look at a String representing a move and return whether or not it represents a valid move
@@ -309,7 +314,7 @@ public class board {
 		for (int i = 0; i < players.length; i++) {
 			gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
 		}
-		showMoves(players[turn], true);
+		//showMoves(players[turn], true);
 	}
 	
 	// I'm assuming the String for moving a piece will look like "M X Y"
@@ -490,6 +495,7 @@ public class board {
 		if(players[turn].hasWon()){
 			JOptionPane.showMessageDialog(winFrame,
 		    "Player " + (turn) + " has won!");
+			return;
 		}
 		
 		turn = (turn + pl + 1) % pl;

@@ -374,5 +374,18 @@ public class Player {
 		else 
 			xy = new Point(0, 0);
 	}
+
+	/**
+	 * Determines whether or not the Player has any walls left.
+	 * 
+	 * @return
+	 * 		Returns true if the Player has any walls remaining.
+	 * 		Returns false otherwise.
+	 */
+	public boolean hasWalls() {
+		if (walls > 0)
+			return true;
+		return false;
+	}
 	
 }
