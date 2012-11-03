@@ -43,7 +43,7 @@
     <junit fork="yes" haltonfailure="yes">
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
-      <test name="main_test.QuoridorTest" />
+      <test name="main_test.QuoridorTestSuite" />
     </junit>
   </target>
 

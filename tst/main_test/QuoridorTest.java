@@ -28,19 +28,8 @@ import com.objogate.wl.swing.*;
 
 import main_test.QuoridorTest;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    //main_test.qBoardTest.class,
-    main_test.OptionsMenuTest.class,
-    player_test.PlayerTest.class,
-    util_test.GraphTest.class
-})
 public class QuoridorTest {
 
-    /*
 	JFrameDriver driver;
 	
 	@SuppressWarnings("unchecked")
@@ -75,6 +64,7 @@ public class QuoridorTest {
 		driver.hasTitle(MAIN_WINDOW_TITLE);
     }
     
+    /*
     @Test
     public void buttonsWork(){
 		JLabelDriver label = label(LABEL_NAME);
