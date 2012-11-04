@@ -158,7 +158,7 @@ public class qBoard extends JFrame implements ActionListener{
 
         }
         sb.append("<br>");
-        sb.append("It is currently <br> Player " + playingBoard.getTurn() + " turn");
+        sb.append("It is currently <br> Player " + (playingBoard.getTurn()+1) + " turn");
 
         sb.append("</p></html>");
         
@@ -175,7 +175,7 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent action) {
-		if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
+		//if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
 			String move = ((JButton) action.getSource()).getName();
 			if (playingBoard.isStringLegal(move)) {
 				playingBoard.readStringFromGUI(move);
@@ -184,7 +184,7 @@ public class qBoard extends JFrame implements ActionListener{
 					System.exit(0);
 			}
 			
-		}
+		//}
 
 	}
 	

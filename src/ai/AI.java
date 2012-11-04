@@ -4,6 +4,18 @@ import java.awt.Point;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JButton;
+
+import main.Quoridor;
+import main.qBoard;
+
+import com.objogate.wl.swing.AWTEventQueueProber;
+import com.objogate.wl.swing.driver.ComponentDriver;
+import com.objogate.wl.swing.driver.JButtonDriver;
+import com.objogate.wl.swing.driver.JFrameDriver;
+import com.objogate.wl.swing.driver.JRadioButtonDriver;
+import com.objogate.wl.swing.gesture.GesturePerformer;
+
 //import util.Graph;
 import player.board;
 
@@ -12,12 +24,14 @@ public class AI extends Thread {
     //private Graph<Point> graph;
     private board board;
     private Semaphore sem;
+    JFrameDriver qBoardDriver;
 
     //public AI(Graph<Point> graph, Board board) {
     public AI(board board, Semaphore sem) {
         //this.graph = graph;
         this.board = board;
         this.sem = sem;
+        qBoardDriver = new JFrameDriver(new GesturePerformer(), new AWTEventQueueProber(), JFrameDriver.named(qBoard.BOARD_WINDOW_TITLE), JFrameDriver.showingOnScreen());
     }
 
     public void makeMove() {
@@ -26,9 +40,13 @@ public class AI extends Thread {
         board.readStringFromGUI(in.nextLine());
     }
     
+    private JButtonDriver button(String name) {
+        return new JButtonDriver(qBoardDriver, JButton.class, ComponentDriver.named(name));
+	}
+    
     //Method to make a random move, doesn't look as cool as I thought it would be.
     private void randomAIMove() throws InterruptedException {
-    	sleep(100);
+    	//sleep(100);
     	if (board.hasWalls(board.getTurn())) {
         	int MoveOrWall = (int)(Math.random()*2);
         	if (MoveOrWall == 0)
@@ -47,20 +65,17 @@ public class AI extends Thread {
     		int VertOrHori = (int)(Math.random()*2);
     		int x = (int)(Math.random()*8);
 			int y = (int)(Math.random()*8);
-        	if (VertOrHori == 0) {
-        		String str = ("H" + " " + x + " " + y);
-        		if(board.isStringLegal(str)) {
-					board.readStringFromGUI(str);
-					return;
-				}	
-        	}
-        	if (VertOrHori == 1) {
-        		String str = ("V" + " " + x + " " + y);
-        		if(board.isStringLegal(str)) {
-					board.readStringFromGUI(str);
-					return;
-				}	
-        	}
+			String str = "";
+        	if (VertOrHori == 0)
+        		str = ("H" + " " + x + " " + y);
+        	if (VertOrHori == 1)
+        		str = ("V" + " " + x + " " + y);
+        	
+        	if(board.isStringLegal(str)) {
+        		JButtonDriver bDriver = button(str);
+       			bDriver.click();
+				return;
+			}       	
     	}
 	}
 
@@ -71,7 +86,8 @@ public class AI extends Thread {
 			int y = (int)(Math.random()*9);
 			String str = ("M" + " " + x + " " + y);
 			if(board.isStringLegal(str)) {
-				board.readStringFromGUI(str);
+				JButtonDriver bDriver = button(str);
+       			bDriver.click();
 				return;
 			}
 		}
