@@ -143,7 +143,7 @@ public class qBoard extends JFrame implements ActionListener{
 		//disableEdgeWalls();
 	}
 	
-	private void setStatus(){
+	public void setStatus(){
 		StringBuffer sb = new StringBuffer();
         sb.append("<html><p align=center>");
         sb.append("Player 1: " + playingBoard.numberOfWalls(0));
@@ -182,7 +182,6 @@ public class qBoard extends JFrame implements ActionListener{
 				System.out.println(((JButton) action.getSource()).getName());
 				if(playingBoard.getCurrentPlayer().hasWon())
 					System.exit(0);
-				setStatus();
 			}
 			
 		}

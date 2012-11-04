@@ -508,6 +508,7 @@ public class board {
 		}
 		
 		turn = (turn + pl + 1) % pl;
+		gui.setStatus();
 		showMoves(players[turn], true);
 		if (getCurrentPlayerType() == Player.AI_PLAYER) {
 			sem.release();
