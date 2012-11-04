@@ -27,16 +27,22 @@
   </target>
 
   <target name="compile" depends="init">
-    <javac srcdir="src" destdir="bin/classes">
-      <classpath refid="classpath.base"/>
-    </javac>
+    <javac srcdir="src"
+        destdir="bin/classes"
+        debug="true"
+        debuglevel="source,line">
+    <classpath refid="classpath.base"/>
+  </javac>
   </target>
 
   
   <target name="compile-test" depends="compile">
-    <javac srcdir="tst" destdir="bin/classes">
-      <classpath refid="classpath.test"/>
-    </javac>
+    <javac srcdir="tst"
+        destdir="bin/classes"
+        debug="true"
+        debuglevel="source,line">
+    <classpath refid="classpath.test"/>
+  </javac>
   </target>
 
   <target name="test" depends="compile-test">
