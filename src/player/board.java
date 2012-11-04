@@ -144,6 +144,9 @@ public class board {
 	public boolean hasWalls(int player) {
 		return players[player].hasWalls();
 	}
+	public int numberOfWalls(int player){
+		return players[player].getWalls();
+	}
 		
 	// method to look at a String representing a move and return whether or not it represents a valid move
 	// works for players trying to move their piece; returns true whenever a player tries to place a wall
@@ -306,6 +309,10 @@ public class board {
 	
 	public int getCurrentPlayerType() {
 		return players[turn].getPlayerType();
+	}
+	
+	public Player getCurrentPlayer(){
+		return players[turn];
 	}
 	
 
@@ -505,7 +512,6 @@ public class board {
 		if (getCurrentPlayerType() == Player.AI_PLAYER) {
 			sem.release();
 		}
-
 	}
 	
 	public int getNumOfPlayers(){

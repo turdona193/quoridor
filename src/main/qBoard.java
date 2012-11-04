@@ -60,7 +60,7 @@ public class qBoard extends JFrame implements ActionListener{
 		initializeButtons();
 		buttonPanel.setSize(356, 356);
 		statusPanel.setPreferredSize(new Dimension(100, 356));
-		initializeStatus();
+		setStatus();
 		statusPanel.add(statusLabel);
 
 		add (buttonPanel);
@@ -143,8 +143,26 @@ public class qBoard extends JFrame implements ActionListener{
 		//disableEdgeWalls();
 	}
 	
-	private void initializeStatus(){
-		statusLabel.setText("Player 1: 10");
+	private void setStatus(){
+		StringBuffer sb = new StringBuffer();
+        sb.append("<html><p align=center>");
+        sb.append("Player 1: " + playingBoard.numberOfWalls(0));
+        sb.append("<br>");
+        sb.append("Player 2: " + playingBoard.numberOfWalls(1));
+        sb.append("<br>");
+        if(playingBoard.getNumOfPlayers()>2){
+        sb.append("Player 3: " + playingBoard.numberOfWalls(2)); //should format
+        sb.append("<br>");
+        sb.append("Player 4: " + playingBoard.numberOfWalls(3));
+        sb.append("<br>");
+
+        }
+        sb.append("<br>");
+        sb.append("It is currently <br> Player " + playingBoard.getTurn() + " turn");
+
+        sb.append("</p></html>");
+        
+		statusLabel.setText(sb.toString());
 	}
 	// method which stops the user from clicking walls around the right and bottom edges
 	private void disableEdgeWalls() {
@@ -162,7 +180,11 @@ public class qBoard extends JFrame implements ActionListener{
 			if (playingBoard.isStringLegal(move)) {
 				playingBoard.readStringFromGUI(move);
 				System.out.println(((JButton) action.getSource()).getName());
+				if(playingBoard.getCurrentPlayer().hasWon())
+					System.exit(0);
+				setStatus();
 			}
+			
 		}
 
 	}
