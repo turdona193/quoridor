@@ -86,9 +86,8 @@ public class OptionsMenuTest {
 		JTextFieldDriver tfDriver = text(textName);
 		tfDriver.focusWithMouse();
 		tfDriver.replaceAllText("255");
-		Thread.sleep(2000);
 		tfDriver.pressReturn();
-		Thread.sleep(2000);
+		Thread.sleep(500);
 	}
 	
 	@Test

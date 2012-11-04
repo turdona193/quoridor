@@ -9,12 +9,12 @@ import javax.swing.JButton;
 import main.Quoridor;
 import main.qBoard;
 
-import com.objogate.wl.swing.AWTEventQueueProber;
+/*import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.ComponentDriver;
 import com.objogate.wl.swing.driver.JButtonDriver;
 import com.objogate.wl.swing.driver.JFrameDriver;
 import com.objogate.wl.swing.driver.JRadioButtonDriver;
-import com.objogate.wl.swing.gesture.GesturePerformer;
+import com.objogate.wl.swing.gesture.GesturePerformer;*/
 
 //import util.Graph;
 import player.board;
@@ -24,14 +24,14 @@ public class AI extends Thread {
     //private Graph<Point> graph;
     private board board;
     private Semaphore sem;
-    JFrameDriver qBoardDriver;
+    //JFrameDriver qBoardDriver;
 
     //public AI(Graph<Point> graph, Board board) {
     public AI(board board, Semaphore sem) {
         //this.graph = graph;
         this.board = board;
         this.sem = sem;
-        qBoardDriver = new JFrameDriver(new GesturePerformer(), new AWTEventQueueProber(), JFrameDriver.named(qBoard.BOARD_WINDOW_TITLE), JFrameDriver.showingOnScreen());
+        //qBoardDriver = new JFrameDriver(new GesturePerformer(), new AWTEventQueueProber(), JFrameDriver.named(qBoard.BOARD_WINDOW_TITLE), JFrameDriver.showingOnScreen());
     }
 
     public void makeMove() {
@@ -40,9 +40,9 @@ public class AI extends Thread {
         board.readStringFromGUI(in.nextLine());
     }
     
-    private JButtonDriver button(String name) {
+    /*private JButtonDriver button(String name) {
         return new JButtonDriver(qBoardDriver, JButton.class, ComponentDriver.named(name));
-	}
+	}*/
     
     //Method to make a random move, doesn't look as cool as I thought it would be.
     private void randomAIMove() throws InterruptedException {
@@ -72,8 +72,9 @@ public class AI extends Thread {
         		str = ("V" + " " + x + " " + y);
         	
         	if(board.isStringLegal(str)) {
-        		JButtonDriver bDriver = button(str);
-       			bDriver.click();
+        		board.readStringFromGUI(str);
+        		//JButtonDriver bDriver = button(str);
+       			//bDriver.click();
 				return;
 			}       	
     	}
@@ -86,8 +87,9 @@ public class AI extends Thread {
 			int y = (int)(Math.random()*9);
 			String str = ("M" + " " + x + " " + y);
 			if(board.isStringLegal(str)) {
-				JButtonDriver bDriver = button(str);
-       			bDriver.click();
+				board.readStringFromGUI(str);
+				//JButtonDriver bDriver = button(str);
+       			//bDriver.click();
 				return;
 			}
 		}
