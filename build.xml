@@ -1,85 +1,82 @@
 <project name="Quoridor" default="run">
 
-  <presetdef name="javac">
-     <javac includeantruntime="false" />
-  </presetdef>
+    <presetdef name="javac">
+        <javac includeantruntime="false" />
+    </presetdef>
 
-  <path id="classpath.base">
-    <pathelement location="bin/classes" />
-  </path>
+    <path id="classpath.base">
+        <pathelement location="bin/classes" />
+    </path>
 
-  <path id="classpath.test">
-    <pathelement location="lib/junit-dep-4.10.jar" />
-    <pathelement location="lib/hamcrest-all-1.3.jar" />
-    <pathelement location="lib/windowlicker-core-DEV.jar" />
-    <pathelement location="lib/windowlicker-swing-DEV.jar" />
-    <path refid="classpath.base" />
-  </path>
+    <path id="classpath.test">
+        <pathelement location="lib/junit-dep-4.10.jar" />
+        <pathelement location="lib/hamcrest-all-1.3.jar" />
+        <pathelement location="lib/windowlicker-core-DEV.jar" />
+        <pathelement location="lib/windowlicker-swing-DEV.jar" />
+        <path refid="classpath.base" />
+    </path>
 
-  <target name="clean">
-    <delete dir="bin" />
-  </target>
+    <target name="clean">
+        <delete dir="bin" />
+    </target>
 
-  <target name="init">
-    <mkdir dir="bin" />
-    <mkdir dir="bin/classes" />
-    <mkdir dir="bin/jars" />
-  </target>
+    <target name="init">
+        <mkdir dir="bin" />
+        <mkdir dir="bin/classes" />
+        <mkdir dir="bin/jars" />
+    </target>
 
-  <target name="compile" depends="init">
-    <javac srcdir="src"
-        destdir="bin/classes"
-        debug="true"
-        debuglevel="source,line">
-    <classpath refid="classpath.base"/>
-  </javac>
-  </target>
+    <target name="compile" depends="init">
+        <javac srcdir="src"
+            destdir="bin/classes"
+            debug="true"
+            debuglevel="source,line">
+            <classpath refid="classpath.base"/>
+        </javac>
+    </target>
 
-  
-  <target name="compile-test" depends="compile">
-    <javac srcdir="tst"
-        destdir="bin/classes"
-        debug="true"
-        debuglevel="source,line">
-    <classpath refid="classpath.test"/>
-  </javac>
-  </target>
+    <target name="compile-test" depends="compile">
+        <javac srcdir="tst"
+            destdir="bin/classes"
+            debug="true"
+            debuglevel="source,line">
+            <classpath refid="classpath.test"/>
+        </javac>
+    </target>
 
-  <target name="test" depends="compile-test">
-    <junit fork="yes" haltonfailure="yes">
-      <classpath refid="classpath.test" />
-      <formatter type="brief" usefile="false" />
-      <test name="main_test.QuoridorTestSuite" />
-    </junit>
-  </target>
+    <target name="test" depends="compile-test">
+        <junit fork="yes" haltonfailure="yes">
+            <classpath refid="classpath.test" />
+            <formatter type="brief" usefile="false" />
+            <test name="main_test.QuoridorTestSuite" />
+        </junit>
+    </target>
 
-  <target name="jar" depends="compile">
-    <mkdir dir="bin/jars"/>
-    <jar destfile="bin/jars/Quoridor.jar" basedir="bin/classes">
-      <manifest>
-        <attribute name="Main-Class" value="main.Quoridor"/>
-      </manifest>
-    </jar>
-  </target>
+    <target name="jar" depends="compile">
+        <mkdir dir="bin/jars"/>
+        <jar destfile="bin/jars/Quoridor.jar" basedir="bin/classes">
+            <manifest>
+                <attribute name="Main-Class" value="main.Quoridor"/>
+            </manifest>
+        </jar>
+    </target>
 
-  <target name="run" depends="jar">
-    <java jar="bin/jars/Quoridor.jar" fork="true">
-      <classpath refid="classpath.base"/>
-    </java>
-  </target>
+    <target name="run" depends="jar">
+        <java jar="bin/jars/Quoridor.jar" fork="true">
+            <classpath refid="classpath.base"/>
+        </java>
+    </target>
 
-  <target name="javadoc" depends="compile">
-    <javadoc packagenames="*"
-             sourcepath="src"
-             excludepackagenames=""
-             defaultexcludes="yes"
-             destdir="doc/api"
-             author="true"
-             version="true"
-             use="true"
-             windowtitle="Quoridor API">
-      <doctitle><![CDATA[<h1>Quoridor API</h1>]]></doctitle>
-    </javadoc>
-  </target>
+    <target name="javadoc" depends="compile">
+        <javadoc packagenames="*"
+            sourcepath="src"
+            destdir="doc/api"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Quoridor API">
+            <doctitle><![CDATA[<h1>Quoridor API</h1>]]></doctitle>
+        </javadoc>
+    </target>
 
 </project>
