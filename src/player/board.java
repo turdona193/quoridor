@@ -504,7 +504,7 @@ public class board {
 		if(players[turn].hasWon()){
 			JOptionPane.showMessageDialog(winFrame,
 		    "Player " + (turn) + " has won!");
-			return;
+			System.exit(0);
 		}
 		
 		turn = (turn + pl + 1) % pl;

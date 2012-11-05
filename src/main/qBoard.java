@@ -180,8 +180,6 @@ public class qBoard extends JFrame implements ActionListener{
 			if (playingBoard.isStringLegal(move)) {
 				playingBoard.readStringFromGUI(move);
 				System.out.println(((JButton) action.getSource()).getName());
-				if(playingBoard.getCurrentPlayer().hasWon())
-					System.exit(0);
 			}
 			
 		//}
