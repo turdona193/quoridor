@@ -887,8 +887,6 @@ public class Graph<E> {
      * node for the origin element.  If this graph is directed, only the first
      * edge as in above is created.
      *
-     * <p>Note: this method is an alias for {@code addEgg(origin, apex, 1d);}.
-     *
      * @param origin
      *     the element of the origin node
      *
