@@ -180,6 +180,7 @@ public class qBoard extends JFrame implements ActionListener{
 			if (playingBoard.isStringLegal(move)) {
 				System.out.println(((JButton) action.getSource()).getName());
 				System.out.println(playingBoard.convertGUIStringToNetString(move));
+				System.out.println(playingBoard.convertNetStringToGUIString(playingBoard.convertGUIStringToNetString(move)));
 				playingBoard.readStringFromGUI(move);
 			}
 			

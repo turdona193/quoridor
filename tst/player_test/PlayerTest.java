@@ -92,7 +92,7 @@ public class PlayerTest {
 		boolean expectedResult = false;
 		assertThat(expectedResult, is(equalTo(pl.hasWon())));
 		for (int i = 0; i < 9; i++) {
-			pl.setLocation(i, 0);
+			pl.setLocation(i, 8);
 			expectedResult = true;
 			assertThat(expectedResult, is(equalTo(pl.hasWon())));
 		}

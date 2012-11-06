@@ -148,8 +148,34 @@ public class board {
 		return players[player].getWalls();
 	}
 	
-	public String convertGUIStringToNetString(String gui) {
-		Scanner sc = new Scanner(gui);
+	/**
+	 * This method will convert a String containing a move in the format we've been using in our gui into one 
+	 * matching the format that will be used when we send moves over a network.
+	 * 
+	 * The format of a "gui String"  is: <op> X Y
+	 * Where op is either M,V, or H depending on what type of move it is, and X and Y are coordinates.
+	 * 
+	 * The format of the "net string" is: <op> (Y1, X1) (Y2, X2)
+	 * Where op is either M for piece being moved, or W for a wall being placed.
+	 * 
+	 * If op is M, then:
+	 * 		Y1 and X1 are the coordinates of the current player.
+	 * 		Y2 and X2 represent the coordinates of the location the player wants to move to.
+	 * 
+	 * If op is W, then:
+	 * 		Y1 and X1 represent the location of either the top or left edge of the wall being placed.
+	 * 		Y2 and X2 represent the location of either the bottom or right edge of the wall.
+	 * 
+	 * One major difference between these two formats is that converting between the two switches the x and y axis of the board.
+	 * 
+	 * @param guiString
+	 * 		This is a String representing a move in the "gui String" format.
+	 * 
+	 * @return
+	 * 		This returns a String representing a move in the "net String" format.
+	 */
+	public String convertGUIStringToNetString(String guiString) {
+		Scanner sc = new Scanner(guiString);
 		String firstChar = sc.next();
 		String netString = "";
 		int x = Integer.parseInt(sc.next());
@@ -171,6 +197,77 @@ public class board {
 		}
 		
 		return netString;
+	}
+	
+	/**
+	 * This method converts a "Net String" to a "GUI String" so that it can be processed correctly.
+	 * 
+	 * The format of a "gui String"  is: <op> X Y
+	 * Where op is either M,V, or H depending on what type of move it is, and X and Y are coordinates.
+	 * 
+	 * The format of the "net string" is: <op> (Y1, X1) (Y2, X2)
+	 * Where op is either M for piece being moved, or W for a wall being placed.
+	 * 
+	 * If op is M, then:
+	 * 		Y1 and X1 are the coordinates of the current player.
+	 * 		Y2 and X2 represent the coordinates of the location the player wants to move to.
+	 * 
+	 * If op is W, then:
+	 * 		Y1 and X1 represent the location of either the top or left edge of the wall being placed.
+	 * 		Y2 and X2 represent the location of either the bottom or right edge of the wall.
+	 * 
+	 * One major difference between these two formats is that converting between the two switches the x and y axis of the board.
+	 * 
+	 * @param netString
+	 * 		This is a String containing a move in the "net String" format.
+	 * @return
+	 * 		This returns A String containing the same move in the "GUI String" format.
+	 */
+	public String convertNetStringToGUIString(String netStr) {
+		String netString = removePunctuation(netStr);
+		Scanner sc = new Scanner(netString);
+		String firstChar = sc.next();
+		
+		String GUIString = "";
+
+		//needed to determine if a wall is horizontal or vertical
+		int y2 = Integer.parseInt(sc.next());
+		int x2 = Integer.parseInt(sc.next());
+		
+		int y = Integer.parseInt(sc.next());
+		int x = Integer.parseInt(sc.next());
+
+		if (firstChar.charAt(0) == 'M') {
+			GUIString = "M " + x + " " + y;
+		}
+		
+		if (firstChar.charAt(0) == 'W') {
+			//if it's a vertical wall
+			if (x == x2)
+				GUIString = "V " + (x-1) + " " + (y-2);  
+			//otherwise it must be horizontal
+			else
+				GUIString = "H " + (x-2) + " " + (y-1);
+		}
+		
+		
+		return GUIString;
+	}
+	
+	/**
+	 * This method takes a String and replaces all of the parentheses and commas with spaces.
+	 * 
+	 * @param str
+	 * 		This is the String we want to parentheses and commas from.
+	 * @return
+	 * 		Returns a String similar to the original String, but with all the paretheses and commas replaced with spaces.
+	 */
+	private String removePunctuation(String oldStr) {
+		String newStr = oldStr;
+		newStr = newStr.replace('(', ' ');
+		newStr = newStr.replace(')', ' ');
+		newStr = newStr.replace(',', ' ');
+		return newStr;
 	}
 		
 	// method to look at a String representing a move and return whether or not it represents a valid move
@@ -532,7 +629,7 @@ public class board {
 			System.exit(0);
 		}
 		
-		turn = (turn + pl + 1) % pl;
+		turn = (turn + pl + 1) % pl;	//This should eventually be changed such that it skips Players who have been dropped.
 		gui.setStatus();
 		showMoves(players[turn], true);
 		if (getCurrentPlayerType() == Player.AI_PLAYER) {
