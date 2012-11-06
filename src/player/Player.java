@@ -17,7 +17,7 @@ public class Player {
 	/**
 	 * Y holds all of the starting Y values of the Players.
 	 */
-	public final static int Y[] = {8, 0, 4, 4};
+	public final static int Y[] = {0, 8, 4, 4};
 	/**
 	 * color holds the default Colors of the Players.
 	 */

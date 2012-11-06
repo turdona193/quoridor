@@ -175,14 +175,15 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent action) {
-		//if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
+		if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
 			String move = ((JButton) action.getSource()).getName();
 			if (playingBoard.isStringLegal(move)) {
-				playingBoard.readStringFromGUI(move);
 				System.out.println(((JButton) action.getSource()).getName());
+				System.out.println(playingBoard.convertGUIStringToNetString(move));
+				playingBoard.readStringFromGUI(move);
 			}
 			
-		//}
+		}
 
 	}
 	

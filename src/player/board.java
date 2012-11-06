@@ -147,6 +147,31 @@ public class board {
 	public int numberOfWalls(int player){
 		return players[player].getWalls();
 	}
+	
+	public String convertGUIStringToNetString(String gui) {
+		Scanner sc = new Scanner(gui);
+		String firstChar = sc.next();
+		String netString = "";
+		int x = Integer.parseInt(sc.next());
+		int y = Integer.parseInt(sc.next());
+		
+		if (firstChar.charAt(0) == 'M') {
+			netString += ("M (" + players[turn].getY() + ", " + players[turn].getX() + ")");
+			netString += " (" + y + ", " + x + ")";
+		}
+		
+		if (firstChar.charAt(0) == 'V') {
+			netString += ("W (" + y + ", " + (x+1) + ")");
+			netString += " (" + (y+2) + ", " + (x+1) + ")";
+		}
+		
+		if (firstChar.charAt(0) == 'H') {
+			netString += ("W (" + (y+1) + ", " + x + ")");
+			netString += " (" + (y+1) + ", " + (x+2) + ")";
+		}
+		
+		return netString;
+	}
 		
 	// method to look at a String representing a move and return whether or not it represents a valid move
 	// works for players trying to move their piece; returns true whenever a player tries to place a wall
