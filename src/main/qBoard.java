@@ -20,14 +20,19 @@ import javax.swing.text.StyleConstants.ColorConstants;
 import player.Player;
 import player.board;
 
+//TODO: qBoard should be QBoard
+//TODO: What is a qBoard?
 public class qBoard extends JFrame implements ActionListener{
 
 	public final static String BOARD_WINDOW_TITLE = "Quoridor Board";
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public final static int boardLength = 9;
 	
+	//TODO: private Board board;
 	private board playingBoard;
 	
+    //TODO: shouldn't these calculated relative to boardLength, not hard-coded?
+	//TODO: public JButton[][] tiles = new JButton[9][9];
 	public JButton[][] board = new JButton[9][9];
 	public JButton[][] wallVert = new JButton[8][9];
 	public JButton[][] wallHor = new JButton[9][8];
@@ -65,20 +70,18 @@ public class qBoard extends JFrame implements ActionListener{
 
 		add (buttonPanel);
 		add (statusPanel, BorderLayout.EAST);
-		//setSize(512,512);
 
 		setVisible(true);
 	}
 	
+    //TODO: try to clean this up, its pretty long and redundant so it could
+    //      probably be factored
 	private void initializeButtons(){
-
 		int fromTop = 0;
 		boolean border = false;
 		for(int i = 0;i < 17;i++){ //Row
 			int fromLeft = 0;
-
 			for (int j = 0; j < 17; j++) { // Column
-
 				if(!border){
 					if(j%2 == 0){
 						JButton button = new JButton(""); // sets the text
@@ -86,7 +89,6 @@ public class qBoard extends JFrame implements ActionListener{
 						button.addActionListener(this);
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
-						//button.setEnabled(false);
 						
 						buttonPanel.add(button);
 
@@ -95,7 +97,6 @@ public class qBoard extends JFrame implements ActionListener{
 						fromLeft += 26;
 						
 						board[j/2][i/2]=button;
-
 					}
 					else{
 						JButton button = new JButton(""); // sets the text
@@ -104,7 +105,6 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setRolloverEnabled(true);
 						button.setBackground(BUTTON_DEFAULT_COLOR);
 
-
 						buttonPanel.add(button);
 
 						Insets insets = buttonPanel.getInsets();
@@ -112,7 +112,6 @@ public class qBoard extends JFrame implements ActionListener{
 						fromLeft += 11;
 						wallVert[j/2][i/2]=button;
 					}
-
 				}
 				if (border){
 					JButton button = new JButton(""); // sets the text
@@ -120,7 +119,6 @@ public class qBoard extends JFrame implements ActionListener{
 					button.addActionListener(this);
 					button.setRolloverEnabled(true);
 					button.setBackground(BUTTON_DEFAULT_COLOR);
-
 
 					buttonPanel.add(button);
 
@@ -131,7 +129,6 @@ public class qBoard extends JFrame implements ActionListener{
 					j++;
 					wallHor[j/2][i/2]=button;
 				}
-
 			}
 			if(!border){ // Fix Spacing
 				fromTop += 26;
@@ -140,7 +137,6 @@ public class qBoard extends JFrame implements ActionListener{
 			}
 			border = !border;
 		}
-		//disableEdgeWalls();
 	}
 	
 	public void setStatus(){
@@ -164,16 +160,7 @@ public class qBoard extends JFrame implements ActionListener{
         
 		statusLabel.setText(sb.toString());
 	}
-	// method which stops the user from clicking walls around the right and bottom edges
-	private void disableEdgeWalls() {
-		for (int i=0; i < wallVert.length; i++) {
-			wallVert[i][wallVert[0].length-1].setEnabled(false);
-		}
-		for (int j = 0; j < wallHor[0].length; j++) {
-			wallHor[wallHor.length-1][j].setEnabled(false);
-		}
-	}
-	
+
 	public void actionPerformed(ActionEvent action) {
 		if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
 			String move = ((JButton) action.getSource()).getName();
@@ -183,25 +170,7 @@ public class qBoard extends JFrame implements ActionListener{
 				System.out.println(playingBoard.convertNetStringToGUIString(playingBoard.convertGUIStringToNetString(move)));
 				playingBoard.readStringFromGUI(move);
 			}
-			
 		}
-
-	}
-	
-	/**
-	 * Checks to see if the supplied color is equivalent to the
-	 * button default color.
-	 * 
-	 * @param bColor
-	 * 		the color that will be compared to the default color
-	 * 		by inspecting its RGB values
-	 * 
-	 * @return
-	 * 		returns true if the argument color is the same as
-	 * 		the button default color. Otherwise, returns false
-	 */
-	private boolean isDefaultColor(Color bColor){
-		return (bColor.equals(BUTTON_DEFAULT_COLOR));
 	}
 	
 	/**
@@ -220,35 +189,6 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	/**
-	 * Enables or disables the ability for the user to click a certain space.
-	 * 
-	 * @param p
-	 * 		the point of the chosen space. This contains x and
-	 * 		y coordinates
-	 * 
-	 * @param b
-	 * 		Enable (true) or disable (false) the ability to click
-	 * 		on the chosen space
-	 */
-	public void setSpaceClickable(Point p, boolean b) {
-		board[p.x][p.y].setEnabled(b);
-	}
-	
-	/**
-	 * Checks if the space is enabled and returns true if it is. Otherwise, the
-	 * method returns false.
-	 * 
-	 * @param p
-	 * 		the point of the chosen space
-	 * 
-	 * @return
-	 * 		returns true if the space is enabled, otherwise the method will return false
-	 */
-	public boolean isSpaceClickable(Point p) {
-		return board[p.x][p.y].isEnabled();
-	}
-	
-	/**
 	 * Takes a "point" from the wallHor 2D array and changes the color
 	 * value of that wall.
 	 * 
@@ -261,35 +201,6 @@ public class qBoard extends JFrame implements ActionListener{
 	 */
 	public void setHoriWallColor(Point p, Color c) {
 		wallHor[p.x][p.y].setBackground(c);
-	}
-	
-	/**
-	 * Enables or disables the ability for the user to click a certain horizontal wall.
-	 * 
-	 * @param p
-	 * 		the point of the chosen wall. This contains x and
-	 * 		y coordinates
-	 * 
-	 * @param b
-	 * 		Enable (true) or disable (false) the ability to click
-	 * 		on the chosen space
-	 */
-	public void setHoriWallClickable(Point p, boolean b) {
-		wallHor[p.x][p.y].setEnabled(b);
-	}
-	
-	/**
-	 * Checks if the space is enabled and returns true if it is. Otherwise, the
-	 * method returns false.
-	 * 
-	 * @param p
-	 * 		the point of the chosen wall
-	 * 
-	 * @return
-	 * 		returns true if the horizontal wall is enabled, otherwise the method will return false
-	 */
-	public boolean isHoriWallClickable(Point p) {
-		return wallHor[p.x][p.y].isEnabled();
 	}
 	
 	/**
@@ -307,56 +218,7 @@ public class qBoard extends JFrame implements ActionListener{
 		wallVert[p.x][p.y].setBackground(c);
 	}
 	
-	/**
-	 * Enables or disables the ability for the user to click a certain vertical wall.
-	 * 
-	 * @param p
-	 * 		the point of the chosen wall. This contains x and
-	 * 		y coordinates
-	 * 
-	 * @param b
-	 * 		Enable (true) or disable (false) the ability to click
-	 * 		on the chosen space
-	 */
-	public void setVertWallClickable(Point p, boolean b) {
-		wallVert[p.x][p.y].setEnabled(b);
-	}
-	
-	/**
-	 * Checks if the space is enabled and returns true if it is. Otherwise, the
-	 * method returns false.
-	 * 
-	 * @param p
-	 * 		the point of the chosen wall
-	 * 
-	 * @return
-	 * 		returns true if the vertical wall is enabled, otherwise the method will return false
-	 */
-	public boolean isVertWallClickable(Point p) {
-		return wallVert[p.x][p.y].isEnabled();
-	}
-	
-	
-
-	/*private static void createAndShowGUI() {
-	        JFrame frame = new JFrame("Quoridor Board");
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        frame.getContentPane().add( new qBoard());
-	        frame.pack();
-	        frame.setVisible(true);
-	        frame.setSize(500,200);
-	    }
-	 */
-
-
-
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		board b = new board(true);
-		//qBoard board = new qBoard(); broken at the moment
-		//createAndShowGUI();
 	}
-
 }

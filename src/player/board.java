@@ -18,6 +18,7 @@ import util.GraphNodeNotFoundException;
 import main.qBoard;
 import ai.AI;
 
+//TODO: board should be Board
 public class board {
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public static final Color WALL_COLOR = Color.black;  //This will eventually be switched to brown
