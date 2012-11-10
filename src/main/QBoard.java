@@ -18,22 +18,20 @@ import javax.swing.SwingConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 
 import player.Player;
-import player.board;
+import player.Board;
 
 //TODO: qBoard should be QBoard
 //TODO: What is a qBoard?
-public class qBoard extends JFrame implements ActionListener{
+public class QBoard extends JFrame implements ActionListener{
 
 	public final static String BOARD_WINDOW_TITLE = "Quoridor Board";
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public final static int boardLength = 9;
 	
-	//TODO: private Board board;
-	private board playingBoard;
+	private Board board;
 	
     //TODO: shouldn't these calculated relative to boardLength, not hard-coded?
-	//TODO: public JButton[][] tiles = new JButton[9][9];
-	public JButton[][] board = new JButton[9][9];
+	public JButton[][] tiles = new JButton[9][9];
 	public JButton[][] wallVert = new JButton[8][9];
 	public JButton[][] wallHor = new JButton[9][8];
 
@@ -42,9 +40,9 @@ public class qBoard extends JFrame implements ActionListener{
 	private JLabel statusLabel;
 	
 	//this is the constructor that should probably always be used, probably
-	public qBoard(board b) {
+	public QBoard(Board b) {
 		super();
-		playingBoard = b;
+		board = b;
 		initialize();
 	}
 	
@@ -96,7 +94,7 @@ public class qBoard extends JFrame implements ActionListener{
 						button.setBounds(fromLeft + insets.left, fromTop + insets.top, 25, 25);
 						fromLeft += 26;
 						
-						board[j/2][i/2]=button;
+						tiles[j/2][i/2]=button;
 					}
 					else{
 						JButton button = new JButton(""); // sets the text
@@ -142,19 +140,19 @@ public class qBoard extends JFrame implements ActionListener{
 	public void setStatus(){
 		StringBuffer sb = new StringBuffer();
         sb.append("<html><p align=center>");
-        sb.append("Player 1: " + playingBoard.numberOfWalls(0));
+        sb.append("Player 1: " + board.numberOfWalls(0));
         sb.append("<br>");
-        sb.append("Player 2: " + playingBoard.numberOfWalls(1));
+        sb.append("Player 2: " + board.numberOfWalls(1));
         sb.append("<br>");
-        if(playingBoard.getNumOfPlayers()>2){
-        sb.append("Player 3: " + playingBoard.numberOfWalls(2)); //should format
+        if(board.getNumOfPlayers()>2){
+        sb.append("Player 3: " + board.numberOfWalls(2)); //should format
         sb.append("<br>");
-        sb.append("Player 4: " + playingBoard.numberOfWalls(3));
+        sb.append("Player 4: " + board.numberOfWalls(3));
         sb.append("<br>");
 
         }
         sb.append("<br>");
-        sb.append("It is currently <br> Player " + (playingBoard.getTurn()+1) + " turn");
+        sb.append("It is currently <br> Player " + (board.getTurn()+1) + " turn");
 
         sb.append("</p></html>");
         
@@ -162,13 +160,13 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent action) {
-		if (playingBoard.getCurrentPlayerType() == Player.GUI_PLAYER) {
+		if (board.getCurrentPlayerType() == Player.GUI_PLAYER) {
 			String move = ((JButton) action.getSource()).getName();
-			if (playingBoard.isStringLegal(move)) {
+			if (board.isStringLegal(move)) {
 				System.out.println(((JButton) action.getSource()).getName());
-				System.out.println(playingBoard.convertGUIStringToNetString(move));
-				System.out.println(playingBoard.convertNetStringToGUIString(playingBoard.convertGUIStringToNetString(move)));
-				playingBoard.readStringFromGUI(move);
+				System.out.println(board.convertGUIStringToNetString(move));
+				System.out.println(board.convertNetStringToGUIString(board.convertGUIStringToNetString(move)));
+				board.readStringFromGUI(move);
 			}
 		}
 	}
@@ -185,7 +183,7 @@ public class qBoard extends JFrame implements ActionListener{
 	 * 		and indicated by new RGB values
 	 */
 	public void setColorOfSpace(Point p, Color c) {
-		board[p.x][p.y].setBackground(c);
+		tiles[p.x][p.y].setBackground(c);
 	}
 	
 	/**
@@ -219,6 +217,6 @@ public class qBoard extends JFrame implements ActionListener{
 	}
 	
 	public static void main(String[] args) {
-		board b = new board(true);
+		Board b = new Board(true);
 	}
 }

@@ -15,18 +15,18 @@ import util.GraphEdgeNotFoundException;
 import util.GraphNodeIsDuplicateException;
 import util.GraphNodeNotFoundException;
 
-import main.qBoard;
+import main.QBoard;
 import ai.AI;
 
 //TODO: board should be Board
-public class board {
+public class Board {
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public static final Color WALL_COLOR = Color.black;  //This will eventually be switched to brown
 	
 	private int[][] walls;		// holds the locations of all the walls; 0 = no wall, 1 = vertical wall, 2 = horizontal wall
 	private Player players[];	// holds information about each player
 	private int turn, pl;		// turn tells us which player's turn it is;  pl is the number of players
-	private qBoard gui;			// allows board to communicate with the gui
+	private QBoard gui;			// allows board to communicate with the gui
 	private AI ai;				// allows board to communicate with the ai
 	public Graph<Point> graph;	// needed to find a path from a point to the goal
 	public Semaphore sem;		// used to tell the ai when it's turn is, needs a better name
@@ -34,7 +34,7 @@ public class board {
 	
 	// default constructor, assumes 2 players all using their default colors
 	// will probably only be used for testing
-	public board() {
+	public Board() {
 		walls = new int[8][8];
 		initializeToZero(walls);
 		pl = 2;
@@ -48,7 +48,7 @@ public class board {
 	}
 	
 	// constructor that will make a 2 player game where player 0 is using the gui, and player 1 is an ai opponent
-	public board(boolean usingAI) {
+	public Board(boolean usingAI) {
 		walls = new int[8][8];
 		initializeToZero(walls);
 		pl = 2;
@@ -68,7 +68,7 @@ public class board {
 	}
 	
 	// this is the constructor that will be used most often
-	public board(int numOfPlayers, Color[] colArray, int[] playerTypes) {
+	public Board(int numOfPlayers, Color[] colArray, int[] playerTypes) {
 		walls = new int[8][8];
 		initializeToZero(walls);
 		pl = numOfPlayers;
@@ -442,7 +442,7 @@ public class board {
 	
 	// makes a new board appear on screen and sets default locations of the players 
 	public void newGUI() {
-		gui = new qBoard(this);
+		gui = new QBoard(this);
 		for (int i = 0; i < players.length; i++) {
 			gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
 		}
@@ -647,6 +647,6 @@ public class board {
 	}
 
 	public static void main(String[] args) {
-		board b = new board(true);
+		Board b = new Board(true);
 	}
 }

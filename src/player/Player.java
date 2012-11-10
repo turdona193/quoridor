@@ -122,25 +122,25 @@ public class Player {
 			temp = 0;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(temp, i);
-				goalSet.add(new Point(temp, i));
+				goalSet.add(goalLine[i]);
 			}
 		} else if (xy.x == 0) {
 			temp = 8;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(temp, i);
-				goalSet.add(new Point(temp, i));
+				goalSet.add(goalLine[i]);
 			}
 		} else if (xy.y == 8) {
 			temp = 0;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(i, temp);
-				goalSet.add(new Point(i, temp));
+				goalSet.add(goalLine[i]);
 			}
 		} else if (xy.y == 0) {
 			temp = 8;
 			for (int i = 0; i < goalLine.length; i++) {
 				goalLine[i] = new Point(i, temp);
-				goalSet.add(new Point(i, temp));
+				goalSet.add(goalLine[i]);
 			}
 		}	
 	}

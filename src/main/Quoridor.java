@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import player.Player;
-import player.board;
+import player.Board;
 
 public class Quoridor extends JFrame implements ActionListener {
 
@@ -194,7 +194,7 @@ public class Quoridor extends JFrame implements ActionListener {
 
 	private void play() {
 		label.setText(MESSAGES[0]);
-		board play = new board(players, colors, playerTypes);
+		Board play = new Board(players, colors, playerTypes);
 	}
 
 	private void options() {

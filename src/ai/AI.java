@@ -7,7 +7,7 @@ import java.util.concurrent.Semaphore;
 import javax.swing.JButton;
 
 import main.Quoridor;
-import main.qBoard;
+import main.QBoard;
 
 /*import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.ComponentDriver;
@@ -17,17 +17,17 @@ import com.objogate.wl.swing.driver.JRadioButtonDriver;
 import com.objogate.wl.swing.gesture.GesturePerformer;*/
 
 //import util.Graph;
-import player.board;
+import player.Board;
 
 public class AI extends Thread {
 
     //private Graph<Point> graph;
-    private board board;
+    private Board board;
     private Semaphore sem;
     //JFrameDriver qBoardDriver;
 
     //public AI(Graph<Point> graph, Board board) {
-    public AI(board board, Semaphore sem) {
+    public AI(Board board, Semaphore sem) {
         //this.graph = graph;
         this.board = board;
         this.sem = sem;

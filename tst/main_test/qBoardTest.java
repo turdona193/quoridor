@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.text.IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace;
 import static org.hamcrest.Matchers.*;
 import static main.Quoridor.*;
-import static main.qBoard.*;
+import static main.QBoard.*;
 
 import javax.swing.JButton;
 
@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import main.Quoridor;
-import main.qBoard;
+import main.QBoard;
 
 import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.ComponentDriver;
