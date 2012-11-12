@@ -20,7 +20,6 @@ import javax.swing.text.StyleConstants.ColorConstants;
 import player.Player;
 import player.Board;
 
-//TODO: qBoard should be QBoard
 //TODO: What is a qBoard?
 public class QBoard extends JFrame implements ActionListener{
 

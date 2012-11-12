@@ -150,6 +150,15 @@ public class Board {
 	}
 	
 	/**
+	 * This method returns a GameState Object which contains a copy of all the necessary variables in the game.
+	 * @return
+	 * 		Returns a GameState Object representing the game's current State.
+	 */
+	public GameState getCurrentState() {
+		return new GameState(walls, players, turn, graph);
+	}
+	
+	/**
 	 * This method will convert a String containing a move in the format we've been using in our gui into one 
 	 * matching the format that will be used when we send moves over a network.
 	 * 
