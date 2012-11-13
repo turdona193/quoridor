@@ -2,6 +2,8 @@ package player;
 
 import java.awt.Color;
 import java.awt.Point;
+
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -10,10 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import util.Graph;
-import util.GraphEdgeIsDuplicateException;
-import util.GraphEdgeNotFoundException;
-import util.GraphNodeIsDuplicateException;
-import util.GraphNodeNotFoundException;
 
 import main.QBoard;
 import ai.AI;
@@ -111,34 +109,22 @@ public class Board {
 	// nodes representing spaces directly adjacent to each other
 	private void initializeGraph() {
 		graph = new Graph<Point>();
-		try {
-			for (int i = 0; i < 9; i++) {
-				for (int j = 0; j < 9; j++) {
-					graph.addNode(new Point(i,j));
-				}
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				graph.addNode(new Point(i,j));
 			}
-			
-			for (int i = 0; i < 8; i++) {
-				for (int j = 0; j < 9; j++) {
-					graph.addEdge(new Point(i, j), new Point(i + 1, j));
-				}
+		}
+		
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 9; j++) {
+				graph.addEdge(new Point(i, j), new Point(i + 1, j));
 			}
-			
-			for (int i = 0; i < 8; i++) {
-				for (int j = 0; j < 9; j++) {
-					graph.addEdge(new Point(j, i), new Point(j, i + 1));
-				}
+		}
+		
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 9; j++) {
+				graph.addEdge(new Point(j, i), new Point(j, i + 1));
 			}
-			
-		} catch (GraphNodeIsDuplicateException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		} catch (GraphNodeNotFoundException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		} catch (GraphEdgeIsDuplicateException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 	
@@ -316,31 +302,19 @@ public class Board {
 			
 			boolean legal = true;	//if any player would be blocked by the wall, this will be set to false
 			
-			try {
-				graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
-				graph.removeEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
-				Object path[];
-				for (int i = 0; i < pl; i++) {
-					// The code should test to see if any Player cannot reach their goal inside this for loop.
-					// But I can't seem to figure out how to do that.
-					path = graph.findPath(players[i].getLocation(), players[i].goalSet);
-					if (Double.valueOf(String.valueOf(path[3])) == Double.POSITIVE_INFINITY) {
-						legal = false;
-					}
+			graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
+			graph.removeEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
+			List<Point> path;
+            // test to see if any Player cannot reach their goal
+			for (int i = 0; i < pl; i++) {
+				path = graph.findPath(players[i].getLocation(), players[i].goalSet);
+				if (path.isEmpty()) {
+					legal = false;
 				}
-				graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
-				graph.addEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
-				
-			} catch (GraphNodeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			} catch (GraphEdgeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			} catch (GraphEdgeIsDuplicateException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
 			}
+			graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
+			graph.addEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
+
 			return legal;
 		}
 
@@ -361,31 +335,19 @@ public class Board {
 			
 			boolean legal = true;	//if any player would be blocked by the wall, this will be set to false
 			
-			try {
-				graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
-				graph.removeEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
-				Object path[];
-				for (int i = 0; i < pl; i++) {
-					// The code should test to see if any Player cannot reach their goal inside this for loop.
-					// But I can't seem to figure out how to do that.
-					path = graph.findPath(players[i].getLocation(), players[i].goalSet);
-					if (Double.valueOf(String.valueOf(path[3])) == Double.POSITIVE_INFINITY) {
-						legal = false;
-					}
+			graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
+			graph.removeEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
+			List<Point> path;
+            // test to see if any Player cannot reach their goal
+			for (int i = 0; i < pl; i++) {
+				path = graph.findPath(players[i].getLocation(), players[i].goalSet);
+				if (path.isEmpty()) {
+					legal = false;
 				}
-				graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
-				graph.addEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
-				
-			} catch (GraphNodeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			} catch (GraphEdgeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			} catch (GraphEdgeIsDuplicateException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
 			}
+			graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
+			graph.addEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
+
 			return legal;
 		}
 		return false;
@@ -487,19 +449,8 @@ public class Board {
 			walls[xy.x][xy.y] = 2;
 			gui.setHoriWallColor(xy, players[turn].getColor());
 			gui.setHoriWallColor(new Point(xy.x+1,xy.y), players[turn].getColor());
-			try {
-				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
-				graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
-			}
-			catch (GraphNodeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			catch (GraphEdgeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			
+            graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
+            graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
 			players[turn].decrementWall();
 			nextTurn();
 		}
@@ -511,19 +462,8 @@ public class Board {
 			walls[xy.x][xy.y] = 1;
 			gui.setVertWallColor(xy, players[turn].getColor());
 			gui.setVertWallColor(new Point(xy.x,xy.y+1), players[turn].getColor());
-			try {
-				graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
-				graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
-			}
-			catch (GraphNodeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			catch (GraphEdgeNotFoundException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-
+            graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
+            graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
 			players[turn].decrementWall();
 			nextTurn();
 		}
