@@ -71,6 +71,20 @@ public class Graph<E> {
     }
 
     /**
+     * Return {@code true} if and only if this graph contains the specified
+     * element, {@code false} otherwise.
+     *
+     * @param element
+     *     the specified element
+     *
+     * @return
+     *     {@code true} if and only if this graph contains the specified element
+     */
+    public boolean contains(E element) {
+        return nodes.contains(new Node<E>(element));
+    }
+
+    /**
      * Add an edge to this graph from the node for the origin element to the
      * node for the apex elements.
      *

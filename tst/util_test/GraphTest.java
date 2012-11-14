@@ -20,11 +20,23 @@ import util.Graph;
  */
 public class GraphTest {
 
+    Graph<Integer> graph;
+
+    @Before
+    public void setUp() {
+        graph = new Graph<Integer>();
+    }
+
+    @Test
+    public void testContains() {
+        graph.addNode(1);
+        assertTrue(graph.contains(1));
+    }
+
     @Test
     public void testFindPathSetOfGoals() {
-        Graph<Integer> graph        = new Graph<Integer>();
-        Set<Integer>   goalSet      = new HashSet<Integer>();
-        List<Integer>  expectedPath = new ArrayList<Integer>();
+        Set<Integer> goalSet = new HashSet<Integer>();
+        List<Integer> expectedPath = new ArrayList<Integer>();
 
         graph.addNode(1);
         goalSet.add(1);
