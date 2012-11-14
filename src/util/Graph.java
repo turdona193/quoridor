@@ -85,6 +85,20 @@ public class Graph<E> {
     }
 
     /**
+     * Returns the set of elements stored by nodes in this graph.
+     *
+     * @return
+     *     the set of elements stored by nodes in this graph
+     */
+    public Set<E> elements() {
+        Set<E> elements = new HashSet<E>();
+        for (Node<E> node: nodes) {
+            elements.add(node.element());
+        }
+        return elements;
+    }
+
+    /**
      * Add an edge to this graph from the node for the origin element to the
      * node for the apex elements.
      *
@@ -152,6 +166,77 @@ public class Graph<E> {
 
         node(nodeA).removeEdge(node(nodeA), node(nodeB), weight);
         node(nodeB).removeEdge(node(nodeB), node(nodeA), weight);
+    }
+
+    /**
+     * Returns the set containing the elements whose nodes are connected by an
+     * edge to the node for the specified element.
+     *
+     * @return
+     *     the set containing the elements whose nodes are connected by an edge
+     *     to the node for the specified element
+     */
+    public Set<E> neighbors(E element) {
+        Set<E> neighbors = new HashSet<E>();
+        Node<E> node = node(new Node<E>(element));
+        for (Edge<E> edge: node.edges()) {
+            neighbors.add(edge.apex().element());
+        }
+        return neighbors;
+    }
+
+    /**
+     * Creates and returns a copy of this graph.  This performs a deep copy of
+     * the graph data structure, i.e., without copying the elements stored by
+     * it.
+     *
+     * @return
+     *      copy of this graph
+     */
+    public Graph<E> clone() {
+        Graph<E> clone = new Graph<E>();
+        for (Node<E> node: nodes) {
+            clone.addNode(node.element());
+        }
+        for (Node<E> node: nodes) {
+            for (Edge<E> edge: node.edges()) {
+                clone.addEdge(edge.origin().element(),
+                              edge.apex().element(),
+                              edge.weight());
+            }
+        }
+        return clone;
+    }
+
+    /**
+     * Compares this graph to the specified object.  Returns {@code true} if the
+     * specified object is an equivalent graph.
+     *
+     * @param object
+     *     the specified object
+     *
+     * @return
+     *     {@code true} if the specified object is an equivalent graph, {@code
+     *     false} otherwise
+     */
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object instanceof Graph) {
+            Graph<E> graph = (Graph<E>)object;
+            if (!graph.elements().equals(elements())) {
+                return false;
+            }
+            else {
+                for (E element: elements()) {
+                    if (!graph.neighbors(element).equals(neighbors(element))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -279,7 +364,7 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
     private double pathCost;
 
     /**
-     * Construct a new earch tree node with the specified state, parent, and
+     * Construct a new search tree node with the specified state, parent, and
      * path-cost.  
      *
      * @param state
@@ -409,7 +494,7 @@ class Node<E> {
     private Set<Edge<E>> edges;
 
     /**
-     * Contructs a new, empty node.
+     * Constructs a new, empty node.
      */
     public Node() {
         this.element = null;
@@ -668,7 +753,7 @@ interface Frontier<E> {
     public E remove();
 
     /**
-     * Returns {@code ture} if and only if this frontier contains the specified
+     * Returns {@code true} if and only if this frontier contains the specified
      * element.
      *
      * @param element
@@ -723,7 +808,7 @@ class QueueFrontier<E> implements Frontier<E> {
     }
 
     /**
-     * Returns {@code ture} if and only if this frontier contains the specified
+     * Returns {@code true} if and only if this frontier contains the specified
      * element.
      *
      * @param element

@@ -34,6 +34,30 @@ public class GraphTest {
     }
 
     @Test
+    public void testClone() {
+        assertTrue(graph.equals(graph));
+        addNodes(new int[] { 1, 2, 3 });
+        addEdges(new int[] { 1, 1 },
+                 new int[] { 2, 3 });
+        Graph<Integer> clone = graph.clone();
+        assertTrue(graph.equals(clone));
+        graph.removeEdge(1, 2);
+        assertTrue(!graph.equals(clone));
+    }
+
+    private void addNodes(int[] ints) {
+        for (int i: ints) {
+            graph.addNode(i);
+        }
+    }
+
+    private void addEdges(int[] origins, int[] apices) {
+        for (int i = 0; i < origins.length; i++) {
+            graph.addEdge(origins[i], apices[i]);
+        }
+    }
+
+    @Test
     public void testFindPathSetOfGoals() {
         Set<Integer> goalSet = new HashSet<Integer>();
         List<Integer> expectedPath = new ArrayList<Integer>();
