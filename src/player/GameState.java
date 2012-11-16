@@ -1,12 +1,9 @@
 package player;
 
-import java.awt.Color;
 import java.awt.Point;
 
 import java.util.List;
 import java.util.Scanner;
-
-import javax.swing.JOptionPane;
 
 import util.Graph;
 
@@ -27,11 +24,11 @@ public class GameState {
 	 * 
 	 * Also, the first index represents the row, and the second represents the column.
 	 */
-	public int[][] walls;
+	private int[][] walls;
 	/**
 	 * An array of Player objects, there's one for each Player in the game.
 	 */
-	public Player players[];
+	private Player players[];
 	/**
 	 * This number tells us which Player's turn it is.
 	 */
@@ -41,7 +38,7 @@ public class GameState {
 	 * the board, and there is initially an Edge between each adjacent Node in the Graph.  As walls are added, 
 	 * corresponding edges are removed from the Graph.
 	 */
-	public Graph<Point> graph;
+	private Graph<Point> graph;
 	
 	/**
 	 * Constructs a new State with parameters that match what is passed in.
@@ -67,7 +64,7 @@ public class GameState {
 			players[i].setLocation(pls[i].getLocation());
 		}
 		this.turn = turn;
-		this.graph = graph;
+		this.graph = graph.clone();
 	}
 	
 	//TODO: Make either this class use the isStringLegal method in Board, or make Board use the ont in this class.
@@ -389,6 +386,43 @@ public class GameState {
 		 */
 		private void nextTurn() {
 			turn = (turn + players.length + 1) % players.length;
+		}
+		
+		//TODO: Make it return a copy of the array
+		/**
+		 * Returns an array representing the locations of the walls.
+		 * @return
+		 * 		an 8x8 int array representing the locations of the walls on the board.
+		 */
+		public int[][] getWalls() {
+			return walls;
+		}
+		
+		//TODO: Make this return a copy of the Players array instead of the actual thing
+		/**
+		 * Returns a reference to the array containing the information about each Player.
+		 * @return
+		 * 		an array containing a Player object for each Player.
+		 */
+		public Player[] getPlayerArray() {
+			return players;
+		}
+		
+		/**
+		 * Returns the turn number.
+		 * @return
+		 * 		returns the turn number.
+		 */
+		public int getTurn() {
+			return turn;
+		}
+		/**
+		 * Returns the graph that knows where walls are located.
+		 * @return
+		 * 		a graph representing all the possible moves a Player could make.
+		 */
+		public Graph getGraph() {
+			return graph;
 		}
 	
 

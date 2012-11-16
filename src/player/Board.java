@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -16,11 +15,11 @@ import util.Graph;
 import main.QBoard;
 import ai.AI;
 
-//TODO: board should be Board
 public class Board {
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public static final Color WALL_COLOR = Color.black;  //This will eventually be switched to brown
 	
+	//TODO: replace walls, players[], turn, pl, and graph with a single GameState Object.
 	private int[][] walls;		// holds the locations of all the walls; 0 = no wall, 1 = vertical wall, 2 = horizontal wall
 	private Player players[];	// holds information about each player
 	private int turn, pl;		// turn tells us which player's turn it is;  pl is the number of players
@@ -30,6 +29,7 @@ public class Board {
 	public Semaphore sem;		// used to tell the ai when it's turn is, needs a better name
 	public JFrame winFrame;		// holds the message when a player wins the game
 	
+	//TODO: Create a single initialize method that handles all of the stuff that is in all of the constructors.
 	// default constructor, assumes 2 players all using their default colors
 	// will probably only be used for testing
 	public Board() {
@@ -131,6 +131,7 @@ public class Board {
 	public boolean hasWalls(int player) {
 		return players[player].hasWalls();
 	}
+	
 	public int numberOfWalls(int player){
 		return players[player].getWalls();
 	}
@@ -143,6 +144,9 @@ public class Board {
 	public GameState getCurrentState() {
 		return new GameState(walls, players, turn, graph);
 	}
+	
+	
+	//TODO: Update to make the returned String have "MOVE?" at the beginning of it.
 	
 	/**
 	 * This method will convert a String containing a move in the format we've been using in our gui into one 
@@ -195,6 +199,7 @@ public class Board {
 		return netString;
 	}
 	
+	//TODO: Make it read Strings that start with "MOVED" or "MOVE?"
 	/**
 	 * This method converts a "Net String" to a "GUI String" so that it can be processed correctly.
 	 * 
@@ -227,7 +232,6 @@ public class Board {
 		String GUIString = "";
 
 		//needed to determine if a wall is horizontal or vertical
-		int y2 = Integer.parseInt(sc.next());
 		int x2 = Integer.parseInt(sc.next());
 		
 		int y = Integer.parseInt(sc.next());
@@ -245,8 +249,7 @@ public class Board {
 			else
 				GUIString = "H " + (x-2) + " " + (y-1);
 		}
-		
-		
+			
 		return GUIString;
 	}
 	
@@ -265,128 +268,17 @@ public class Board {
 		newStr = newStr.replace(',', ' ');
 		return newStr;
 	}
-		
-	// method to look at a String representing a move and return whether or not it represents a valid move
-	// works for players trying to move their piece; returns true whenever a player tries to place a wall
+
+	/**
+	 * Method which takes in a GUIString representing a move and determines whether or not it is legal.
+	 * 
+	 * @param input
+	 * 		This is the String representing the move.
+	 * @return
+	 * 		true if the move is legal, false if the move is illegal.
+	 */
 	public boolean isStringLegal(String input) {
-		Point xy = new Point();
-		Scanner sc = new Scanner(input);
-		String firstCh = sc.next();
-		if (firstCh.equals("M")) {
-			xy.x = sc.nextInt();
-			xy.y = sc.nextInt();
-			return isMoveLegal(turn, xy);
-		} else if (firstCh.equals("H")) {
-			xy.x = sc.nextInt();
-			xy.y = sc.nextInt();
-			return isHoriWallLegal(turn, xy);
-		} else if (firstCh.equals("V")) {
-			xy.x = sc.nextInt();
-			xy.y = sc.nextInt();
-			return isVertWallLegal(turn, xy);
-		}
-		return false;
-	}
-	
-	// player is the ID of the player trying to place a wall, loc represents the location of the wall
-	public boolean isHoriWallLegal(int player, Point loc) {
-		if (players[player].getWalls() > 0 && loc.x < 8 && loc.x > -1 && loc.y > -1 && loc.y < 8) {
-			if (walls[loc.x][loc.y] > 0)
-				return false;
-			if (loc.x < 7)
-				if (walls[loc.x+1][loc.y] == 2)
-					return false;
-			if (loc.x > 0)
-				if (walls[loc.x-1][loc.y] == 2)
-					return false;
-			
-			boolean legal = true;	//if any player would be blocked by the wall, this will be set to false
-			
-			graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
-			graph.removeEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
-			List<Point> path;
-            // test to see if any Player cannot reach their goal
-			for (int i = 0; i < pl; i++) {
-				path = graph.findPath(players[i].getLocation(), players[i].goalSet);
-				if (path.isEmpty()) {
-					legal = false;
-				}
-			}
-			graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x,loc.y+1));
-			graph.addEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
-
-			return legal;
-		}
-
-		return false;
-	}
-	
-	// player is the ID of the player trying to place a wall, loc represents the location of the wall
-	public boolean isVertWallLegal(int player, Point loc) {
-		if (players[player].getWalls() > 0 && loc.x < 8 && loc.x > -1 && loc.y > -1 && loc.y < 8) {
-			if (walls[loc.x][loc.y] > 0)
-				return false;
-			if (loc.y < 7)
-				if (walls[loc.x][loc.y+1] == 1)
-					return false;
-			if (loc.y > 0)
-				if (walls[loc.x][loc.y-1] == 1)
-					return false;
-			
-			boolean legal = true;	//if any player would be blocked by the wall, this will be set to false
-			
-			graph.removeEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
-			graph.removeEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
-			List<Point> path;
-            // test to see if any Player cannot reach their goal
-			for (int i = 0; i < pl; i++) {
-				path = graph.findPath(players[i].getLocation(), players[i].goalSet);
-				if (path.isEmpty()) {
-					legal = false;
-				}
-			}
-			graph.addEdge(new Point(loc.x,loc.y), new Point(loc.x+1,loc.y));
-			graph.addEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
-
-			return legal;
-		}
-		return false;
-	}
-	
-	public boolean isMoveLegal(int player, Point move) {
-		return isMoveLegal(player, move, 0);
-	}
-	
-	// will eventually return true if a move is legal and false if it is not legal
-	// player is the player's number, and move is where the player is attempting to move
-	private boolean isMoveLegal(int player, Point move, int rec) {
-		if (rec >= players.length)
-			return false;
-		
-		Player currentPlayer = players[player];
-		Point[] adjacentSpaces = new Point[4];
-		adjacentSpaces[0] = currentPlayer.up();
-		adjacentSpaces[1] = currentPlayer.down();
-		adjacentSpaces[2] = currentPlayer.left();
-		adjacentSpaces[3] = currentPlayer.right();
-		
-		for (int i = 0; i < adjacentSpaces.length; i++) {
-			if (adjacentSpaces[i] != null) {
-				if (!isBlocked(currentPlayer.getLocation(), adjacentSpaces[i])) {
-					int PID = PlayerOnSpace(adjacentSpaces[i]);
-					if (PID >= 0) {
-						if (isMoveLegal(PID, move, rec+1)) {
-							return true;
-						}
-					}
-					else if (adjacentSpaces[i].equals(move)) {
-						return true;	
-					}
-				}
-			}
-		}
-		
-		return false;
+		return getCurrentState().isStringLegal(input);
 	}
 	
 	public int[][] getWallArray() {
@@ -400,7 +292,11 @@ public class Board {
 	public Player[] getPlayersArray() {
 		return players;
 	}
-	
+	/**
+	 * Returns an int representing the current Player's type.
+	 * @return
+	 * 		an int representing a Player type.
+	 */
 	public int getCurrentPlayerType() {
 		return players[turn].getPlayerType();
 	}
@@ -419,6 +315,8 @@ public class Board {
 		}
 		//showMoves(players[turn], true);
 	}
+	
+	//TODO: Should be changed to use a method in GameState to make the moves.
 	
 	// I'm assuming the String for moving a piece will look like "M X Y"
 	// where X and Y are variables representing the coordinates of the move
@@ -522,6 +420,8 @@ public class Board {
 		enableAndChangeColor(pl.getLocation(), false, pl.getColor());
 	}
 	
+	//TODO: Should call the isBlocked method in GameState.
+	
 	// method which will return true if there is a wall between the two points of false if there isn't.
 	// assumes that the two spaces are directly next to each other
 	public boolean isBlocked(Point p1, Point p2) {
@@ -566,11 +466,6 @@ public class Board {
 		//gui.setSpaceClickable(p, b);
 	}
 	
-	//will eventually be able to send a string containing a move to an AI or over a network after we have more information
-	private void Send() {
-		
-	}
-	
 	private void nextTurn() {
 		showMoves(players[turn], false);
 		if(players[turn].hasWon()){
@@ -596,6 +491,6 @@ public class Board {
 	}
 
 	public static void main(String[] args) {
-		Board b = new Board(true);
+		new Board(true);
 	}
 }
