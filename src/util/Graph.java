@@ -169,6 +169,34 @@ public class Graph<E> {
     }
 
     /**
+     * Returns {@code true} if this graph contains an edge between the nodes for
+     * the specified elements, {@code false} otherwise.
+     *
+     * @param element1
+     *     an element in this graph
+     *
+     * @param element2
+     *     an element in this graph
+     *
+     * @return
+     *     {@code true} if this graph contains an edge between the nodes for the
+     *     specified elements, {@code false} otherwise.
+     */
+    public boolean containsEdge(E element1, E element2) {
+        if (!contains(element1) || !contains(element2)) {
+            return false;
+        }
+
+        for (E element: neighbors(element1)) {
+            if (element.equals(element2)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the set containing the elements whose nodes are connected by an
      * edge to the node for the specified element.
      *

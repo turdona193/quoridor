@@ -34,6 +34,16 @@ public class GraphTest {
     }
 
     @Test
+    public void testContainsEdge() {
+        addNodes(new int[] {1, 2});
+        assertFalse(graph.containsEdge(1, 2));
+        assertFalse(graph.containsEdge(2, 1));
+        graph.addEdge(1, 2);
+        assertTrue(graph.containsEdge(1, 2));
+        assertTrue(graph.containsEdge(2, 1));
+    }
+
+    @Test
     public void testClone() {
         assertTrue(graph.equals(graph));
         addNodes(new int[] { 1, 2, 3 });
