@@ -55,18 +55,6 @@ public class GraphTest {
         assertTrue(!graph.equals(clone));
     }
 
-    private void addNodes(int[] ints) {
-        for (int i: ints) {
-            graph.addNode(i);
-        }
-    }
-
-    private void addEdges(int[] origins, int[] apices) {
-        for (int i = 0; i < origins.length; i++) {
-            graph.addEdge(origins[i], apices[i]);
-        }
-    }
-
     @Test
     public void testFindPathSetOfGoals() {
         Set<Integer> goalSet = new HashSet<Integer>();
@@ -85,5 +73,17 @@ public class GraphTest {
         graph.addNode(3);
         goalSet.add(3);
         assertEquals(expectedPath, graph.findPath(1, goalSet));
+    }
+
+    private void addNodes(int[] ints) {
+        for (int i: ints) {
+            graph.addNode(i);
+        }
+    }
+
+    private void addEdges(int[] origins, int[] apices) {
+        for (int i = 0; i < origins.length; i++) {
+            graph.addEdge(origins[i], apices[i]);
+        }
     }
 }
