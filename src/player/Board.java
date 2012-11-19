@@ -219,8 +219,9 @@ public class Board {
 	 * 
 	 * One major difference between these two formats is that converting between the two switches the x and y axis of the board.
 	 * 
-	 * @param netString
+	 * @param netStr
 	 * 		This is a String containing a move in the "net String" format.
+     *
 	 * @return
 	 * 		This returns A String containing the same move in the "GUI String" format.
 	 */

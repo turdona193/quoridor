@@ -17,10 +17,12 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -30,7 +32,7 @@ import java.util.TreeSet;
  * {@code Graph} implements an undirected graph.
  *
  * @author  <a href="mailto:barkle36@gmail.com">Andrew Allen Barkley</a>
- * @version 2012-11-13
+ * @version 2012-11-18
  */
 public class Graph<E> {
     /**
@@ -48,7 +50,7 @@ public class Graph<E> {
     /**
      * Add a node with the specified element to this graph.
      *
-     * @param  element
+     * @param element
      *     the element to add to this graph
      */
     public void addNode(E element) {
@@ -58,7 +60,7 @@ public class Graph<E> {
     /**
      * Return the specified node from this graph.
      *
-     * @param  target
+     * @param target
      *     the specified node
      */
     private Node<E> node(Node<E> target) {
@@ -304,10 +306,10 @@ public class Graph<E> {
     /**
      * Returns a path from initial element to goal element.
      *
-     * @param  initial
+     * @param initial
      *     the initial element
      *
-     * @param  goal
+     * @param goal
      *     the goal element
      *
      * @return
@@ -323,60 +325,72 @@ public class Graph<E> {
             return path;
         }
 
-        Node<E> initialNode = node(new Node<E>(initial));
-        Node<E> goalNode = node(new Node<E>(goal));
+        Node<E> initialNode;
+        Node<E> goalNode;
+        Frontier<SearchNode<Node<E>>> frontier;
+        NavigableSet<SearchNode<Node<E>>> explored;
+        SearchNode<Node<E>> node;
+        SearchNode<Node<E>> child;
+        Stack<E> stack;
+        double f; // the value of the evaluation function for node, f(node)
+        double g; // the value of the  path cost function for node, g(node)
+        double h; // the value of the  heuristic function for node, h(node)
 
-        Frontier<SearchNode<Node<E>>> frontier
-            = new QueueFrontier<SearchNode<Node<E>>>();
-        frontier.add(new SearchNode<Node<E>>(initialNode, null, 0d));
+        initialNode = node(new Node<E>(initial));
+        goalNode    = node(new Node<E>(goal));
+        frontier    = new PriorityQueueFrontier<SearchNode<Node<E>>>(
+                          11,                        // prime for hashing
+                          new SearchNodeComparator() // the comparator
+                      );
+        explored    = new TreeSet<SearchNode<Node<E>>>();
+        stack       = new Stack<E>();
 
-        NavigableSet<SearchNode<Node<E>>>
-            explored = new TreeSet<SearchNode<Node<E>>>();
+        frontier.add(new SearchNode<Node<E>>(initialNode, // state
+                                             null,        // parent
+                                             0d           // f(initialNode)
+                                            ));
 
-        while (true) {
-            if (frontier.isEmpty()) {
-                return path;
-            }
-            SearchNode<Node<E>> n = frontier.remove();
-            explored.add(n);
-            for (Edge<E> e : n.state().edges()) {
-                SearchNode<Node<E>> child = new SearchNode<Node<E>>(
-                                e.apex(), n, n.pathCost() + e.weight());
-                if (!explored.contains(child) &&
-                    !frontier.contains(child)) {
-                    if (child.state().equals(goalNode)) {
-                        Stack<E> stack = new Stack<E>();
-                        while (true) {
-                            stack.push(child.state().element());
-                            if (child.parent() == null) {
-                                break;
-                            }
-                            child = child.parent();
-                        }
-                        while (!stack.isEmpty()) {
-                            path.add(stack.pop());
-                        }
-                        return path;
+        while (!frontier.isEmpty()) {
+            node = frontier.remove();
+            if (node.state().element().equals(goal)) {
+                while (true) {
+                    stack.push(node.state().element());
+                    if (node.parent() == null) {
+                        break;
                     }
+                    node = node.parent();
+                }
+                while (!stack.isEmpty()) {
+                    path.add(stack.pop());
+                }
+                break;
+            }
+            explored.add(node);
+            for (Edge<E> edge : node.state().edges()) {
+                g = node.pathCost() + edge.weight();
+                h = 0; // need h = heuristicValue(node(node.state()));
+                f = g + h;
+                child = new SearchNode<Node<E>>(edge.apex(), node, f);
+                if (!explored.contains(child) &&
+                    !frontier.contains(child))
+                {
                     frontier.add(child);
                 }
             }
         }
+
+        return path;
     }
 }
-
+ 
 /**
  * This class implements a node in the search tree generated by a search for a
  * path in this graph.
- *
- * @param <T>
- *     the type of the state of this search tree node
  */
 class SearchNode<T> implements Comparable<SearchNode<T>> {
 
     /**
-     * The state in the state space to which this search tree node
-     * corresponds.
+     * The state in the state space to which this search tree node corresponds.
      */
     private T state;
 
@@ -507,6 +521,37 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
 }
 
 /**
+ * {@code SearchNodeComparator} implements a {@code SearchNode} {@code
+ * Comparator} for use by the priority queue in the best-first search.  It
+ * simply implements compare to compare the path cost of nodes.  This has the
+ * effect of ordering nodes in the priority queue by the path cost of the node.
+ */
+class SearchNodeComparator implements Comparator {
+
+    /**
+     * Construct a new {@code SearchNodeComparator}.
+     */
+    public SearchNodeComparator() {
+
+    }
+
+    /**
+     * Compare the specified objects according to path cost.
+     *
+     * @param o1 the first object
+     * @param o2 the second object
+     */
+    public int compare(Object o1, Object o2) {
+        if (o1 == o2) {
+            return 0;
+        }
+        SearchNode n1 = (SearchNode)o1;
+        SearchNode n2 = (SearchNode)o2;
+        return (int)(n1.pathCost() - n2.pathCost());
+    }
+}
+
+/**
  * {@code Node} implements a node for this graph.
  */
 class Node<E> {
@@ -564,10 +609,10 @@ class Node<E> {
     /**
      * Adds an edge to this node using the specified nodes and weight.
      *
-     * @param  origin
+     * @param origin
      *     the origin {@code Node}
      *
-     * @param  apex
+     * @param apex
      *     the apex {@code Node}
      */
     public void addEdge(Node<E> origin, Node<E> apex, double weight) {
@@ -596,7 +641,7 @@ class Node<E> {
      * and only if the argument is not {@code null} and is a {@code Node} that
      * has an element equivalent to the element of this node.
      *
-     * @param  anotherObject
+     * @param anotherObject
      *     the object to compare this node to
      *
      * @return
@@ -716,7 +761,7 @@ class Edge<E> {
      * only if the argument is not {@code null} and is an {@code Edge} object
      * that has equivalent origin and apex nodes.
      *
-     * @param  anotherObject
+     * @param anotherObject
      *     the object to compare this edge to
      *
      * @return
@@ -760,8 +805,6 @@ class Edge<E> {
 /**
  * The {@code Frontier} interface defines a set of classes that implement the
  * frontier of a search algorithm.
- *
- * @param E the type of element that is stored in this frontier
  */
 interface Frontier<E> {
 
@@ -796,58 +839,78 @@ interface Frontier<E> {
 }
 
 /**
- * The {@code ListFrontier} class implement the frontier of a search algorithm
- * using a FIFO {@code Queue}.
- *
- * @param E
- *     the type of element that is stored in this frontier
+ * The {@code PriorityQueueFrontier} class implement the frontier of a search
+ * algorithm using a {@code PriorityQueue}.
  */
-class QueueFrontier<E> implements Frontier<E> {
+class PriorityQueueFrontier<E> implements Frontier<E> {
 
     /**
      * The queue for this frontier
      */
-    private Queue<E> queue;
+    private PriorityQueue<E> queue;
 
     /**
-     * Construct a new, empty frontier.
+     * Construct a new, empty priority-queue-backed frontier.
      */
-    public QueueFrontier() {
-        queue = new LinkedList<E>();
+    public PriorityQueueFrontier() {
+        queue = new PriorityQueue<E>();
     }
 
     /**
-     * Add an element to the frontier.
+     * Construct a new, empty priority-queue-backed frontier.
+     *
+     * @param initialCapacity
+     *     the initial capacity of this priority-queue-backed frontier
+     *
+     * @param comparator
+     *     the {@code Comparator} used to order elements in this
+     *     priority-queue-backed frontier
+     */
+    public PriorityQueueFrontier(int initialCapacity,
+            Comparator<E> comparator) {
+        queue = new PriorityQueue<E>(initialCapacity, comparator);
+    }
+
+    /**
+     * Add an element to this frontier.
      *
      * @param element
-     *     the element to add this frontier
+     *     the element to add to this frontier
      */
     public void add(E element) {
         queue.add(element);
     }
 
     /**
-     * Remove an element from the frontier.
+     * Remove an element from this frontier.
      *
-     * @return an element from the frontier
+     * @return
+     *     an element from this frontier
      */
     public E remove() {
-        return queue.remove();
+        return queue.poll();
     }
 
     /**
-     * Returns {@code true} if and only if this frontier contains the specified
-     * element.
+     * Returns {@code true} if this frontier contains the specified element,
+     * {@code false} otherwise.
      *
      * @param element
      *     the specified element
+     *
+     * @return
+     *     {@code true} if this frontier contains the specified element, {@code
+     *     false} otherwise
      */
     public boolean contains(E element) {
         return queue.contains(element);
     }
 
     /**
-     * Returns {@code true} if and only if this frontier is empty.
+     * Returns {@code true} if this frontier is empty, {@code false} otherwise.
+     *
+     * @return
+     *     {@code true} if this frontier is empty, {@code false} otherwise
      */
     public boolean isEmpty() {
         return queue.isEmpty();

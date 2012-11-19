@@ -1,0 +1,88 @@
+--------------------------------------------------------------------------------
+
+Implement the clone() method for the graph
+
+Complete:           Yes
+Assigned to:     Andrew
+Due:         2012-11-19
+Size:               ***
+Priority:          High
+
+As a designer, I want to be able to copy the graph.
+
+Acceptance criterion: util.Graph.clone() makes a deep copy of the graph.
+
+--------------------------------------------------------------------------------
+
+Implement the containsEdge method for the graph
+
+Complete:           Yes
+Assigned to:     Andrew
+Due:         2012-11-19
+Size:                 *
+Priority:          High
+
+As a designer, I want to be able to query the graph for the presence of an edge
+between two elements contained therein.
+
+Acceptance criterion: util.Graph.containsEdge acts as expected.
+
+--------------------------------------------------------------------------------
+
+Implement best-first without a heuristic
+
+Completed:          Yes
+Assigned to:     Andrew
+Due:         2012-11-19
+Size:               ***
+Priority:          High
+
+As a designer, I want path finding to use a best-first algorithm, with no
+heuristic.
+
+Acceptance criterion: path finding still works with the new algorithm.
+
+--------------------------------------------------------------------------------
+
+Implement AI jumping
+
+Completed:           No
+Assigned to:       John
+Due:         2012-11-19
+Size:             *****
+Priority:          High
+
+As a robot, I want the AI to jump when appropriate.
+
+Acceptance criterion: an AI can jump other players without breaking rules.
+
+--------------------------------------------------------------------------------
+
+Implement basic networking
+
+Completed:          No
+Assigned to:      Nick
+Due:        2012-11-11
+Size:
+Priority:
+
+As a user, I want to be able to make a connection to the game.
+
+Acceptance criterion: 
+
+--------------------------------------------------------------------------------
+
+Implement shortest path finding
+
+Completed:           No
+Assigned to:     Andrew
+Due:         2012-11-26
+Size:             *****
+Priority:          High
+
+As a player, I want the AI to move toward its goal.
+
+Acceptance criterion: an AI has a way to find the shortest path
+
+--------------------------------------------------------------------------------
+
