@@ -29,6 +29,21 @@ Acceptance criterion: util.Graph.containsEdge acts as expected.
 
 --------------------------------------------------------------------------------
 
+Implement breadth-first search
+
+Completed:          Yes
+Assigned to:     Andrew
+Due:         2012-11-26
+Completed:   2012-11-19
+Size:               ***
+Priority:          High
+
+As a designer, I want path finding to be able to use a breadth-first algorithm.
+
+Acceptance criterion: path finding can use a breadth-first algorithm
+
+--------------------------------------------------------------------------------
+
 Implement best-first without a heuristic
 
 Completed:          Yes
@@ -37,10 +52,26 @@ Due:         2012-11-19
 Size:               ***
 Priority:          High
 
-As a designer, I want path finding to use a best-first algorithm, with no
-heuristic.
+As a designer, I want path finding to be able to use a best-first algorithm
+with a constant heuristic function (uniform-cost).
 
-Acceptance criterion: path finding still works with the new algorithm.
+Acceptance criterion: path finding can use a best-first algorithm with a
+constant heuristic function (uniform-cost).
+
+--------------------------------------------------------------------------------
+
+Implement shortest path finding
+
+Completed:          Yes
+Assigned to:     Andrew
+Due:         2012-11-26
+Completed:   2012-11-19
+Size:             *****
+Priority:          High
+
+As a player, I want the AI to move toward its goal.
+
+Acceptance criterion: an AI has a way to find the shortest path
 
 --------------------------------------------------------------------------------
 
@@ -69,20 +100,4 @@ Priority:
 As a user, I want to be able to make a connection to the game.
 
 Acceptance criterion: 
-
---------------------------------------------------------------------------------
-
-Implement shortest path finding
-
-Completed:           No
-Assigned to:     Andrew
-Due:         2012-11-26
-Size:             *****
-Priority:          High
-
-As a player, I want the AI to move toward its goal.
-
-Acceptance criterion: an AI has a way to find the shortest path
-
---------------------------------------------------------------------------------
 

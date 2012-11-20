@@ -32,7 +32,7 @@ import java.util.TreeSet;
  * {@code Graph} implements an undirected graph.
  *
  * @author  <a href="mailto:barkle36@gmail.com">Andrew Allen Barkley</a>
- * @version 2012-11-18
+ * @version 2012-11-19
  */
 public class Graph<E> {
     /**
@@ -73,24 +73,24 @@ public class Graph<E> {
     }
 
     /**
-     * Return {@code true} if and only if this graph contains the specified
-     * element, {@code false} otherwise.
+     * Return {@code true} if this graph contains the specified element, {@code
+     * false} otherwise.
      *
      * @param element
      *     the specified element
      *
      * @return
-     *     {@code true} if and only if this graph contains the specified element
+     *     {@code true} if this graph contains the specified element
      */
     public boolean contains(E element) {
         return nodes.contains(new Node<E>(element));
     }
 
     /**
-     * Returns the set of elements stored by nodes in this graph.
+     * Returns a set containing the elements stored in this graph.
      *
      * @return
-     *     the set of elements stored by nodes in this graph
+     *     a set containing the elements stored in this graph
      */
     public Set<E> elements() {
         Set<E> elements = new HashSet<E>();
@@ -199,11 +199,11 @@ public class Graph<E> {
     }
 
     /**
-     * Returns the set containing the elements whose nodes are connected by an
+     * Returns a set containing the elements whose nodes are connected by an
      * edge to the node for the specified element.
      *
      * @return
-     *     the set containing the elements whose nodes are connected by an edge
+     *     a set containing the elements whose nodes are connected by an edge
      *     to the node for the specified element
      */
     public Set<E> neighbors(E element) {
@@ -270,8 +270,12 @@ public class Graph<E> {
     }
 
     /**
-     * Returns a path from initial element to the 'closest' goal
-     * element.
+     * Searches for a path from initial element to the 'closest' goal element
+     * using the specified algorithm.
+     *
+     * @param algorithm
+     *     the algorithm to use: breadth-first, depth-first, or best-first
+     *     (uniform-cost)
      *
      * @param initial
      *     the initial element
@@ -280,18 +284,18 @@ public class Graph<E> {
      *     the list of goal elements
      *
      * @return
-     *     a list containing the elements along the path from initial
-     *     element to goal element, containing initial if initial is
-     *     equivalent to a goal in goals, empty if no path was found
+     *     a list containing the elements along the path from initial element
+     *     to goal element, containing initial if initial is equivalent to a
+     *     goal in goals, empty if no path was found
      */
-    public List<E> findPath(E initial, Set<E> goals) {
+    public List<E> findPath(String algorithm, E initial, Set<E> goals) {
         List<E> path             = new ArrayList<E>();
         Double  pathSize         = Double.POSITIVE_INFINITY;
         List<E> shortestPath     = path;
         Double  shortestPathSize = pathSize;
 
         for (E goal: goals) {
-            path     = findPath(initial, goal);
+            path     = findPath(algorithm, initial, goal);
             pathSize = Double.valueOf(path.size());
 
             if (pathSize > 0d && pathSize < shortestPathSize) {
@@ -304,7 +308,116 @@ public class Graph<E> {
     }
 
     /**
-     * Returns a path from initial element to goal element.
+     * Searches for a path from initial element to goal element using the
+     * specified algorithm.
+     *
+     * @param algorithm
+     *     the algorithm to use: breadth-first, depth-first, or best-first
+     *     (uniform-cost)
+     *
+     * @param initial
+     *     the initial state
+     *
+     * @param goal
+     *     the goal state
+     *
+     * @return
+     *     a list containing the elements along the path from initial element
+     *     to goal element, containing initial if initial is equivalent to
+     *     goal, empty if no path was found
+     */
+    public List<E> findPath(String algorithm, E initial, E goal) {
+        List<E> path = new ArrayList<E>();
+
+        if (initial.equals(goal)) {
+            path.add(initial);
+            return path;
+        }
+
+        Node<E> initialNode = node(new Node<E>(initial));
+        Node<E> goalNode    = node(new Node<E>(goal));
+
+        if (algorithm.equals("breadth-first") ||
+                algorithm.equals("depth-first")) {
+            return findPath(path, algorithm, initialNode, goalNode);
+        }
+
+        return findPath(path, initialNode, goalNode);
+    }
+
+    /**
+     * Searches for a path from initial element to goal element using a
+     * breadth-first or depth-first search.
+     *
+     * @param algorithm
+     *     the search algorith to use; depth-first if equal to depth-first,
+     *     breadth-first otherwise
+     *
+     * @param initial
+     *     the initial state
+     *
+     * @param goal
+     *     the goal state
+     *
+     * @return
+     *     a list containing the elements along the path from initial element
+     *     to goal element, containing initial if initial is equivalent to
+     *     goal, empty if no path was found
+     */
+    private List<E> findPath(List<E> path,
+                             String  algorithm,
+                             Node<E> initialNode,
+                             Node<E> goalNode)
+    {
+        Frontier<SearchNode<Node<E>>> frontier;
+        NavigableSet<SearchNode<Node<E>>> explored;
+        SearchNode<Node<E>> node;
+        SearchNode<Node<E>> child;
+        Stack<E> stack;
+
+        frontier = new QueueFrontier<SearchNode<Node<E>>>();
+        explored = new TreeSet<SearchNode<Node<E>>>();
+        stack    = new Stack<E>();
+
+        if (algorithm.equals("depth-first")) {
+            frontier = new StackFrontier<SearchNode<Node<E>>>();
+        }
+
+        frontier.add(new SearchNode<Node<E>>(initialNode, // state
+                                             null));      // parent
+
+        while (!frontier.isEmpty()) {
+            node = frontier.remove();
+            explored.add(node);
+            for (Edge<E> edge : node.state().edges()) {
+                child = new SearchNode<Node<E>>(edge.apex(), // state
+                                                node);       // parent
+                if (!explored.contains(child) && !frontier.contains(child)) {
+                    if (child.state().equals(goalNode)) {
+                        stack.push(child.state().element());
+                        while (true) {
+                            stack.push(node.state().element());
+                            if (node.parent() == null) {
+                                break;
+                            }
+                            node = node.parent();
+                        }
+                        while (!stack.isEmpty()) {
+                            path.add(stack.pop());
+                        }
+                        return path;
+                    }
+                    frontier.add(child);
+                }
+            }
+        }
+
+        return path;
+    }
+
+    /**
+     * Searches for a path from initial element to goal element using a
+     * best-first search with a constant heuristic (uniform-cost).
      *
      * @param initial
      *     the initial element
@@ -313,20 +426,14 @@ public class Graph<E> {
      *     the goal element
      *
      * @return
-     *     a list containing the elements along the path from initial
-     *     element to goal element, containing initial if initial is
-     *     equivalent to goal, empty if no path was found
+     *     a list containing the elements along the path from initial element
+     *     to goal element, containing initial if initial is equivalent to
+     *     goal, empty if no path was found
      */
-    public List<E> findPath(E initial, E goal) {
-        List<E> path = new ArrayList<E>();
-
-        if (initial.equals(goal)) {
-            path.add(initial);
-            return path;
-        }
-
-        Node<E> initialNode;
-        Node<E> goalNode;
+    private List<E> findPath(List<E> path,
+                             Node<E> initialNode,
+                             Node<E> goalNode)
+    {
         Frontier<SearchNode<Node<E>>> frontier;
         NavigableSet<SearchNode<Node<E>>> explored;
         SearchNode<Node<E>> node;
@@ -336,23 +443,18 @@ public class Graph<E> {
         double g; // the value of the  path cost function for node, g(node)
         double h; // the value of the  heuristic function for node, h(node)
 
-        initialNode = node(new Node<E>(initial));
-        goalNode    = node(new Node<E>(goal));
-        frontier    = new PriorityQueueFrontier<SearchNode<Node<E>>>(
-                          11,                        // prime for hashing
-                          new SearchNodeComparator() // the comparator
-                      );
-        explored    = new TreeSet<SearchNode<Node<E>>>();
-        stack       = new Stack<E>();
+        frontier = new PriorityQueueFrontier<SearchNode<Node<E>>>(
+                                                11, new SearchNodeComparator());
+        explored = new TreeSet<SearchNode<Node<E>>>();
+        stack    = new Stack<E>();
 
         frontier.add(new SearchNode<Node<E>>(initialNode, // state
                                              null,        // parent
-                                             0d           // f(initialNode)
-                                            ));
+                                             0d));        // f(initialNode)
 
         while (!frontier.isEmpty()) {
             node = frontier.remove();
-            if (node.state().element().equals(goal)) {
+            if (node.state().element().equals(goalNode)) {
                 while (true) {
                     stack.push(node.state().element());
                     if (node.parent() == null) {
@@ -367,13 +469,13 @@ public class Graph<E> {
             }
             explored.add(node);
             for (Edge<E> edge : node.state().edges()) {
-                g = node.pathCost() + edge.weight();
-                h = 0; // need h = heuristicValue(node(node.state()));
+                g = node.value() + edge.weight();
+                h = 0;
                 f = g + h;
-                child = new SearchNode<Node<E>>(edge.apex(), node, f);
-                if (!explored.contains(child) &&
-                    !frontier.contains(child))
-                {
+                child = new SearchNode<Node<E>>(edge.apex(), // state
+                                                node,        // parent
+                                                f);          // f(node)
+                if (!explored.contains(child) && !frontier.contains(child)) {
                     frontier.add(child);
                 }
             }
@@ -382,7 +484,7 @@ public class Graph<E> {
         return path;
     }
 }
- 
+
 /**
  * This class implements a node in the search tree generated by a search for a
  * path in this graph.
@@ -400,14 +502,27 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
     private SearchNode<T> parent;
 
     /**
-     * The cost of the path from the initial state in the state space to the
-     * state of this node.
+     * The value of the evaluation function for this node.
      */
-    private double pathCost;
+    private double value;
+
+    /**
+     * Construct a new search tree node with the specified state and parent.
+     *
+     * @param state
+     *     the state in the state space to which this node corresponds
+     *
+     * @param parent
+     *     the node in the search tree that generated this node
+     */
+    public SearchNode(T state, SearchNode<T> parent) {
+        this.state = state;
+        this.parent = parent;
+    }
 
     /**
      * Construct a new search tree node with the specified state, parent, and
-     * path-cost.  
+     * evaluation function value.
      *
      * @param state
      *     the state in the state space to which this node corresponds
@@ -415,14 +530,13 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
      * @param parent
      *     the node in the search tree that generated this node
      *
-     * @param pathCost
-     *     the cost of the path from the initial state in the state space to
-     *     this node
+     * @param value
+     *     the value of the evaluation function for this node
      */
-    public SearchNode(T state, SearchNode<T> parent, double pathCost) {
+    public SearchNode(T state, SearchNode<T> parent, double value) {
         this.state = state;
         this.parent = parent;
-        this.pathCost = pathCost;
+        this.value = value;
     }
 
     /**
@@ -446,15 +560,13 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
     }
 
     /**
-     * Returns the cost of the path from the initial state in the state space
-     * to this node.
+     * Returns the value of the evaluation function for this node.
      *
      * @return
-     *     the cost of the path from the initial state in the state space to
-     *     this node
+     *     the value of the evaluation function for this node
      */
-    public double pathCost() {
-        return pathCost;
+    public double value() {
+        return value;
     }
 
     /**
@@ -485,9 +597,8 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
 
     /**
      * Compares this search tree node to the specified object. Returns {@code
-     * true} if and only if the argument is not {@code null} and is a {@code
-     * SearchNode} object that has a state that is equivalent to the state of
-     * this object.
+     * true} if the argument is not {@code null} and is a {@code SearchNode}
+     * object that has a state that is equivalent to the state of this object.
      *
      * @param anotherObject
      *     the object to compare this one to
@@ -523,8 +634,9 @@ class SearchNode<T> implements Comparable<SearchNode<T>> {
 /**
  * {@code SearchNodeComparator} implements a {@code SearchNode} {@code
  * Comparator} for use by the priority queue in the best-first search.  It
- * simply implements compare to compare the path cost of nodes.  This has the
- * effect of ordering nodes in the priority queue by the path cost of the node.
+ * simply implements compare to compare the evaluation function value nodes.
+ * This has the effect of ordering nodes in the priority queue by the value of
+ * the evaluation function of the node.
  */
 class SearchNodeComparator implements Comparator {
 
@@ -536,7 +648,7 @@ class SearchNodeComparator implements Comparator {
     }
 
     /**
-     * Compare the specified objects according to path cost.
+     * Compare the specified objects according to evaluation function value.
      *
      * @param o1 the first object
      * @param o2 the second object
@@ -547,7 +659,7 @@ class SearchNodeComparator implements Comparator {
         }
         SearchNode n1 = (SearchNode)o1;
         SearchNode n2 = (SearchNode)o2;
-        return (int)(n1.pathCost() - n2.pathCost());
+        return (int)(n1.value() - n2.value());
     }
 }
 
@@ -637,9 +749,9 @@ class Node<E> {
     }
 
     /**
-     * Compares this node to the specified object.  Returns {@code true} if
-     * and only if the argument is not {@code null} and is a {@code Node} that
-     * has an element equivalent to the element of this node.
+     * Compares this node to the specified object.  Returns {@code true} if the
+     * argument is not {@code null} and is a {@code Node} that has an element
+     * equivalent to the element of this node.
      *
      * @param anotherObject
      *     the object to compare this node to
@@ -757,9 +869,9 @@ class Edge<E> {
     }
 
     /**
-     * Compare this edge to the specified object.  Returns {@code true} if and
-     * only if the argument is not {@code null} and is an {@code Edge} object
-     * that has equivalent origin and apex nodes.
+     * Compare this edge to the specified object.  Returns {@code true} if the
+     * argument is not {@code null} and is an {@code Edge} object that has
+     * equivalent origin and apex nodes.
      *
      * @param anotherObject
      *     the object to compare this edge to
@@ -824,8 +936,7 @@ interface Frontier<E> {
     public E remove();
 
     /**
-     * Returns {@code true} if and only if this frontier contains the specified
-     * element.
+     * Returns {@code true} if this frontier contains the specified element.
      *
      * @param element
      *     the specified element
@@ -833,14 +944,137 @@ interface Frontier<E> {
     public boolean contains(E element);
 
     /**
-     * Returns {@code true} if and only if this frontier is empty.
+     * Returns {@code true} if this frontier is empty.
      */
     public boolean isEmpty();
 }
 
 /**
- * The {@code PriorityQueueFrontier} class implement the frontier of a search
- * algorithm using a {@code PriorityQueue}.
+ * {@code QueueFrontier} implements the frontier of a search algorithm using a
+ * FIFO {@code Queue}.
+ */
+class QueueFrontier<E> implements Frontier<E> {
+
+    /**
+     * The queue for this frontier
+     */
+    private Queue<E> queue;
+
+    /**
+     * Construct a new, empty frontier.
+     */
+    public QueueFrontier() {
+        queue = new LinkedList<E>();
+    }
+
+    /**
+     * Add an element to the frontier.
+     *
+     * @param element the element to add this frontier
+     */
+    public void add(E element) {
+        queue.add(element);
+    }
+
+    /**
+     * Remove an element from the frontier.
+     *
+     * @return an element from the frontier
+     */
+    public E remove() {
+        return queue.remove();
+    }
+
+    /**
+     * Returns {@code true} if this frontier contains the specified element,
+     * {@code false} otherwise.
+     *
+     * @param element
+     *     the specified element
+     *
+     * @return
+     *     {@code true} if this frontier contains the specified element, {@code
+     *     false} otherwise.
+     */
+    public boolean contains(E element) {
+        return queue.contains(element);
+    }
+
+    /**
+     * Returns {@code true} if this frontier is empty.
+     *
+     * @return
+     *     {@code true} if this frontier is empty, {@code false} otherwise
+     */
+    public boolean isEmpty() {
+        return queue.isEmpty();
+    }
+}
+
+/**
+ * {@code StackFrontier} implements the frontier of a search algorithm using a
+ * LIFO {@code Queue}.
+ */
+class StackFrontier<E> implements Frontier<E> {
+
+    /**
+     * The queue for this frontier.
+     */
+    private Stack<E> queue;
+
+    /**
+     * Construct a new, empty frontier.
+     */
+    public StackFrontier() {
+        queue = new Stack<E>();
+    }
+
+    /**
+     * Add an element to the frontier.
+     *
+     * @param element
+     *     the element to add this frontier
+     */
+    public void add(E element) {
+        queue.push(element);
+    }
+
+    /**
+     * Remove an element from the frontier.
+     *
+     * @return
+     *     an element from the frontier
+     */
+    public E remove() {
+        return queue.pop();
+    }
+
+    /**
+     * Returns {@code true} if this frontier contains the specified element,
+     * {@code false} otherwise.
+     *
+     * @param element
+     *     the specified element
+     *
+     * @return
+     *     {@code true} if this frontier contains the specified element, {@code
+     *     false} otherwise
+     */
+    public boolean contains(E element) {
+        return queue.contains(element);
+    }
+
+    /**
+     * Returns {@code true} if this frontier is empty.
+     */
+    public boolean isEmpty() {
+        return queue.empty();
+    }
+}
+
+/**
+ * {@code PriorityQueueFrontier} implements the frontier of a search algorithm
+ * using a {@code PriorityQueue}.
  */
 class PriorityQueueFrontier<E> implements Frontier<E> {
 

@@ -20,7 +20,9 @@ import util.Graph;
  */
 public class GraphTest {
 
-    Graph<Integer> graph;
+    private static final String DEFAULT_SEARCH = "breadth-first";
+
+    private Graph<Integer> graph;
 
     @Before
     public void setUp() {
@@ -63,7 +65,7 @@ public class GraphTest {
         graph.addNode(1);
         goalSet.add(1);
         expectedPath.add(1);
-        assertEquals(expectedPath, graph.findPath(1, goalSet));
+        assertEquals(expectedPath, graph.findPath(DEFAULT_SEARCH, 1, goalSet));
         goalSet.remove(1);
 
         graph.addNode(2);
@@ -72,7 +74,31 @@ public class GraphTest {
         expectedPath.add(2);
         graph.addNode(3);
         goalSet.add(3);
-        assertEquals(expectedPath, graph.findPath(1, goalSet));
+        assertEquals(expectedPath, graph.findPath(DEFAULT_SEARCH, 1, goalSet));
+    }
+
+    @Test
+    public void testUnweightedGraphFindPathFindsShortestPath() {
+        //       1
+        //      /|\
+        //     / | \
+        //    /  |  \
+        //  21  22  23
+        //   |   |   |
+        //  31  32   |
+        //    \  |  /
+        //     4 | /
+        //      \|/
+        //       5
+        addNodes(new int[] {  1, 21, 22, 23, 31, 32,  4,  5 });
+        addEdges(new int[] {  1,  1,  1, 21, 22, 31, 32, 23 },
+                 new int[] { 21, 22, 23, 31, 32,  4,  5,  5 });
+        List<Integer> expectedPath = new ArrayList<Integer>();
+        expectedPath.add(1);
+        expectedPath.add(23);
+        expectedPath.add(5);
+        List<Integer> actualPath = graph.findPath(DEFAULT_SEARCH, 1, 5);
+        assertEquals(expectedPath, actualPath);
     }
 
     private void addNodes(int[] ints) {

@@ -13,6 +13,11 @@ import util.Graph;
  *
  */
 public class GameState {
+    /**
+     * Default search algorithm to use when searching for paths in the graph.
+     */
+    private static final String DEFAULT_SEARCH = "breadth-first";
+
 	//TODO: Consider adding a cool diagram to make things clearer.
 	/**
 	 * Represents the location of the walls as an 8x8 grid.  Whenever a wall is placed, the center of the wall
@@ -133,7 +138,7 @@ public class GameState {
 			graph.removeEdge(new Point(loc.x+1,loc.y), new Point(loc.x+1,loc.y+1));
             List<Point> path;
 			for (int i = 0; i < players.length; i++) {
-				path = graph.findPath(players[i].getLocation(), players[i].goalSet);
+				path = graph.findPath(DEFAULT_SEARCH, players[i].getLocation(), players[i].goalSet);
                 if (path.isEmpty()) {
 					legal = false;
 				}
@@ -175,7 +180,7 @@ public class GameState {
 			graph.removeEdge(new Point(loc.x,loc.y+1), new Point(loc.x+1,loc.y+1));
             List<Point> path;
 			for (int i = 0; i < players.length; i++) {
-				path = graph.findPath(players[i].getLocation(), players[i].goalSet);
+				path = graph.findPath(DEFAULT_SEARCH, players[i].getLocation(), players[i].goalSet);
                 if (path.isEmpty()) {
 					legal = false;
 				}
