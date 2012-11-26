@@ -19,13 +19,9 @@ public class Board {
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public static final Color WALL_COLOR = Color.black;  //This will eventually be switched to brown
 	
-	//TODO: replace walls, players[], turn, pl, and graph with a single GameState Object.
-	private int[][] walls;		// holds the locations of all the walls; 0 = no wall, 1 = vertical wall, 2 = horizontal wall
-	private Player players[];	// holds information about each player
-	private int turn, pl;		// turn tells us which player's turn it is;  pl is the number of players
+	GameState currentState;		// holds the state of the game in a single variable.
 	private QBoard gui;			// allows board to communicate with the gui
 	private AI ai;				// allows board to communicate with the ai
-	public Graph<Point> graph;	// needed to find a path from a point to the goal
 	public Semaphore sem;		// used to tell the ai when it's turn is, needs a better name
 	public JFrame winFrame;		// holds the message when a player wins the game
 	
@@ -33,24 +29,17 @@ public class Board {
 	// default constructor, assumes 2 players all using their default colors
 	// will probably only be used for testing
 	public Board() {
-		walls = new int[8][8];
-		initializeToZero(walls);
-		pl = 2;
-		players = new Player[pl];
+		int pl = 2;
+		Player[] players = new Player[pl];
 		for (int i = 0; i < pl; i++) {
 			players[i] = new Player(i, 10, Player.color[i], 0);
 		}
-		turn = pl-1;
-		newGUI();
-		nextTurn();
+		initialize(players);
 	}
 	
 	// constructor that will make a 2 player game where player 0 is using the gui, and player 1 is an ai opponent
 	public Board(boolean usingAI) {
-		walls = new int[8][8];
-		initializeToZero(walls);
-		pl = 2;
-		players = new Player[pl];
+		Player[] players = new Player[2];
 		players[0] = new Player(0, 10, Color.blue, Player.GUI_PLAYER);
 		if (usingAI) {
 			players[1] = new Player(1, 10, Color.red, Player.AI_PLAYER);	
@@ -58,41 +47,34 @@ public class Board {
 		else {
 			players[1] = new Player(1, 10, Color.red, Player.GUI_PLAYER);
 		}
-		turn = pl-1;
-		initializeGraph();
-		initializeAIIfNeeded();
-		newGUI();
-		nextTurn();
+		initialize(players);
 	}
 	
 	// this is the constructor that will be used most often
 	public Board(int numOfPlayers, Color[] colArray, int[] playerTypes) {
-		walls = new int[8][8];
-		initializeToZero(walls);
-		pl = numOfPlayers;
-		players = new Player[pl];
+		Player[] players = new Player[numOfPlayers];
+		int pl = players.length;
 		for (int i = 0; i < pl; i++) {
 			players[i] = new Player(i, 20/pl, colArray[i], playerTypes[i]);
 		}
-		turn = pl - 1;
-		initializeGraph();
+		initialize(players);	
+	}
+	
+	private void initialize(Player[] pls) {
+		int[][] walls = new int[8][8];
+		currentState = new GameState(walls, pls,0, initializeGraph());
 		initializeAIIfNeeded();
 		newGUI();
-		nextTurn();
+		requestMove();
 	}
 	
-	private void initializeToZero(int[][] w) {
-		for (int i = 0; i < w.length; i++) 
-			for (int j = 0; j < w.length; j++) {
-				w[i][j] = 0;
-			}
-		
-	}
-	
-	// checks to see if any of the players are AI players, and initializes an AI and Semaphore if there are
+	/**
+	 * Initializes an AI if there are any Players marked as being an AI_PLAYER.
+	 */
 	private void initializeAIIfNeeded() {
+		Player[] players = currentState.getPlayerArray();
 		boolean isNeeded = false;
-		for (int i = 0; i < pl; i++) {
+		for (int i = 0; i < players.length; i++) {
 			if (players[i].getPlayerType() == Player.AI_PLAYER) {
 				isNeeded = true;
 			}
@@ -107,8 +89,8 @@ public class Board {
 	
 	// creates a graph containing 81 nodes, each representing a space on the board, and add edges between
 	// nodes representing spaces directly adjacent to each other
-	private void initializeGraph() {
-		graph = new Graph<Point>();
+	private Graph initializeGraph() {
+		Graph graph = new Graph<Point>();
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				graph.addNode(new Point(i,j));
@@ -121,19 +103,37 @@ public class Board {
 			}
 		}
 		
+		
+		
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 9; j++) {
 				graph.addEdge(new Point(j, i), new Point(j, i + 1));
 			}
 		}
+		return graph;
 	}
 	
+	/**
+	 * Returns true if the specified Player has any walls left.  Otherwise, it returns false.
+	 * @param player
+	 * 		An int representing which Player we're interested in.
+	 * @return
+	 * 		true if the Player has walls left, false otherwise.
+	 */
 	public boolean hasWalls(int player) {
-		return players[player].hasWalls();
+		return currentState.hasWalls(player);
 	}
 	
+	//TODO:  Keep/Update this method when needed.
+	/**
+	 * Returns the number of walls the specified Player has left.
+	 * @param player
+	 * 		This is the number of the Player we're interested in.
+	 * @return
+	 * 		the number of walls the Player has left.
+	 */
 	public int numberOfWalls(int player){
-		return players[player].getWalls();
+		return currentState.numberOfWalls(player);
 	}
 	
 	/**
@@ -142,7 +142,8 @@ public class Board {
 	 * 		Returns a GameState Object representing the game's current State.
 	 */
 	public GameState getCurrentState() {
-		return new GameState(walls, players, turn, graph);
+		return currentState;
+		//return new GameState(walls, players, turn, graph);
 	}
 	
 	
@@ -175,6 +176,7 @@ public class Board {
 	 * 		This returns a String representing a move in the "net String" format.
 	 */
 	public String convertGUIStringToNetString(String guiString) {
+		Player[] players = currentState.getPlayerArray();
 		Scanner sc = new Scanner(guiString);
 		String firstChar = sc.next();
 		String netString = "";
@@ -182,7 +184,7 @@ public class Board {
 		int y = Integer.parseInt(sc.next());
 		
 		if (firstChar.charAt(0) == 'M') {
-			netString += ("M (" + players[turn].getY() + ", " + players[turn].getX() + ")");
+			netString += ("M (" + players[currentState.getTurn()].getY() + ", " + players[currentState.getTurn()].getX() + ")");
 			netString += " (" + y + ", " + x + ")";
 		}
 		
@@ -283,103 +285,100 @@ public class Board {
 	}
 	
 	public int[][] getWallArray() {
-		return walls;
+		return currentState.getWalls();
 	}
 	
+	/**
+	 * Returns the number associated with the Player whose turn it is.
+	 * @return
+	 * 		an int representing which Player's turn it is.
+	 */
 	public int getTurn() {
-		return turn;
+		return currentState.getTurn();
 	}
 	
-	public Player[] getPlayersArray() {
-		return players;
-	}
+
 	/**
 	 * Returns an int representing the current Player's type.
 	 * @return
 	 * 		an int representing a Player type.
 	 */
 	public int getCurrentPlayerType() {
-		return players[turn].getPlayerType();
+		return currentState.getCurrentPlayerType();
 	}
-	
-	public Player getCurrentPlayer(){
-		return players[turn];
-	}
-	
-
 	
 	// makes a new board appear on screen and sets default locations of the players 
 	public void newGUI() {
+		Player players[] = currentState.getPlayerArray();
 		gui = new QBoard(this);
 		for (int i = 0; i < players.length; i++) {
 			gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
 		}
-		//showMoves(players[turn], true);
 	}
 	
-	//TODO: Should be changed to use a method in GameState to make the moves.
-	
-	// I'm assuming the String for moving a piece will look like "M X Y"
-	// where X and Y are variables representing the coordinates of the move
+	/**
+	 * Reads in a String representing a move and makes it.  Don't call this without calling the isStringLegal method
+	 * first.
+	 * @param input
+	 * 		This is a GUI String representing a move.
+	 */
 	public void readStringFromGUI(String input) {
-		Point xy = new Point();
-		Scanner sc = new Scanner(input);
-		String firstCh = sc.next();
-		if (firstCh.equals("M")) {
-			xy.x = sc.nextInt();
-			xy.y = sc.nextInt();
-			move(xy);
-		} else if (firstCh.equals("H")) {
-			xy.x = sc.nextInt();
-			xy.y = sc.nextInt();
-			placeHoriWall(xy);
-		} else if (firstCh.equals("V")) {
-			xy.x = sc.nextInt();
-			xy.y = sc.nextInt();
-			placeVertWall(xy);
+		Player[] players = currentState.getPlayerArray();
+		showMoves(players[getTurn()],false);
+		
+		//makes the actual move
+		currentState = currentState.move(input);
+		showMoves(currentState.getPlayerArray()[(getTurn()+players.length-1)%players.length], false);
+		showMoves(players[getTurn()], true);
+		
+		//enableAndChangeColor(players[getTurn()].getLocation(), false, players[getTurn()].getColor());
+		
+		if(players[getTurn()].hasWon()){
+			JOptionPane.showMessageDialog(winFrame,
+		    "Player " + (getTurn()) + " has won!");
+			System.exit(0);
 		}
+		gui.setStatus();
+		if (input.startsWith("V") || input.startsWith("H"))
+			updateWalls();
+
+		requestMove();
 	}
 	
-	// called by readString when a horizontal wall needs to be placed
-	// p is the location where the wall is begin place
-	private void placeHoriWall(Point xy) {
-		if (players[turn].getWalls() > 0) {
-			showMoves(players[turn], false);
-			walls[xy.x][xy.y] = 2;
-			gui.setHoriWallColor(xy, players[turn].getColor());
-			gui.setHoriWallColor(new Point(xy.x+1,xy.y), players[turn].getColor());
-            graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x,xy.y+1));
-            graph.removeEdge(new Point(xy.x+1,xy.y), new Point(xy.x+1,xy.y+1));
-			players[turn].decrementWall();
-			nextTurn();
-		}
-	}
-	
-	private void placeVertWall(Point xy) {
-		if (players[turn].getWalls() > 0) {
-			showMoves(players[turn], false);
-			walls[xy.x][xy.y] = 1;
-			gui.setVertWallColor(xy, players[turn].getColor());
-			gui.setVertWallColor(new Point(xy.x,xy.y+1), players[turn].getColor());
-            graph.removeEdge(new Point(xy.x,xy.y), new Point(xy.x+1,xy.y));
-            graph.removeEdge(new Point(xy.x,xy.y+1), new Point(xy.x+1,xy.y+1));
-			players[turn].decrementWall();
-			nextTurn();
-		}
+	/**
+	 * Called after a move is made.  Prompts the next Player to make their move.
+	 * If the Player is using the GUI, spaces will be highlighted.
+	 * If the Player is an AI, they'll be called.
+	 * If the Player if over a network, it will respond appropriately when it's implemented.
+	 */
+	private void requestMove() {
+		Player[] players = currentState.getPlayerArray();
+		if (getCurrentPlayerType() == Player.GUI_PLAYER)
+			showMoves(players[getTurn()], true);
+		else if (getCurrentPlayerType() == Player.AI_PLAYER)
+			sem.release();
 	}
 
-	// called by readString when a piece needs to be moved
-	// p is the location where the player wants to move their piece
-	private void move(Point p) {
-		showMoves(players[turn], false);
-		gui.setColorOfSpace(players[turn].getLocation(), BUTTON_DEFAULT_COLOR);
-		players[turn].setLocation(p);
-		gui.setColorOfSpace(players[turn].getLocation(), players[turn].getColor());
-		nextTurn();
-
-
+	/**
+	 * This method makes the gui show the walls.
+	 */
+	private void updateWalls() {
+		int[][] walls = currentState.getWalls();
+		Player[] players = currentState.getPlayerArray();
+		int turn = (getTurn() + players.length - 1) % players.length;
+		for (int i = 0; i < walls.length; i++)
+			for (int j = 0; j < walls.length; j++) {
+				if (walls[i][j] == 1 && gui.getVertWallColor(new Point(i, j)).equals(BUTTON_DEFAULT_COLOR)) {
+					gui.setVertWallColor(new Point(i,j), players[turn].getColor());
+					gui.setVertWallColor(new Point(i,j+1), players[turn].getColor());
+				}else if (walls[i][j] == 2 && gui.getHoriWallColor(new Point(i, j)).equals(BUTTON_DEFAULT_COLOR)) {
+					gui.setHoriWallColor(new Point(i,j), players[turn].getColor());
+					gui.setHoriWallColor(new Point(i+1,j), players[turn].getColor());
+				}
+			}
+		
 	}
-	
+
 	// this method can show the available moves a player can make if b is true, this needs to be called again with
 	// b being false to stop showing the moves a player could make.
 	private void showMoves(Player pl, boolean b) {
@@ -388,10 +387,12 @@ public class Board {
 	
 	// rec is the number of times a recursive call was made it should probably get a better name
 	private void showMoves(Player pl, boolean b, int rec) {
+		Player[] players = currentState.getPlayerArray();
 		if (rec >= players.length)
 			return;
 		Color c;
 		if (b == true) {
+			int turn = currentState.getTurn();
 			int re = Math.min((players[turn].getColor().getRed() + 255)/2, 240);
 			int gr = Math.min((players[turn].getColor().getGreen() + 255)/2, 240);
 			int bl = Math.min((players[turn].getColor().getBlue() + 255)/2, 240);
@@ -421,38 +422,32 @@ public class Board {
 		enableAndChangeColor(pl.getLocation(), false, pl.getColor());
 	}
 	
-	//TODO: Should call the isBlocked method in GameState.
-	
-	// method which will return true if there is a wall between the two points of false if there isn't.
-	// assumes that the two spaces are directly next to each other
-	public boolean isBlocked(Point p1, Point p2) {
-		int smaller = -1; // 
-		// if the two spaces are in the same column
-		if (p1.x == p2.x) {
-			smaller = Math.min(p1.y,p2.y); //finds the point that's higher up
-			if (p1.x < 8)
-				if (walls[p1.x][smaller] == 2)
-					return true;
-			if (p1.x > 0)
-				if (walls[p1.x-1][smaller] == 2)
-					return true;
-		}
-		// if the two spaces are in the same row
-		else if (p1.y == p2.y) {
-			smaller = Math.min(p1.x,p2.x); //finds the space to the left
-			if (p1.y < 8)
-				if (walls[smaller][p1.y] == 1)
-					return true;
-			if (p1.y > 0)
-				if (walls[smaller][p1.y-1] == 1)
-					return true;
-		}
-		
-		return false;
+	/**
+	 * Returns true if a wall is between two adjacent spaces.
+	 * 
+	 * Do not use this method if the spaces are not adjacent to each other.
+	 * 
+	 * @param p1
+	 * 		the first Point
+	 * @param p2
+	 * 		the second Point
+	 * @return
+	 * 		true if there is a wall between two Points.  Returns false otherwise.
+	 */
+	private boolean isBlocked(Point p1, Point p2) {
+		return currentState.isBlocked(p1, p2);
 	}
 	
-	// returns the ID of the player at location p, if no player is found, -1 is returned
+	/**
+	 * Returns an int containing the ID of the Player currently on the space passed in.
+	 * If no Player is on that space, -1 is returned.
+	 * @param p
+	 * 		A Point representing the location being checked.
+	 * @return
+	 * 		the ID of the Player if there is one on the space.  returns -1 if there is no Player.
+	 */
 	private int PlayerOnSpace(Point p) {
+		Player[] players = currentState.getPlayerArray();
 		for (int i = 0; i < players.length; i++) {
 			if (p.getLocation().equals(players[i].getLocation())) {
 				return i;
@@ -464,31 +459,10 @@ public class Board {
 	// just a small helper method
 	private void enableAndChangeColor(Point p, boolean b, Color c) {
 		gui.setColorOfSpace(p, c);
-		//gui.setSpaceClickable(p, b);
-	}
-	
-	private void nextTurn() {
-		showMoves(players[turn], false);
-		if(players[turn].hasWon()){
-			JOptionPane.showMessageDialog(winFrame,
-		    "Player " + (turn) + " has won!");
-			System.exit(0);
-		}
-		
-		turn = (turn + pl + 1) % pl;	//This should eventually be changed such that it skips Players who have been dropped.
-		gui.setStatus();
-		showMoves(players[turn], true);
-		if (getCurrentPlayerType() == Player.AI_PLAYER) {
-			sem.release();
-		}
 	}
 	
 	public int getNumOfPlayers(){
-		return pl;
-	}
-	
-	public Point getPlayerLocation(int player) {
-		return players[player].getLocation();
+		return currentState.getPlayerArray().length;
 	}
 
 	public static void main(String[] args) {

@@ -154,7 +154,6 @@ public class QBoard extends JFrame implements ActionListener{
 			if (board.isStringLegal(move)) {
 				System.out.println(((JButton) action.getSource()).getName());
 				System.out.println(board.convertGUIStringToNetString(move));
-				System.out.println(board.convertNetStringToGUIString(board.convertGUIStringToNetString(move)));
 				board.readStringFromGUI(move);
 			}
 		}
@@ -203,6 +202,28 @@ public class QBoard extends JFrame implements ActionListener{
 	 */
 	public void setVertWallColor(Point p, Color c) {
 		wallVert[p.x][p.y].setBackground(c);
+	}
+	
+	/**
+	 * Returns the Color of the horizontal wall at the specified postion.
+	 * @param p
+	 * 		The Point representing the location of the wall.
+	 * @return
+	 * 		the Color of the wall
+	 */
+	public Color getHoriWallColor(Point p) {
+		return wallHor[p.x][p.y].getBackground();
+	}
+	
+	/**
+	 * Returns the Color of the vertical wall at the specified postion.
+	 * @param p
+	 * 		The Point representing the location of the wall.
+	 * @return
+	 * 		the Color of the wall
+	 */
+	public Color getVertWallColor(Point p) {
+		return wallVert[p.x][p.y].getBackground();
 	}
 	
 	public static void main(String[] args) {

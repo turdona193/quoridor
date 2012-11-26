@@ -298,7 +298,7 @@ public class Player {
 	 * 		Returns the location of the Player as a Point.
 	 */
 	public Point getLocation() {
-		return xy;
+		return new Point(xy.x, xy.y);
 	}
 	
 	/**
@@ -386,6 +386,12 @@ public class Player {
 		if (walls > 0)
 			return true;
 		return false;
+	}
+	
+	public Player clone() {
+		Player clone = new Player(playerID, walls, col, playerType);
+		clone.setLocation(getLocation());
+		return clone;
 	}
 	
 }

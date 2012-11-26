@@ -261,7 +261,7 @@ public class GameState {
 	 * 		true if there is a wall between them, false if there isn't.
 	 * 		May return anything if the spaces are not directly next to each other.
 	 */
-	private boolean isBlocked(Point p1, Point p2) {
+	public boolean isBlocked(Point p1, Point p2) {
 		int smaller = -1; // 
 		// if the two spaces are in the same column
 		if (p1.x == p2.x) {
@@ -314,7 +314,7 @@ public class GameState {
 	 * 		Returns the new State of the game after the move has been made.
 	 */
 	public GameState move(String move) {
-		GameState newState = new GameState(walls, players, turn, graph);
+		GameState newState = clone();
 		newState.readStringFromGUI(move);
 		return newState;
 	}
@@ -386,6 +386,105 @@ public class GameState {
 			nextTurn();
 		}
 		
+		
+		//All the following methods involving jumping were copy/pasted so that they would survive the refactoring 
+		//on Board.
+		
+		/**
+		 * This method will change the Graph so all of the Points in the Graph representing the locations of Players will
+		 * only contain edges containing legal moves by adding edges when a Player can jump another piece and by removing 
+		 * edges between adjacent pieces.  The changes made by this method can also be reverted.
+		 * 
+		 * Should only be called immediately after a move is made to make it so the AI knows how to jump, and right 
+		 * before a move is made to change the Graph back to normal.
+		 * 
+		 * @param addOrRem
+		 * 		if true, the Graph will be changed as described above.  Otherwise, the changes made to the Graph will
+		 * 		be reverted.
+		 */
+		private void addAllJumps(boolean addOrRem) {
+			for (int i = 0; i < players.length; i++) {
+				addJumpsToGraph(players[i], addOrRem);
+			}
+		}
+
+		
+		//TODO: Most of the addJumpsToGraph method is copy/pasted from showMoves.  Figure out how to make them share code.
+		
+		/**
+		 * Called by addAllJumps and also calls itself recursively. This method will change the graph so that there 
+		 * will be a edges from the location of the Player pl to all the possible spots the Player could move to.
+		 * This method also removes the edge between the Player pl, and all the adjacent Players.
+		 * 
+		 * @param pl
+		 * 		This is the Player whose edges are being added or removed.
+		 * @param addOrRem
+		 * 		If true, the edges will be added.  If false, the changes made to the graph by this method are reversed.
+		 */
+		private void addJumpsToGraph(Player pl, boolean addOrRem) {
+			Point[] adjacentSpaces = new Point[4];
+			adjacentSpaces[0] = pl.up();
+			adjacentSpaces[1] = pl.down();
+			adjacentSpaces[2] = pl.left();
+			adjacentSpaces[3] = pl.right();
+			
+			for (int i = 0; i < adjacentSpaces.length; i++) {
+				if (adjacentSpaces[i] != null) {
+					if (!isBlocked(pl.getLocation(), adjacentSpaces[i])) {
+						int PID = PlayerOnSpace(adjacentSpaces[i]);
+						if (PID >= 0) {
+							if (addOrRem)
+								if (graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
+									graph.removeEdge(pl.getLocation(), players[PID].getLocation());
+							else
+								if (!graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
+									graph.addEdge(pl.getLocation(), players[PID].getLocation());
+							addJumpsToGraph(players[PID], pl, addOrRem, 1);
+						}
+							
+					}
+				}
+			}
+			
+		}
+		
+		private void addJumpsToGraph(Player pl, Player p2, boolean addOrRem, int rec) {
+			if (rec >= players.length)
+				return;
+			Point[] adjacentSpaces = new Point[4];
+			adjacentSpaces[0] = pl.up();
+			adjacentSpaces[1] = pl.down();
+			adjacentSpaces[2] = pl.left();
+			adjacentSpaces[3] = pl.right();
+			
+			for (int i = 0; i < adjacentSpaces.length; i++) {
+				if (adjacentSpaces[i] != null) {
+					if (!isBlocked(pl.getLocation(), adjacentSpaces[i])) {
+						int PID = PlayerOnSpace(adjacentSpaces[i]);
+						if (PID >= 0) {
+							if (addOrRem)
+								if (graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
+									graph.removeEdge(pl.getLocation(), players[PID].getLocation());
+							else
+								if (!graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
+									graph.addEdge(pl.getLocation(), players[PID].getLocation());
+							addJumpsToGraph(players[PID], p2, addOrRem, rec+1);
+						}
+						else {
+							if (addOrRem)
+								if (!graph.containsEdge(pl.getLocation(), adjacentSpaces[i]))
+									graph.addEdge(pl.getLocation(), adjacentSpaces[i]);
+							else
+								if (graph.containsEdge(pl.getLocation(), adjacentSpaces[i]))
+									graph.removeEdge(pl.getLocation(), adjacentSpaces[i]);
+						}
+							
+					}
+				}
+			}
+			
+		}
+		
 		/**
 		 * Called after any move is made to increment turn;
 		 */
@@ -428,6 +527,41 @@ public class GameState {
 		 */
 		public Graph getGraph() {
 			return graph;
+		}
+		
+		/**
+		 * Returns true if the specified Player has any walls left.  Otherwise, it returns false.
+		 * @param player
+		 * 		An int representing which Player we're interested in.
+		 * @return
+		 * 		true if the Player has walls left, false otherwise.
+		 */
+		public boolean hasWalls(int player) {
+			return players[player].hasWalls();
+		}
+		
+		/**
+		 * Returns the number of walls the specified Player has left.
+		 * @param player
+		 * 		This is the number of the Player we're interested in.
+		 * @return
+		 * 		the number of walls the Player has left.
+		 */
+		public int numberOfWalls(int player){
+			return players[player].getWalls();
+		}
+		
+		/**
+		 * Returns an int representing the current Player's type.
+		 * @return
+		 * 		an int representing a Player type.
+		 */
+		public int getCurrentPlayerType() {
+			return players[turn].getPlayerType();
+		}
+		
+		public GameState clone() {
+			return new GameState(walls, players, turn, graph);
 		}
 	
 
