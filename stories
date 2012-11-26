@@ -60,21 +60,6 @@ constant heuristic function (uniform-cost).
 
 --------------------------------------------------------------------------------
 
-Implement shortest path finding
-
-Completed:          Yes
-Assigned to:     Andrew
-Due:         2012-11-26
-Completed:   2012-11-19
-Size:             *****
-Priority:          High
-
-As a player, I want the AI to move toward its goal.
-
-Acceptance criterion: an AI has a way to find the shortest path
-
---------------------------------------------------------------------------------
-
 Implement AI jumping
 
 Completed:           No
