@@ -333,15 +333,19 @@ public class GameState {
 				xy.x = sc.nextInt();
 				xy.y = sc.nextInt();
 				move(xy);
-			} else if (firstCh.equals("H")) {
-				xy.x = sc.nextInt();
-				xy.y = sc.nextInt();
-				placeHoriWall(xy);
-			} else if (firstCh.equals("V")) {
-				xy.x = sc.nextInt();
-				xy.y = sc.nextInt();
-				placeVertWall(xy);
+			} else {
+				addAllJumps(false);
+				if (firstCh.equals("H")) {
+					xy.x = sc.nextInt();
+					xy.y = sc.nextInt();
+					placeHoriWall(xy);
+				} else if (firstCh.equals("V")) {
+					xy.x = sc.nextInt();
+					xy.y = sc.nextInt();
+					placeVertWall(xy);
+				}
 			}
+			addAllJumps(true);
 		}
 		
 		/**

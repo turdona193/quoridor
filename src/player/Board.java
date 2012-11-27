@@ -344,7 +344,6 @@ public class Board {
 		gui.setStatus();
 		if (input.startsWith("V") || input.startsWith("H"))
 			updateWalls();
-
 		requestMove();
 	}
 	
