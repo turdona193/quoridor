@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import util.Graph;
 
@@ -510,6 +511,30 @@ public class GameState {
 		 */
 		public Player[] getPlayerArray() {
 			return players;
+		}
+		
+		public Player getPlayer(int num) {
+			return players[num];
+		}
+		
+		public Player getCurrentPlayer() {
+			return players[turn];
+		}
+		
+		public Point getCurrentPlayerLocation() {
+			return players[turn].getLocation();
+		}
+		
+		public Point getPlayerLocation(int num) {
+			return players[num].getLocation();
+		}
+		
+		public Set<Point> getCurrentPlayerGoalSet() {
+			return players[turn].goalSet;
+		}
+		
+		public Set<Point> getPlayerGoalSet(int num) {
+			return players[num].goalSet;
 		}
 		
 		/**
