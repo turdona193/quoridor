@@ -138,7 +138,6 @@ public class QBoard extends JFrame implements ActionListener{
         sb.append("<br>");
         sb.append("Player 4: " + board.numberOfWalls(3));
         sb.append("<br>");
-
         }
         sb.append("<br>");
         sb.append("It is currently <br> Player " + (board.getTurn()+1) + " turn");
@@ -153,8 +152,11 @@ public class QBoard extends JFrame implements ActionListener{
 			String move = ((JButton) action.getSource()).getName();
 			if (board.isStringLegal(move)) {
 				System.out.println(((JButton) action.getSource()).getName());
-				System.out.println(board.convertGUIStringToNetString(move));
-				board.readStringFromGUI(move);
+				move = board.convertGUIStringToNetString(move);
+				board.readStringFromNet(move);
+				//System.out.println(board.convertGUIStringToNetString(move));
+				//System.out.println(board.convertNetStringToGUIString(board.convertGUIStringToNetString(move)));
+				//board.readStringFromGUI(move);
 			}
 		}
 	}

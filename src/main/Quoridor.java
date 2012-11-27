@@ -105,7 +105,6 @@ public class Quoridor extends JFrame implements ActionListener {
 		}
 		
 		players = 2;
-		
 		setVisible(true);
 
 	}

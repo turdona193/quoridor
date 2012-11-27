@@ -184,17 +184,17 @@ public class Board {
 		int y = Integer.parseInt(sc.next());
 		
 		if (firstChar.charAt(0) == 'M') {
-			netString += ("M (" + players[currentState.getTurn()].getY() + ", " + players[currentState.getTurn()].getX() + ")");
+			netString += ("MOVED M (" + players[currentState.getTurn()].getY() + ", " + players[currentState.getTurn()].getX() + ")");
 			netString += " (" + y + ", " + x + ")";
 		}
 		
 		if (firstChar.charAt(0) == 'V') {
-			netString += ("W (" + y + ", " + (x+1) + ")");
+			netString += ("MOVED W (" + y + ", " + (x+1) + ")");
 			netString += " (" + (y+2) + ", " + (x+1) + ")";
 		}
 		
 		if (firstChar.charAt(0) == 'H') {
-			netString += ("W (" + (y+1) + ", " + x + ")");
+			netString += ("MOVED W (" + (y+1) + ", " + x + ")");
 			netString += " (" + (y+1) + ", " + (x+2) + ")";
 		}
 		
@@ -208,7 +208,7 @@ public class Board {
 	 * The format of a "gui String"  is: <op> X Y
 	 * Where op is either M,V, or H depending on what type of move it is, and X and Y are coordinates.
 	 * 
-	 * The format of the "net string" is: <op> (Y1, X1) (Y2, X2)
+	 * The format of the "net string" is: MOVED <op> (Y1, X1) (Y2, X2) or MOVE <op> (Y1, X1) (Y2, X2)
 	 * Where op is either M for piece being moved, or W for a wall being placed.
 	 * 
 	 * If op is M, then:
@@ -230,11 +230,14 @@ public class Board {
 	public String convertNetStringToGUIString(String netStr) {
 		String netString = removePunctuation(netStr);
 		Scanner sc = new Scanner(netString);
+
+		sc.next();						//skips MOVE/MOVED since we already know it's a move of some sort.
 		String firstChar = sc.next();
 		
 		String GUIString = "";
-
+		
 		//needed to determine if a wall is horizontal or vertical
+		sc.next();
 		int x2 = Integer.parseInt(sc.next());
 		
 		int y = Integer.parseInt(sc.next());
@@ -343,6 +346,30 @@ public class Board {
 			updateWalls();
 
 		requestMove();
+	}
+	
+	/**
+	 * Reads in a String representing a move from over the network and makes the move.
+	 * 
+	 * @param input
+	 * 		This is the String representing the move in the Net String format.
+	 */
+	public void readStringFromNet(String input) {
+		input = convertNetStringToGUIString(input);
+		readStringFromGUI(input);
+	}
+	
+	/**
+	 * Determines whether a move from over the network was legal.
+	 * Currently assumes that the location of the current Player is correct.
+	 * @param input
+	 * 		The String representing the move.
+	 * @return
+	 * 		true if the move is legal.  False otherwise.
+	 */
+	public boolean isStringFromNetLegal(String input) {
+		input = convertNetStringToGUIString(input);
+		return isStringLegal(input);
 	}
 	
 	/**
