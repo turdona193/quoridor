@@ -550,7 +550,7 @@ public class GameState {
 		 * @return
 		 * 		a graph representing all the possible moves a Player could make.
 		 */
-		public Graph getGraph() {
+		public Graph<Point> getGraph() {
 			return graph;
 		}
 		
