@@ -60,21 +60,6 @@ constant heuristic function (uniform-cost).
 
 --------------------------------------------------------------------------------
 
-Implement shortest path AI without jumping
-
-Completed:          Yes
-Assigned to:     Andrew
-Due:         2012-12-03
-Size:                 1
-Priority:          High
-
-As a player, I want the AI to move toward its goal.
-
-Acceptance criterion: the AIs move toward their goal, but jumping doesn't work
-yet.
-
---------------------------------------------------------------------------------
-
 Implement AI jumping
 
 Completed:           No
@@ -86,6 +71,21 @@ Priority:          High
 As a robot, I want the AI to jump when appropriate.
 
 Acceptance criterion: an AI can jump other players without breaking rules.
+
+--------------------------------------------------------------------------------
+
+Win Test Timing
+
+Complete:           No
+Assigned to:      John
+Due:        2012-12-03
+Size:                1
+Priorit:          High
+
+As a user, I want to be notified immediately when a player wins.
+
+Acceptance criterion: when a player wins, the game notifies the user
+immediately.
 
 --------------------------------------------------------------------------------
 
@@ -103,6 +103,21 @@ Acceptance criterion:
 
 --------------------------------------------------------------------------------
 
+Implement shortest path AI without jumping
+
+Completed:          Yes
+Assigned to:     Andrew
+Due:         2012-12-03
+Size:                 1
+Priority:          High
+
+As a player, I want the AI to move toward its goal.
+
+Acceptance criterion: the AIs move toward their goal, but jumping doesn't work
+yet.
+
+--------------------------------------------------------------------------------
+
 Implement wall-placing AI
 
 Completed:          No
@@ -111,4 +126,9 @@ Due:        2012-12-03
 Size:                8
 Priority:          Med
 
+As a user, I want the AI to place walls.
+
+Acceptance criterion: the AI places walls.
+
 --------------------------------------------------------------------------------
+
