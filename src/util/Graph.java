@@ -1149,31 +1149,4 @@ class PriorityQueueFrontier<E> implements Frontier<E> {
     public boolean isEmpty() {
         return queue.isEmpty();
     }
-    
-    /**
-     * Returns a new graph that is a clone of the current graph but has 
-     * added edges for jumping. Currently only works for single jumps.
-     * 
-     * @param element
-     * 		the specified element to check adjacent edges
-     * @return
-     *  	a new graph that is a clone of the current graph but has 
-     * 		added edges for jumping.
-     */
-    public Graph getGraphWithJumpEdges(E element){
-    	Graph editedGraph = new Graph();
-    	try {
-			editedGraph = (Graph) this.clone();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-		}
-		
-		Set adjacentNodeSet        = editedGraph.neighbors(element);
-		Object[] adjacentNodeArray = adjacentNodeSet.toArray();
-		
-		for(int i = 0; i < adjacentNodeSet.size(); ++i){
-			editedGraph.addEdge(element, adjacentNodeArray[i]);
-		}
-		return editedGraph;		
-    }
 }
