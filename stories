@@ -60,6 +60,21 @@ constant heuristic function (uniform-cost).
 
 --------------------------------------------------------------------------------
 
+Implement shortest path AI without jumping
+
+Completed:          Yes
+Assigned to:     Andrew
+Due:         2012-12-03
+Size:                 1
+Priority:          High
+
+As a player, I want the AI to move toward its goal.
+
+Acceptance criterion: the AIs move toward their goal, but jumping doesn't work
+yet.
+
+--------------------------------------------------------------------------------
+
 Implement AI jumping
 
 Completed:           No
@@ -86,3 +101,14 @@ As a user, I want to be able to make a connection to the game.
 
 Acceptance criterion: 
 
+--------------------------------------------------------------------------------
+
+Implement wall-placing AI
+
+Completed:          No
+Assigned to:  everyone
+Due:        2012-12-03
+Size:                8
+Priority:          Med
+
+--------------------------------------------------------------------------------
