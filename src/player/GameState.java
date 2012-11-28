@@ -592,6 +592,36 @@ public class GameState {
 		public GameState clone() {
 			return new GameState(walls, players, turn, graph);
 		}
-	
+		
+		/**
+		 * Adds a set of edges to the graph that allows pawns
+		 * to jump over each other. Checks additional spaces
+		 * for double or triple jumps recursively with the
+		 * assJumpEdges method. Returns a copy of the graph
+		 * before these changes are made, so that we can revert 
+		 * to that board after the move is made by the AI
+		 * 
+		 * @param point
+		 * 		the point on the board whose neighboring spaces
+		 * 		we will mark as potential movement destinations
+		 * 
+		 * @return
+		 * 		a copy of the initial state of the board before
+		 * 		any changes are made
+		 */
+	    public Graph<Point> addJumpEdgesToGraph(Point point){
+			Graph<Point> originalGraph = graph.clone();
+			addJumpEdges(point);
+			return originalGraph;		
+	    }
 
+	    private void addJumpEdges(Point point){
+	    	Set<Point> adjacentNodeSet = graph.neighbors(point);
+	    	for(Point p: adjacentNodeSet){
+	    		graph.addEdge(p, point);
+	    		if(this.PlayerOnSpace(p) != -1){
+	    			addJumpEdges(p);
+	    		}
+	    	}
+	    }
 }
