@@ -49,7 +49,7 @@ public class AI extends Thread {
         String       move;
 
         state = board.getCurrentState();
-        graph = state.getGraph();
+        graph = state.getGraphWithJumpEdges(state.getCurrentPlayerLocation());
         path  = graph.findPath(DEFAULT_SEARCH,
                                state.getCurrentPlayerLocation(),
                                state.getCurrentPlayerGoalSet());

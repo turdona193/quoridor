@@ -38,7 +38,7 @@ public class GameState {
 	/**
 	 * This number tells us which Player's turn it is.
 	 */
-	int turn;
+	private int turn;
 	/**
 	 * Holds the information about the walls in a Graph structure.  It has a Node representing each space on
 	 * the board, and there is initially an Edge between each adjacent Node in the Graph.  As walls are added, 
@@ -334,7 +334,7 @@ public class GameState {
 				xy.y = sc.nextInt();
 				move(xy);
 			} else {
-				addAllJumps(false);
+				//addAllJumps(false);
 				if (firstCh.equals("H")) {
 					xy.x = sc.nextInt();
 					xy.y = sc.nextInt();
@@ -345,7 +345,7 @@ public class GameState {
 					placeVertWall(xy);
 				}
 			}
-			addAllJumps(true);
+			//addAllJumps(true);
 		}
 		
 		/**
@@ -407,11 +407,11 @@ public class GameState {
 		 * 		if true, the Graph will be changed as described above.  Otherwise, the changes made to the Graph will
 		 * 		be reverted.
 		 */
-		private void addAllJumps(boolean addOrRem) {
+		/*private void addAllJumps(boolean addOrRem) {
 			for (int i = 0; i < players.length; i++) {
 				addJumpsToGraph(players[i], addOrRem);
 			}
-		}
+		}*/
 
 		
 		//TODO: Most of the addJumpsToGraph method is copy/pasted from showMoves.  Figure out how to make them share code.
@@ -426,7 +426,7 @@ public class GameState {
 		 * @param addOrRem
 		 * 		If true, the edges will be added.  If false, the changes made to the graph by this method are reversed.
 		 */
-		private void addJumpsToGraph(Player pl, boolean addOrRem) {
+		/*private void addJumpsToGraph(Player pl, boolean addOrRem) {
 			Point[] adjacentSpaces = new Point[4];
 			adjacentSpaces[0] = pl.up();
 			adjacentSpaces[1] = pl.down();
@@ -451,9 +451,9 @@ public class GameState {
 				}
 			}
 			
-		}
+		}*/
 		
-		private void addJumpsToGraph(Player pl, Player p2, boolean addOrRem, int rec) {
+		/*private void addJumpsToGraph(Player pl, Player p2, boolean addOrRem, int rec) {
 			if (rec >= players.length)
 				return;
 			Point[] adjacentSpaces = new Point[4];
@@ -488,7 +488,7 @@ public class GameState {
 				}
 			}
 			
-		}
+		}*/
 		
 		/**
 		 * Called after any move is made to increment turn;
@@ -609,19 +609,47 @@ public class GameState {
 		 * 		a copy of the initial state of the board before
 		 * 		any changes are made
 		 */
-	    public Graph<Point> addJumpEdgesToGraph(Point point){
+	    /*public Graph<Point> addJumpEdgesToGraph(Point point){
 			Graph<Point> originalGraph = graph.clone();
 			addJumpEdges(point);
 			return originalGraph;		
-	    }
+	    }*/
 
-	    private void addJumpEdges(Point point){
-	    	Set<Point> adjacentNodeSet = graph.neighbors(point);
-	    	for(Point p: adjacentNodeSet){
-	    		graph.addEdge(p, point);
-	    		if(this.PlayerOnSpace(p) != -1){
-	    			addJumpEdges(p);
+	    public Graph<Point> getGraphWithJumpEdges(Point point){
+	    	Graph<Point> editedGraph = graph;
+	    	
+	    	Set<Point> neighbors = editedGraph.neighbors(point);
+	    	//here, neighbors is the set of nodes directly adjacent to
+	    	//the player's location
+	    
+	    	addJumpEdges(neighbors, editedGraph);
+	    	
+	    	for(Point p: neighbors){
+	    		//Look at spaces directly adjacent to the point.
+	    		//If there is a player there, remove that edge so
+	    		//that jumping over it will be the shortest path.
+	    		if(PlayerOnSpace(p) != -1){
+	    			editedGraph.removeEdge(p, point);
 	    		}
 	    	}
+	    	return editedGraph;
 	    }
+	    
+	    private void addJumpEdges(Set<Point> points, Graph<Point> gp){
+	    	Set<Point> neighbors;
+	    	for(Point p: points){
+	    		if(PlayerOnSpace(p) != -1){
+	    			neighbors = gp.neighbors(p);
+	    			for(Point n : neighbors){
+	    				gp.addEdge(n, p);
+	    			}
+	    		}
+	    	}
+	    	
+	    }
+	    
+	    public void setGraph(Graph<Point> graph){
+	    	this.graph = graph;
+	    }
+	    
 }
