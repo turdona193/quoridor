@@ -616,13 +616,13 @@ public class GameState {
 	    }*/
 
 	    public Graph<Point> getGraphWithJumpEdges(Point point){
-	    	Graph<Point> editedGraph = graph;
+	    	Graph<Point> editedGraph = graph.clone();
 	    	
 	    	Set<Point> neighbors = editedGraph.neighbors(point);
 	    	//here, neighbors is the set of nodes directly adjacent to
 	    	//the player's location
 	    
-	    	addJumpEdges(neighbors, editedGraph);
+	    	addJumpEdges(point, neighbors, editedGraph);
 	    	
 	    	for(Point p: neighbors){
 	    		//Look at spaces directly adjacent to the point.
@@ -635,13 +635,13 @@ public class GameState {
 	    	return editedGraph;
 	    }
 	    
-	    private void addJumpEdges(Set<Point> points, Graph<Point> gp){
+	    private void addJumpEdges(Point player, Set<Point> points, Graph<Point> gp){
 	    	Set<Point> neighbors;
 	    	for(Point p: points){
 	    		if(PlayerOnSpace(p) != -1){
 	    			neighbors = gp.neighbors(p);
 	    			for(Point n : neighbors){
-	    				gp.addEdge(n, p);
+	    				gp.addEdge(n, player);		//was originally gp.addEdge(n, player);
 	    			}
 	    		}
 	    	}
