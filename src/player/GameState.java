@@ -622,7 +622,7 @@ public class GameState {
 	    	//here, neighbors is the set of nodes directly adjacent to
 	    	//the player's location
 	    
-	    	addJumpEdges(point, neighbors, editedGraph);
+	    	addJumpEdges(point, neighbors, editedGraph, 0);
 	    	
 	    	for(Point p: neighbors){
 	    		//Look at spaces directly adjacent to the point.
@@ -635,15 +635,19 @@ public class GameState {
 	    	return editedGraph;
 	    }
 	    
-	    private void addJumpEdges(Point player, Set<Point> points, Graph<Point> gp){
+	    private void addJumpEdges(Point player, Set<Point> points, Graph<Point> gp, int rec){
+	    	if (rec >= players.length)
+	    		return;
 	    	Set<Point> neighbors;
 	    	for(Point p: points){
 	    		if(PlayerOnSpace(p) != -1){
 	    			neighbors = gp.neighbors(p);
-	    			for(Point n : neighbors){
+	    			addJumpEdges(player, neighbors, gp, rec+1);
+	    			/*for(Point n : neighbors){
 	    				gp.addEdge(n, player);		//was originally gp.addEdge(n, player);
-	    			}
+	    			}*/
 	    		}
+	    		gp.addEdge(p, player);
 	    	}
 	    	
 	    }
