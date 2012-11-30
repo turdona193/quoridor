@@ -152,11 +152,11 @@ public class QBoard extends JFrame implements ActionListener{
 			String move = ((JButton) action.getSource()).getName();
 			if (board.isStringLegal(move)) {
 				System.out.println(((JButton) action.getSource()).getName());
-				move = board.convertGUIStringToNetString(move);
-				board.readStringFromNet(move);
+				//move = board.convertGUIStringToNetString(move);
+				//board.readStringFromNet(move);
 				//System.out.println(board.convertGUIStringToNetString(move));
 				//System.out.println(board.convertNetStringToGUIString(board.convertGUIStringToNetString(move)));
-				//board.readStringFromGUI(move);
+				board.readStringFromGUI(move);
 			}
 		}
 	}

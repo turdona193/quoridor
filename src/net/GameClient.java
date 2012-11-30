@@ -62,7 +62,7 @@ public class GameClient{
 
 		try{
 			for(int i = 0; i<numberOfPlayers;i++){
-				players[i].write("QUORIDOR 4 "+i);
+				players[i].write("QUORIDOR " + numberOfPlayers + " "+i);
 				msg = players[i].read();
 				System.out.println(msg);
 				players[i].setPlayerNumber(i);
@@ -79,7 +79,7 @@ public class GameClient{
 				sc = new Scanner(move);
 				whatever = sc.next();
 				if(whatever.contains("MOVE")){
-					msg = "MOVED <" + players[round%numberOfPlayers].getPlayerNumber() + ">";
+					msg = "MOVED " + players[round%numberOfPlayers].getPlayerNumber() + "";
 					while(sc.hasNext()){
 						msg = msg + " " + sc.next();
 					}

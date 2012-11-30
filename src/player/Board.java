@@ -18,13 +18,18 @@ import ai.AI;
 public class Board {
 	public final static Color BUTTON_DEFAULT_COLOR = new Color(220,220,220);
 	public static final Color WALL_COLOR = Color.black;  //This will eventually be switched to brown
-	
+
 	GameState currentState;		// holds the state of the game in a single variable.
 	private QBoard gui;			// allows board to communicate with the gui
 	private AI ai;				// allows board to communicate with the ai
 	public Semaphore sem;		// used to tell the ai when it's turn is, needs a better name
 	public JFrame winFrame;		// holds the message when a player wins the game
-	
+	private boolean netPlay; 	// If you are playing on the net.
+	private String moveForNetwork;		//
+	private boolean networkMadeLastMove;
+	public Semaphore moveMadeForNetwork;
+
+
 	//TODO: Create a single initialize method that handles all of the stuff that is in all of the constructors.
 	// default constructor, assumes 2 players all using their default colors
 	// will probably only be used for testing
@@ -36,7 +41,7 @@ public class Board {
 		}
 		initialize(players);
 	}
-	
+
 	// constructor that will make a 2 player game where player 0 is using the gui, and player 1 is an ai opponent
 	public Board(boolean usingAI) {
 		Player[] players = new Player[2];
@@ -49,7 +54,7 @@ public class Board {
 		}
 		initialize(players);
 	}
-	
+
 	// this is the constructor that will be used most often
 	public Board(int numOfPlayers, Color[] colArray, int[] playerTypes) {
 		Player[] players = new Player[numOfPlayers];
@@ -59,15 +64,34 @@ public class Board {
 		}
 		initialize(players);	
 	}
-	
+
+	//Using for network Play, Designed for Move Server
+	public Board(int numOfPlayers, int playerNumber) {
+		Player[] players = new Player[numOfPlayers];
+		int pl = players.length;
+		for (int i = 0; i < pl; i++) {
+			if(playerNumber == i){
+				players[i] = new Player(i, 20/pl, Player.color[i], Player.AI_PLAYER);
+			}else 
+				players[i] = new Player(i, 20/pl, Player.color[i], Player.NET_PLAYER);
+		}
+		netPlay = true;
+
+		initialize(players);	
+	}
+
 	private void initialize(Player[] pls) {
 		int[][] walls = new int[8][8];
 		currentState = new GameState(walls, pls,0, initializeGraph());
 		initializeAIIfNeeded();
 		newGUI();
-		requestMove();
+		if(netPlay){
+			return;
+		}else{
+			requestMove();
+		}
 	}
-	
+
 	/**
 	 * Initializes an AI if there are any Players marked as being an AI_PLAYER.
 	 */
@@ -86,7 +110,7 @@ public class Board {
 		}
 
 	}
-	
+
 	// creates a graph containing 81 nodes, each representing a space on the board, and add edges between
 	// nodes representing spaces directly adjacent to each other
 	private Graph initializeGraph() {
@@ -96,15 +120,15 @@ public class Board {
 				graph.addNode(new Point(i,j));
 			}
 		}
-		
+
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 9; j++) {
 				graph.addEdge(new Point(i, j), new Point(i + 1, j));
 			}
 		}
-		
-		
-		
+
+
+
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 9; j++) {
 				graph.addEdge(new Point(j, i), new Point(j, i + 1));
@@ -112,7 +136,7 @@ public class Board {
 		}
 		return graph;
 	}
-	
+
 	/**
 	 * Returns true if the specified Player has any walls left.  Otherwise, it returns false.
 	 * @param player
@@ -123,7 +147,7 @@ public class Board {
 	public boolean hasWalls(int player) {
 		return currentState.hasWalls(player);
 	}
-	
+
 	//TODO:  Keep/Update this method when needed.
 	/**
 	 * Returns the number of walls the specified Player has left.
@@ -135,7 +159,7 @@ public class Board {
 	public int numberOfWalls(int player){
 		return currentState.numberOfWalls(player);
 	}
-	
+
 	/**
 	 * This method returns a GameState Object which contains a copy of all the necessary variables in the game.
 	 * @return
@@ -145,10 +169,10 @@ public class Board {
 		return currentState;
 		//return new GameState(walls, players, turn, graph);
 	}
-	
-	
+
+
 	//TODO: Update to make the returned String have "MOVE?" at the beginning of it.
-	
+
 	/**
 	 * This method will convert a String containing a move in the format we've been using in our gui into one 
 	 * matching the format that will be used when we send moves over a network.
@@ -182,25 +206,25 @@ public class Board {
 		String netString = "";
 		int x = Integer.parseInt(sc.next());
 		int y = Integer.parseInt(sc.next());
-		
+
 		if (firstChar.charAt(0) == 'M') {
 			netString += ("MOVED M (" + players[currentState.getTurn()].getY() + ", " + players[currentState.getTurn()].getX() + ")");
 			netString += " (" + y + ", " + x + ")";
 		}
-		
+
 		if (firstChar.charAt(0) == 'V') {
 			netString += ("MOVED W (" + y + ", " + (x+1) + ")");
 			netString += " (" + (y+2) + ", " + (x+1) + ")";
 		}
-		
+
 		if (firstChar.charAt(0) == 'H') {
 			netString += ("MOVED W (" + (y+1) + ", " + x + ")");
 			netString += " (" + (y+1) + ", " + (x+2) + ")";
 		}
-		
+
 		return netString;
 	}
-	
+
 	//TODO: Make it read Strings that start with "MOVED" or "MOVE?"
 	/**
 	 * This method converts a "Net String" to a "GUI String" so that it can be processed correctly.
@@ -223,30 +247,31 @@ public class Board {
 	 * 
 	 * @param netStr
 	 * 		This is a String containing a move in the "net String" format.
-     *
+	 *
 	 * @return
 	 * 		This returns A String containing the same move in the "GUI String" format.
 	 */
 	public String convertNetStringToGUIString(String netStr) {
+		System.out.println("Recieve string to translate : " + netStr);
 		String netString = removePunctuation(netStr);
 		Scanner sc = new Scanner(netString);
 
-		sc.next();						//skips MOVE/MOVED since we already know it's a move of some sort.
+		//sc.next();						//skips MOVE/MOVED since we already know it's a move of some sort.
 		String firstChar = sc.next();
-		
+
 		String GUIString = "";
-		
+
 		//needed to determine if a wall is horizontal or vertical
 		sc.next();
 		int x2 = Integer.parseInt(sc.next());
-		
+
 		int y = Integer.parseInt(sc.next());
 		int x = Integer.parseInt(sc.next());
 
 		if (firstChar.charAt(0) == 'M') {
 			GUIString = "M " + x + " " + y;
 		}
-		
+
 		if (firstChar.charAt(0) == 'W') {
 			//if it's a vertical wall
 			if (x == x2)
@@ -255,10 +280,10 @@ public class Board {
 			else
 				GUIString = "H " + (x-2) + " " + (y-1);
 		}
-			
+
 		return GUIString;
 	}
-	
+
 	/**
 	 * This method takes a String and replaces all of the parentheses and commas with spaces.
 	 * 
@@ -272,6 +297,8 @@ public class Board {
 		newStr = newStr.replace('(', ' ');
 		newStr = newStr.replace(')', ' ');
 		newStr = newStr.replace(',', ' ');
+		newStr = newStr.replace('<', ' ');
+		newStr = newStr.replace('>', ' ');
 		return newStr;
 	}
 
@@ -286,11 +313,11 @@ public class Board {
 	public boolean isStringLegal(String input) {
 		return getCurrentState().isStringLegal(input);
 	}
-	
+
 	public int[][] getWallArray() {
 		return currentState.getWalls();
 	}
-	
+
 	/**
 	 * Returns the number associated with the Player whose turn it is.
 	 * @return
@@ -299,7 +326,7 @@ public class Board {
 	public int getTurn() {
 		return currentState.getTurn();
 	}
-	
+
 
 	/**
 	 * Returns an int representing the current Player's type.
@@ -309,7 +336,7 @@ public class Board {
 	public int getCurrentPlayerType() {
 		return currentState.getCurrentPlayerType();
 	}
-	
+
 	// makes a new board appear on screen and sets default locations of the players 
 	public void newGUI() {
 		Player players[] = currentState.getPlayerArray();
@@ -318,7 +345,7 @@ public class Board {
 			gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
 		}
 	}
-	
+
 	/**
 	 * Reads in a String representing a move and makes it.  Don't call this without calling the isStringLegal method
 	 * first.
@@ -328,36 +355,83 @@ public class Board {
 	public void readStringFromGUI(String input) {
 		Player[] players = currentState.getPlayerArray();
 		showMoves(players[getTurn()],false);
-		
+		System.out.println("before if netplay, input is :" + input);
+		if (netPlay){
+			System.out.println("before if !networkmadelasemove");
+
+			if(!networkMadeLastMove){
+				System.out.println("after if !networkmadelastmove");
+
+				moveForNetwork = input;
+				moveMadeForNetwork.release();
+				return;
+			}}
+
 		//makes the actual move
 		currentState = currentState.move(input);
 		showMoves(currentState.getPlayerArray()[(getTurn()+players.length-1)%players.length], false);
 		showMoves(players[getTurn()], true);
-		
+
 		//enableAndChangeColor(players[getTurn()].getLocation(), false, players[getTurn()].getColor());
-		
-		if(players[getTurn()].hasWon()){
-			JOptionPane.showMessageDialog(winFrame,
-		    "Player " + (getTurn()) + " has won!");
-			System.exit(0);
+
+		if(hasWon()){
+				winWindow();
 		}
+
 		gui.setStatus();
 		if (input.startsWith("V") || input.startsWith("H"))
 			updateWalls();
-		requestMove();
+		if(!netPlay)
+			requestMove();
+
 	}
-	
+
+	public boolean hasWon(){
+		if(currentState.getPlayerArray()[getTurn()].hasWon()){
+			return true;
+		}
+		return false;
+	}
+
+	public void winWindow(){
+		JOptionPane.showMessageDialog(winFrame,
+				"Player " + (getTurn()) + " has won!");
+		System.exit(0);
+	}
+
+
 	/**
 	 * Reads in a String representing a move from over the network and makes the move.
 	 * 
 	 * @param input
 	 * 		This is the String representing the move in the Net String format.
 	 */
-	public void readStringFromNet(String input) {
-		input = convertNetStringToGUIString(input);
-		readStringFromGUI(input);
+	public String readStringFromNet(String input) {
+		moveForNetwork = "";
+		moveMadeForNetwork = new Semaphore(0);
+
+		if(input.contains("MOVE?")){
+			networkMadeLastMove = false;
+			requestMove();
+			System.out.println("before while !mmfn");
+
+			moveMadeForNetwork.acquireUninterruptibly();
+
+			System.out.println("get pass while");
+			return convertGUIStringToNetString(moveForNetwork);
+		}else if(input.contains("WINNER")){
+			
+		}else if(input.contains("REMOVE")){
+			
+		}
+		else{
+			networkMadeLastMove = true;
+			input = convertNetStringToGUIString(input);
+			readStringFromGUI(input);
+		}
+		return "";
 	}
-	
+
 	/**
 	 * Determines whether a move from over the network was legal.
 	 * Currently assumes that the location of the current Player is correct.
@@ -370,7 +444,7 @@ public class Board {
 		input = convertNetStringToGUIString(input);
 		return isStringLegal(input);
 	}
-	
+
 	/**
 	 * Called after a move is made.  Prompts the next Player to make their move.
 	 * If the Player is using the GUI, spaces will be highlighted.
@@ -383,6 +457,7 @@ public class Board {
 			showMoves(players[getTurn()], true);
 		else if (getCurrentPlayerType() == Player.AI_PLAYER)
 			sem.release();
+
 	}
 
 	/**
@@ -402,7 +477,7 @@ public class Board {
 					gui.setHoriWallColor(new Point(i+1,j), players[turn].getColor());
 				}
 			}
-		
+
 	}
 
 	// this method can show the available moves a player can make if b is true, this needs to be called again with
@@ -410,7 +485,7 @@ public class Board {
 	private void showMoves(Player pl, boolean b) {
 		showMoves(pl, b, 0);
 	}
-	
+
 	// rec is the number of times a recursive call was made it should probably get a better name
 	private void showMoves(Player pl, boolean b, int rec) {
 		Player[] players = currentState.getPlayerArray();
@@ -426,13 +501,13 @@ public class Board {
 		} else {
 			c = BUTTON_DEFAULT_COLOR;
 		}
-		
+
 		Point[] adjacentSpaces = new Point[4];
 		adjacentSpaces[0] = pl.up();
 		adjacentSpaces[1] = pl.down();
 		adjacentSpaces[2] = pl.left();
 		adjacentSpaces[3] = pl.right();
-		
+
 		for (int i = 0; i < adjacentSpaces.length; i++) {
 			if (adjacentSpaces[i] != null) {
 				if (!isBlocked(pl.getLocation(), adjacentSpaces[i])) {
@@ -444,10 +519,10 @@ public class Board {
 				}
 			}
 		}
-		
+
 		enableAndChangeColor(pl.getLocation(), false, pl.getColor());
 	}
-	
+
 	/**
 	 * Returns true if a wall is between two adjacent spaces.
 	 * 
@@ -463,7 +538,7 @@ public class Board {
 	private boolean isBlocked(Point p1, Point p2) {
 		return currentState.isBlocked(p1, p2);
 	}
-	
+
 	/**
 	 * Returns an int containing the ID of the Player currently on the space passed in.
 	 * If no Player is on that space, -1 is returned.
@@ -486,7 +561,7 @@ public class Board {
 	private void enableAndChangeColor(Point p, boolean b, Color c) {
 		gui.setColorOfSpace(p, c);
 	}
-	
+
 	public int getNumOfPlayers(){
 		return currentState.getPlayerArray().length;
 	}
