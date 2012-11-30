@@ -392,6 +392,17 @@ public class Board {
 		}
 		return false;
 	}
+	
+	/**
+	 * Returns true if the specified Player has one.  Otherwise, it returns false.
+	 * @param player
+	 * 		An int representing which Player we're interested in.
+	 * @return
+	 * 		true if the Player has won, false if the player
+	 */
+	public boolean hasWon(int player) {
+		return currentState.getPlayerArray()[player].hasWon();
+	}
 
 	public void winWindow(){
 		JOptionPane.showMessageDialog(winFrame,
