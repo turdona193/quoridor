@@ -373,10 +373,10 @@ public class Board {
 		showMoves(players[getTurn()], true);
 
 		//enableAndChangeColor(players[getTurn()].getLocation(), false, players[getTurn()].getColor());
-
-		if(hasWon()){
+		if(!netPlay)
+			if(hasWon()){
 				winWindow();
-		}
+			}
 
 		gui.setStatus();
 		if (input.startsWith("V") || input.startsWith("H"))
@@ -396,7 +396,15 @@ public class Board {
 	public void winWindow(){
 		JOptionPane.showMessageDialog(winFrame,
 				"Player " + (getTurn()) + " has won!");
-		System.exit(0);
+		if(netPlay)
+			System.exit(0);
+	}
+	
+	public void winWindow(int winner){
+		JOptionPane.showMessageDialog(winFrame,
+				"Player " + winner + " has won!");
+		if(netPlay)
+			System.exit(0);
 	}
 
 
@@ -420,9 +428,9 @@ public class Board {
 			System.out.println("get pass while");
 			return convertGUIStringToNetString(moveForNetwork);
 		}else if(input.contains("WINNER")){
-			
+
 		}else if(input.contains("REMOVE")){
-			
+
 		}
 		else{
 			networkMadeLastMove = true;

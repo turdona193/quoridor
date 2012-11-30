@@ -130,9 +130,11 @@ public class MoveServer{
 				if(next.contains("REMOVED")){
 					networkPlayer.close();
 					isPlayer = false;
+					//break;
 				}
 				if(next.contains("WINNER")){
-					//nothing for now	
+					board.winWindow(sc.nextInt());					
+					//break;
 				}
 			}
 		}

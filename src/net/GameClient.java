@@ -5,12 +5,15 @@ import java.util.Scanner;
 import net.NetworkPlayer;
 import java.net.*;
 
+import player.Board;
+
 public class GameClient{
 
-	public ServerSocket serv;
-	public NetworkPlayer players[];
-	public int numberOfPlayers;
-	public int round;
+	private ServerSocket serv;
+	private NetworkPlayer players[];
+	private int numberOfPlayers;
+	private int round;
+	private Board gameView;
 
 	public GameClient(String[] args)throws Exception{
 		try{
@@ -67,28 +70,45 @@ public class GameClient{
 				System.out.println(msg);
 				players[i].setPlayerNumber(i);
 			}
+			gameView =new Board(numberOfPlayers , -1); // not an active player in game.
+
 		}catch(Exception e){System.out.println("Failed"); stillPlaying =false;}
 		round = 0;
 		move = "";
 		Scanner sc;
 		String whatever ="";
+		String holder = "";
+		boolean boot;
 		
 		while(stillPlaying){
+			boot = false;
 			players[round%numberOfPlayers].write("MOVE?");
 			if((move = players[round%numberOfPlayers].read()) != null){
 				sc = new Scanner(move);
 				whatever = sc.next();
 				if(whatever.contains("MOVE")){
-					msg = "MOVED " + players[round%numberOfPlayers].getPlayerNumber() + "";
-					while(sc.hasNext()){
-						msg = msg + " " + sc.next();
+					msg = "";
+					holder = "";
+					while(sc.hasNext()){ //one should have move left
+						holder = holder + " " + sc.next();
 					}
-
+					if(gameView.isStringFromNetLegal(holder)){
+						boot = false;
+						gameView.readStringFromNet(holder);
+						msg = "MOVED " + players[round%numberOfPlayers].getPlayerNumber() + "";
+						msg = msg + holder;
+					}else{
+						boot = true;
+						msg = "REMOVED " + players[round%numberOfPlayers].getPlayerNumber() + "";
+					}
+					
 					for(int i =0; i<numberOfPlayers;i++){
 						players[i].write(msg);
 					}
 				}
-				
+				if (boot){
+					// remove player
+				}
 				round++;
 			}
 		}
