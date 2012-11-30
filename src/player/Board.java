@@ -387,7 +387,7 @@ public class Board {
 	}
 
 	public boolean hasWon(){
-		if(currentState.getPlayerArray()[getTurn()].hasWon()){
+		if(currentState.getPlayerArray()[((getTurn() +(getNumOfPlayers()-1)) % getNumOfPlayers())].hasWon()){
 			return true;
 		}
 		return false;
