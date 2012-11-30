@@ -13,6 +13,10 @@ import util.Graph;
 
 /**
  * AI implements an artificial intelligence for the game.
+ *
+ * @author  <a href="mailto:barkle36@potsdam.edu">Andrew Allen Barkley</a>
+ * @author  <a href="mailto:kosowsjm195@potsdam.edu">John M. Kosowsky</a>
+ * @version 2012-11-30
  */
 public class AI extends Thread {
 
