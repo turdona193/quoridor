@@ -79,11 +79,14 @@ public class GameClient{
 		String whatever ="";
 		String holder = "";
 		boolean boot;
-		
+		int turn;
 		while(stillPlaying){
 			boot = false;
 			players[round%numberOfPlayers].write("MOVE?");
+			
 			if((move = players[round%numberOfPlayers].read()) != null){
+				Thread.sleep(1000);
+				turn = players[round%numberOfPlayers].getPlayerNumber();
 				sc = new Scanner(move);
 				whatever = sc.next();
 				if(whatever.contains("MOVE")){
@@ -95,15 +98,22 @@ public class GameClient{
 					if(gameView.isStringFromNetLegal(holder)){
 						boot = false;
 						gameView.readStringFromNet(holder);
-						msg = "MOVED " + players[round%numberOfPlayers].getPlayerNumber() + "";
+						msg = "MOVED " + turn + "";
 						msg = msg + holder;
 					}else{
 						boot = true;
-						msg = "REMOVED " + players[round%numberOfPlayers].getPlayerNumber() + "";
+						msg = "REMOVED " + turn + "";
 					}
 					
 					for(int i =0; i<numberOfPlayers;i++){
 						players[i].write(msg);
+					}
+					
+					if(gameView.hasWon()){
+						msg = "WINNER " + turn;
+						for(int i =0; i<numberOfPlayers;i++){
+							players[i].write(msg);
+						}	
 					}
 				}
 				if (boot){
