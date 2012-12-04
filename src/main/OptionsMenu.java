@@ -96,7 +96,7 @@ public class OptionsMenu extends JFrame implements ActionListener, ItemListener 
 	/**
 	 * This holds all of the options in the comboBoxes.
 	 */
-	private String[] playerTypeNames = {"Local", "AI", "Net"};
+	private String[] playerTypeNames = {"Local", "AI", "Net", "Removed"};
 	
 	/**
 	 * Used to make a box pop up when an error occurs.

@@ -34,6 +34,10 @@ public class Player {
 	 * Constant representing a player playing over a network
 	 */
 	public final static int NET_PLAYER = 2;
+	/**
+	 * Constant representing a player that has been kicked from the game.
+	 */
+	public final static int REMOVED = 3;
 	
 	/**
 	 * holds whether a player is using the gui, is an ai, or is playing over a network.
@@ -109,6 +113,14 @@ public class Player {
 	 */
 	public int getPlayerType() {
 		return playerType;
+	}
+	
+	/**
+	 * This method removes the Player from the game.
+	 */
+	public void remove() {
+		playerType = REMOVED;
+		xy = new Point(-1, -1);
 	}
 	
 	/**
