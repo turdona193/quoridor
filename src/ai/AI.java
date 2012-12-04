@@ -50,7 +50,7 @@ public class AI extends Thread {
     /**
      * Makes a move along the shortest path to the goal for the current player.
      */
-    @SuppressWarnings("null")
+
 	public void makeMove() {
         List<Point>   path, opponentPath, targetPath;
         Set<Point>    opponentGoal, targetGoal;
@@ -58,7 +58,7 @@ public class AI extends Thread {
         Point         nextLocation;
         String        move;
         int 		  shortestOpponentPathSize;
-        Player 		  target;
+        Player 		  target;//the player that is closest to their goal
 
         state = board.getCurrentState();
         
@@ -98,22 +98,24 @@ public class AI extends Thread {
     	targetPath = graph.findPath(DEFAULT_SEARCH,
     					            target.getLocation(), 
     					            targetGoal);
-        
 
-        
-        
-        if(targetPath.size() < path.size()){
-        	/////////place a wall because the opponent is closer
-        	System.out.println("You're Losing");
-        }
-        
-        
-        nextLocation = path.get(1);
-        move = "M " + nextLocation.x + " " +
-                      nextLocation.y;
-        if (board.isStringLegal(move)) {
+        	if(targetPath.size() < path.size()){
+        	/* this doesn't really work yet, obviously. The idea
+        	 * here is to place a wall in a way to most inconvenience
+        	 * the target player.
+        	 */
+        	//move = "H " + target.down().x + " " + target.getLocation().y;
+        	}else{
+        	/* 
+        	 * you are currently winning, so simply move toward your goal
+        	 */
+        	}
+        	
+            nextLocation = path.get(1);
+            move = "M " + nextLocation.x + " " + nextLocation.y;
+            if (board.isStringLegal(move)) {
             board.readStringFromGUI(move);
-        }
+            }
     }
     
     /**

@@ -406,4 +406,8 @@ public class Player {
 		return clone;
 	}
 	
+	public String toString(){
+		return "Player " + (playerID + 1);
+	}
+	
 }
