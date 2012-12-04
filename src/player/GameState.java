@@ -17,7 +17,7 @@ public class GameState {
     /**
      * Default search algorithm to use when searching for paths in the graph.
      */
-    private static final String DEFAULT_SEARCH = "breadth-first";
+    private static final String DEFAULT_SEARCH = "depth-first";
 
 	//TODO: Consider adding a cool diagram to make things clearer.
 	/**
@@ -560,6 +560,8 @@ public class GameState {
 		 * 		This is an int representing the Player.
 		 */
 		public void removePlayer(int pl) {
+			if (getCurrentPlayerNum() == pl)
+				nextTurn();
 			players[pl].remove();
 		}
 		
