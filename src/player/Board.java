@@ -55,12 +55,22 @@ public class Board {
 		initialize(players);
 	}
 
-	// this is the constructor that will be used most often
+	/**
+	 * This is the constructor that is used called in the Quoridor class to create a new game.
+	 * @param numOfPlayers
+	 * 		This is the number of Players.
+	 * @param colArray
+	 * 		This is an array holding the Color of each Player.
+	 * @param playerTypes
+	 * 		This is each Player's type.
+	 */
 	public Board(int numOfPlayers, Color[] colArray, int[] playerTypes) {
 		Player[] players = new Player[numOfPlayers];
 		int pl = players.length;
 		for (int i = 0; i < pl; i++) {
 			players[i] = new Player(i, 20/pl, colArray[i], playerTypes[i]);
+			if (players[i].getPlayerType() == Player.REMOVED)
+				players[i].setLocation(-1, -1);
 		}
 		initialize(players);	
 	}
@@ -342,7 +352,8 @@ public class Board {
 		Player players[] = currentState.getPlayerArray();
 		gui = new QBoard(this);
 		for (int i = 0; i < players.length; i++) {
-			gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
+			if (players[i].getPlayerType() != Player.REMOVED)
+				gui.setColorOfSpace(players[i].getLocation(), players[i].getColor());
 		}
 	}
 
@@ -354,7 +365,7 @@ public class Board {
 	 */
 	public void readStringFromGUI(String input) {
 		Player[] players = currentState.getPlayerArray();
-		showMoves(players[getTurn()],false);
+		showMoves(currentState.getCurrentPlayer(),false);
 		System.out.println("before if netplay, input is :" + input);
 		if (netPlay){
 			System.out.println("before if !networkmadelasemove");
@@ -367,15 +378,17 @@ public class Board {
 				return;
 			}}
 
+		gui.setColorOfSpace(currentState.getCurrentPlayer().getLocation(), BUTTON_DEFAULT_COLOR);
 		//makes the actual move
 		currentState = currentState.move(input);
-		showMoves(currentState.getPlayerArray()[(getTurn()+players.length-1)%players.length], false);
-		showMoves(players[getTurn()], true);
+		gui.setColorOfSpace(currentState.getPrevPlayer().getLocation(), currentState.getPrevPlayer().getColor());
+		gui.setColorOfSpace(currentState.getCurrentPlayer().getLocation(), currentState.getCurrentPlayer().getColor());
 
 		//enableAndChangeColor(players[getTurn()].getLocation(), false, players[getTurn()].getColor());
 		if(!netPlay)
 			if(hasWon()){
 				winWindow();
+				return;
 			}
 
 		gui.setStatus();
@@ -387,7 +400,7 @@ public class Board {
 	}
 
 	public boolean hasWon(){
-		if(currentState.getPlayerArray()[((getTurn() +(getNumOfPlayers()-1)) % getNumOfPlayers())].hasWon()){
+		if(currentState.getPrevPlayer().hasWon()){
 			return true;
 		}
 		return false;
@@ -463,6 +476,19 @@ public class Board {
 		input = convertNetStringToGUIString(input);
 		return isStringLegal(input);
 	}
+	
+	/**
+	 * This method removes a specified Player from the game.
+	 * @param pl
+	 * 		This is an int representing the Player.
+	 */
+	public void removePlayer(int pl) {
+		if (currentState.getCurrentPlayerNum() == pl) {
+			showMoves(currentState.getCurrentPlayer(), false);
+		}
+		gui.setColorOfSpace(currentState.getPlayerArray()[pl].getLocation(), BUTTON_DEFAULT_COLOR);
+		currentState.removePlayer(pl);
+	}
 
 	/**
 	 * Called after a move is made.  Prompts the next Player to make their move.
@@ -505,6 +531,8 @@ public class Board {
 		showMoves(pl, b, 0);
 	}
 
+	//TODO:Should probably be refactored to make use of the getGraphWithJumpEdges method.
+	
 	// rec is the number of times a recursive call was made it should probably get a better name
 	private void showMoves(Player pl, boolean b, int rec) {
 		Player[] players = currentState.getPlayerArray();
@@ -576,6 +604,7 @@ public class Board {
 		return -1;
 	}
 
+	//TODO: Update remove or touch up this method.
 	// just a small helper method
 	private void enableAndChangeColor(Point p, boolean b, Color c) {
 		gui.setColorOfSpace(p, c);

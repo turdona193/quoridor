@@ -390,111 +390,68 @@ public class GameState {
 			players[turn].setLocation(p);
 			nextTurn();
 		}
-		
-		
-		//All the following methods involving jumping were copy/pasted so that they would survive the refactoring 
-		//on Board.
-		
-		/**
-		 * This method will change the Graph so all of the Points in the Graph representing the locations of Players will
-		 * only contain edges containing legal moves by adding edges when a Player can jump another piece and by removing 
-		 * edges between adjacent pieces.  The changes made by this method can also be reverted.
-		 * 
-		 * Should only be called immediately after a move is made to make it so the AI knows how to jump, and right 
-		 * before a move is made to change the Graph back to normal.
-		 * 
-		 * @param addOrRem
-		 * 		if true, the Graph will be changed as described above.  Otherwise, the changes made to the Graph will
-		 * 		be reverted.
-		 */
-		/*private void addAllJumps(boolean addOrRem) {
-			for (int i = 0; i < players.length; i++) {
-				addJumpsToGraph(players[i], addOrRem);
-			}
-		}*/
 
-		
-		//TODO: Most of the addJumpsToGraph method is copy/pasted from showMoves.  Figure out how to make them share code.
+		/**
+		 * Returns an int representing the next Player.  If a player has been removed 
+		 * from the game, an int representing the Player after them is returned instead.
+		 * @return
+		 * 		an int representing the next Player
+		 */
+		public int getNextPlayerNum() {
+			int num = turn;
+			do {
+				num = (num + players.length + 1) % players.length;
+			}while(players[num].getPlayerType() == Player.REMOVED);
+			return num;
+		}
 		
 		/**
-		 * Called by addAllJumps and also calls itself recursively. This method will change the graph so that there 
-		 * will be a edges from the location of the Player pl to all the possible spots the Player could move to.
-		 * This method also removes the edge between the Player pl, and all the adjacent Players.
-		 * 
-		 * @param pl
-		 * 		This is the Player whose edges are being added or removed.
-		 * @param addOrRem
-		 * 		If true, the edges will be added.  If false, the changes made to the graph by this method are reversed.
+		 * Returns a reference to the Player Object which is moving next.  If that Player has
+		 * been removed, the Player after them is returned instead.
+		 * @return
+		 * 		a reference to the next Player object.
 		 */
-		/*private void addJumpsToGraph(Player pl, boolean addOrRem) {
-			Point[] adjacentSpaces = new Point[4];
-			adjacentSpaces[0] = pl.up();
-			adjacentSpaces[1] = pl.down();
-			adjacentSpaces[2] = pl.left();
-			adjacentSpaces[3] = pl.right();
-			
-			for (int i = 0; i < adjacentSpaces.length; i++) {
-				if (adjacentSpaces[i] != null) {
-					if (!isBlocked(pl.getLocation(), adjacentSpaces[i])) {
-						int PID = PlayerOnSpace(adjacentSpaces[i]);
-						if (PID >= 0) {
-							if (addOrRem)
-								if (graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
-									graph.removeEdge(pl.getLocation(), players[PID].getLocation());
-							else
-								if (!graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
-									graph.addEdge(pl.getLocation(), players[PID].getLocation());
-							addJumpsToGraph(players[PID], pl, addOrRem, 1);
-						}
-							
-					}
-				}
-			}
-			
-		}*/
+		public Player getNextPlayer() {
+			int num = turn;
+			do {
+				num = (num + players.length + 1) % players.length;
+			}while(players[num].getPlayerType() == Player.REMOVED);
+			return players[num];
+		}
 		
-		/*private void addJumpsToGraph(Player pl, Player p2, boolean addOrRem, int rec) {
-			if (rec >= players.length)
-				return;
-			Point[] adjacentSpaces = new Point[4];
-			adjacentSpaces[0] = pl.up();
-			adjacentSpaces[1] = pl.down();
-			adjacentSpaces[2] = pl.left();
-			adjacentSpaces[3] = pl.right();
-			
-			for (int i = 0; i < adjacentSpaces.length; i++) {
-				if (adjacentSpaces[i] != null) {
-					if (!isBlocked(pl.getLocation(), adjacentSpaces[i])) {
-						int PID = PlayerOnSpace(adjacentSpaces[i]);
-						if (PID >= 0) {
-							if (addOrRem)
-								if (graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
-									graph.removeEdge(pl.getLocation(), players[PID].getLocation());
-							else
-								if (!graph.containsEdge(pl.getLocation(), players[PID].getLocation()))
-									graph.addEdge(pl.getLocation(), players[PID].getLocation());
-							addJumpsToGraph(players[PID], p2, addOrRem, rec+1);
-						}
-						else {
-							if (addOrRem)
-								if (!graph.containsEdge(pl.getLocation(), adjacentSpaces[i]))
-									graph.addEdge(pl.getLocation(), adjacentSpaces[i]);
-							else
-								if (graph.containsEdge(pl.getLocation(), adjacentSpaces[i]))
-									graph.removeEdge(pl.getLocation(), adjacentSpaces[i]);
-						}
-							
-					}
-				}
-			}
-			
-		}*/
+		/**
+		 * Returns an int representing the previous Player.  If a player has been removed 
+		 * from the game, an int representing the Player before them is returned instead.
+		 * @return
+		 * 		an int representing the previous Player
+		 */
+		public int getPrevPlayerNum() {
+			int num = turn;
+			do {
+				num = (num + players.length - 1) % players.length;
+			}while(players[num].getPlayerType() == Player.REMOVED);
+			return num;
+		}
+		
+		/**
+		 * Returns a reference to the Player Object which is moved previously.  If that Player has
+		 * been removed, the Player before them is returned instead.
+		 * @return
+		 * 		a reference to the previous Player object.
+		 */
+		public Player getPrevPlayer() {
+			int num = turn;
+			do {
+				num = (num + players.length - 1) % players.length;
+			}while(players[num].getPlayerType() == Player.REMOVED);
+			return players[num];
+		}
 		
 		/**
 		 * Called after any move is made to increment turn;
 		 */
 		private void nextTurn() {
-			turn = (turn + players.length + 1) % players.length;
+			turn = getNextPlayerNum();
 		}
 		
 		//TODO: Make it return a copy of the array
@@ -519,6 +476,10 @@ public class GameState {
 		
 		public Player getPlayer(int num) {
 			return players[num];
+		}
+		
+		public int getCurrentPlayerNum() {
+			return turn;
 		}
 		
 		public Player getCurrentPlayer() {
@@ -594,6 +555,15 @@ public class GameState {
 		}
 		
 		/**
+		 * This method removes a specified Player from the game.
+		 * @param pl
+		 * 		This is an int representing the Player.
+		 */
+		public void removePlayer(int pl) {
+			players[pl].remove();
+		}
+		
+		/**
 		 * Adds a set of edges to the graph that allows pawns
 		 * to jump over each other. Checks additional spaces
 		 * for double or triple jumps recursively with the
@@ -643,9 +613,6 @@ public class GameState {
 	    		if(PlayerOnSpace(p) != -1){
 	    			neighbors = gp.neighbors(p);
 	    			addJumpEdges(player, neighbors, gp, rec+1);
-	    			/*for(Point n : neighbors){
-	    				gp.addEdge(n, player);		//was originally gp.addEdge(n, player);
-	    			}*/
 	    		}
 	    		gp.addEdge(p, player);
 	    	}
