@@ -31,6 +31,9 @@ public class GameState {
 	 * Also, the first index represents the row, and the second represents the column.
 	 */
 	private int[][] walls;
+	
+	private int numberOfPlayers;
+	
 	/**
 	 * An array of Player objects, there's one for each Player in the game.
 	 */
@@ -71,6 +74,7 @@ public class GameState {
 		}
 		this.turn = turn;
 		this.graph = graph.clone();
+		numberOfPlayers = pls.length;
 	}
 	
 	//TODO: Make either this class use the isStringLegal method in Board, or make Board use the ont in this class.
@@ -621,6 +625,10 @@ public class GameState {
 	    
 	    public void setGraph(Graph<Point> graph){
 	    	this.graph = graph;
+	    }
+	    
+	    public int getNumberOfPLayers(){
+	    	return numberOfPlayers;
 	    }
 	    
 }
