@@ -218,17 +218,17 @@ public class Board {
 		int y = Integer.parseInt(sc.next());
 
 		if (firstChar.charAt(0) == 'M') {
-			netString += ("MOVED M (" + players[currentState.getTurn()].getY() + ", " + players[currentState.getTurn()].getX() + ")");
+			netString += ("MOVE M (" + players[currentState.getTurn()].getY() + ", " + players[currentState.getTurn()].getX() + ")");
 			netString += " (" + y + ", " + x + ")";
 		}
 
 		if (firstChar.charAt(0) == 'V') {
-			netString += ("MOVED W (" + y + ", " + (x+1) + ")");
+			netString += ("MOVE W (" + y + ", " + (x+1) + ")");
 			netString += " (" + (y+2) + ", " + (x+1) + ")";
 		}
 
 		if (firstChar.charAt(0) == 'H') {
-			netString += ("MOVED W (" + (y+1) + ", " + x + ")");
+			netString += ("MOVE W (" + (y+1) + ", " + x + ")");
 			netString += " (" + (y+1) + ", " + (x+2) + ")";
 		}
 
