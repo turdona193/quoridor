@@ -79,11 +79,12 @@ public class GameClient{
 		String whatever ="";
 		String holder = "";
 		boolean boot;
-		int turn;
+		int turn = 0 ;
+
 		while(stillPlaying){
 			boot = false;
 			players[round%numberOfPlayers].write("MOVE?");
-			
+
 			if((move = players[round%numberOfPlayers].read()) != null){
 				Thread.sleep(1000);
 				turn = players[round%numberOfPlayers].getPlayerNumber();
@@ -104,25 +105,41 @@ public class GameClient{
 						boot = true;
 						msg = "REMOVED " + turn + "";
 					}
-					
+
 					for(int i =0; i<numberOfPlayers;i++){
 						players[i].write(msg);
 					}
-					
+
 					if(gameView.hasWon()){
+						stillPlaying = false;
 						msg = "WINNER " + turn;
 						for(int i =0; i<numberOfPlayers;i++){
 							players[i].write(msg);
 						}	
 					}
+
 				}
-				if (boot){
-					// remove player
+			}
+			if (boot){
+				gameView.removePlayer(turn);
+				removeFromRotation(turn);
+			}
+			round++;
+			if((turn == players[round%numberOfPlayers].getPlayerNumber()) && stillPlaying){
+				msg = "WINNER " + turn;
+				for(int i =0; i<numberOfPlayers;i++){
+					players[i].write(msg);
 				}
-				round++;
 			}
 		}
+	}
 
+
+	private void removeFromRotation(int turn) {
+		System.out.println("remove from rotation was called");
+		for(int i = turn;i < numberOfPlayers;i++)
+			players[i]=players[i+1];
+		numberOfPlayers--;
 	}
 
 	public static void main(String [] args) throws Exception{

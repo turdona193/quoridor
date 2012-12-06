@@ -128,12 +128,17 @@ public class MoveServer{
 					board.readStringFromNet(toBoard);
 				}
 				if(next.contains("REMOVED")){
+					System.out.println("I am getting kicked in the move server");
+
 					networkPlayer.close();
 					isPlayer = false;
+					board.removePlayer(sc.nextInt());
 					//break;
 				}
 				if(next.contains("WINNER")){
-					board.winWindow(sc.nextInt());					
+					board.winWindow(sc.nextInt());
+					networkPlayer.close();
+					isPlayer = false;
 					//break;
 				}
 			}
