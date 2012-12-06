@@ -420,15 +420,13 @@ public class Board {
 	public void winWindow(){
 		JOptionPane.showMessageDialog(winFrame,
 				"Player " + (getTurn()) + " has won!");
-		if(netPlay)
-			System.exit(0);
+		
 	}
 	
 	public void winWindow(int winner){
 		JOptionPane.showMessageDialog(winFrame,
 				"Player " + winner + " has won!");
-		if(netPlay)
-			System.exit(0);
+		
 	}
 
 

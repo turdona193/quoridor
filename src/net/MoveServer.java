@@ -28,31 +28,37 @@ public class MoveServer{
 	 * Class constructor. 
 	 * Creates MoveSocket object, initializes serverSocket at predetermined value, '6969'.
 	 * Initializes networkPlayer with an ServerSocket accept from GameClient.
+	 * Upon completing a game, The move server will go back to waiting for an invite to a game.
 	 * 
 	 * @throws Exception Throws I/O exception if error when initializing NetworkPlayer 
 	 */
 	public MoveServer() throws Exception{
 		serverSocket = new ServerSocket(6969);
-		try{
-			networkPlayer = new NetworkPlayer(serverSocket.accept());
-		}catch(Exception e){System.err.println("Failed to connect to Server: " + e);}
+		while(true){
+			try{
+				networkPlayer = new NetworkPlayer(serverSocket.accept());
+				run();
+			}catch(Exception e){System.err.println("Failed to connect to Server: " + e);}
+		}
 	}
 
 	/**
 	 * Class constructor. 
 	 * Creates MoveSocket object, initializes serverSocket at parameter 'port'.
 	 * Initializes networkPlayer with an ServerSocket accept from GameClient.
+	 * Upon completing a game, The move server will go back to waiting for an invite to a game.
 	 * 
 	 * @param port int representation of desired port value of serverSocket.
 	 * @throws Exception Throws I/O exception if error when initializing NetworkPlayer 
 	 */
 	public MoveServer(int port) throws Exception{
 		serverSocket = new ServerSocket(port);
-		try{
-			networkPlayer = new NetworkPlayer(serverSocket.accept());
-
-		}catch(Exception e){System.err.println("Failed to connect to Server: " + e);}
-
+		while(true){
+			try{
+				networkPlayer = new NetworkPlayer(serverSocket.accept());
+				run();
+			}catch(Exception e){System.err.println("Failed to connect to Server: " + e);}
+		}
 	}
 
 	public void run() throws Exception{
@@ -107,7 +113,6 @@ public class MoveServer{
 		String next = ""; // used to take apart move 
 		String toBoard;
 		Scanner sc; // opened on move to parse through it
-		Scanner user = new Scanner(System.in);
 		String nextMove;
 
 		while(isPlayer){
@@ -173,13 +178,16 @@ public class MoveServer{
 	 */
 	public static void main(String [] args) throws Exception{
 		MoveServer moveServer;
+
 		try{
 			if(args.length != 0){
 				moveServer = new MoveServer(Integer.parseInt(args[0]));
 			}else{ moveServer = new MoveServer();}
-			moveServer.run();
-		}catch(Exception e){System.err.println("Failled to start the server: " + e);
-		e.printStackTrace();}
+		}catch(Exception e){
+			System.err.println("Failled to start the server: " + e);
+			e.printStackTrace();
+		}
+
 	}	
 }
 
