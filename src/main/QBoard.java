@@ -129,14 +129,14 @@ public class QBoard extends JFrame implements ActionListener{
 	public void setStatus(){
 		StringBuffer sb = new StringBuffer();
         sb.append("<html><p align=center>");
-        sb.append("Player 1: " + board.numberOfWalls(0));
+        sb.append("Player 0: " + board.numberOfWalls(0));
         sb.append("<br>");
-        sb.append("Player 2: " + board.numberOfWalls(1));
+        sb.append("Player 1: " + board.numberOfWalls(1));
         sb.append("<br>");
         if(board.getNumOfPlayers()>2){
-        sb.append("Player 3: " + board.numberOfWalls(2)); //should format
+        sb.append("Player 2: " + board.numberOfWalls(2)); //should format
         sb.append("<br>");
-        sb.append("Player 4: " + board.numberOfWalls(3));
+        sb.append("Player 3: " + board.numberOfWalls(3));
         sb.append("<br>");
         }
         sb.append("<br>");

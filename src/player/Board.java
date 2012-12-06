@@ -376,7 +376,8 @@ public class Board {
 				moveForNetwork = input;
 				moveMadeForNetwork.release();
 				return;
-			}}
+			}
+		}
 
 		gui.setColorOfSpace(currentState.getCurrentPlayer().getLocation(), BUTTON_DEFAULT_COLOR);
 		//makes the actual move
@@ -405,7 +406,7 @@ public class Board {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns true if the specified Player has one.  Otherwise, it returns false.
 	 * @param player
@@ -419,14 +420,14 @@ public class Board {
 
 	public void winWindow(){
 		JOptionPane.showMessageDialog(winFrame,
-				"Player " + (getTurn()) + " has won!");
-		
+				"Player " + (currentState.getPrevPlayer().getPlayerID()) + " has won!");
+
 	}
-	
+
 	public void winWindow(int winner){
 		JOptionPane.showMessageDialog(winFrame,
 				"Player " + winner + " has won!");
-		
+
 	}
 
 
@@ -474,7 +475,7 @@ public class Board {
 		input = convertNetStringToGUIString(input);
 		return isStringLegal(input);
 	}
-	
+
 	/**
 	 * This method removes a specified Player from the game.
 	 * @param pl
@@ -530,7 +531,7 @@ public class Board {
 	}
 
 	//TODO:Should probably be refactored to make use of the getGraphWithJumpEdges method.
-	
+
 	// rec is the number of times a recursive call was made it should probably get a better name
 	private void showMoves(Player pl, boolean b, int rec) {
 		Player[] players = currentState.getPlayerArray();

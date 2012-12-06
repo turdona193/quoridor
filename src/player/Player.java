@@ -116,6 +116,16 @@ public class Player {
 	}
 	
 	/**
+	 * Method to return the Player's ID.
+	 * 
+	 * @return
+	 * 		Returns an int representing a Player's ID.
+	 */
+	public int getPlayerID() {
+		return playerID;
+	}
+	
+	/**
 	 * This method removes the Player from the game.
 	 */
 	public void remove() {
