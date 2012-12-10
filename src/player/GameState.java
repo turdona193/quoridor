@@ -30,7 +30,7 @@ public class GameState {
 	 * 
 	 * Also, the first index represents the row, and the second represents the column.
 	 */
-	private int[][] walls;
+	public int[][] walls;
 	
 	private int numberOfPlayers;
 	
@@ -47,7 +47,7 @@ public class GameState {
 	 * the board, and there is initially an Edge between each adjacent Node in the Graph.  As walls are added, 
 	 * corresponding edges are removed from the Graph.
 	 */
-	private Graph<Point> graph;
+	public Graph<Point> graph;
 	
 	/**
 	 * Constructs a new State with parameters that match what is passed in.
